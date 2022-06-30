@@ -1,11 +1,14 @@
 import React, { useRef, useState } from "react";
 import { ReactComponent as Logo } from "../assets/logo.svg";
-import "./SendOtpStyle.css";
+import "../css/signInScreenStyle.css";
 import { useAuth } from "../context/AuthContext";
+import EnterOTPDialog from "../components/EnterOTPDialog";
+import { Navigate } from "react-router-dom";
 
 const SignInScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
-  const { signInWithPhone } = useAuth();
+  const [dialogVisibility, setDialogVisibility] = useState(false);
+  const { sendVerificationCode } = useAuth();
 
   const form = useRef();
 
@@ -16,20 +19,27 @@ const SignInScreen = () => {
   const onSendOtpClicked = async (e) => {
     e.preventDefault();
 
-    signInWithPhone(phoneNumber, "captcha-container").then(
+    sendVerificationCode(phoneNumber, "captcha-container").then(
       (confirmationResult) => {
+        console.log(window.confirmationResult);
         window.confirmationResult = confirmationResult;
-        showEnterOtp();
+        setDialogVisibility(true);
       }
     );
   };
 
-  function showEnterOtp() {
-
-  }
+  const onOtpVerified = () => {
+    <Navigate to="/" />;
+  };
 
   return (
     <div className="page">
+      <EnterOTPDialog
+        open={dialogVisibility}
+        onClose={() => setDialogVisibility(false)}
+        phoneNumber={phoneNumber}
+        onOtpVerified={() => onOtpVerified()}
+      />
       <div className="box">
         <div className="logoTitleSubtitle">
           <Logo className="logo" />
@@ -56,7 +66,7 @@ const SignInScreen = () => {
               className="field"
               onChange={handlePhoneFieldChange}
             />
-            <button type="submit" id="signInButton" className="sButton">
+            <button type="submit" id="signInButton" className="pBtn sBtn">
               Continue
             </button>
           </form>

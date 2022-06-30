@@ -1,4 +1,4 @@
-import { RecaptchaVerifier, onAuthStateChanged, signInWithPhoneNumber } from "firebase/auth";
+import { RecaptchaVerifier, onAuthStateChanged, signInWithPhoneNumber, PhoneAuthProvider, signInWithCredential } from "firebase/auth";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import auth from "../utils/FirebaseConfig";
 
@@ -21,7 +21,7 @@ export default function AuthContextProvider({ children }) {
     };
   }, []);
 
-  function signInWithPhone(phoneNumber, captchaContainerId) {
+  function sendVerificationCode(phoneNumber, captchaContainerId) {
     generateRecaptcha(captchaContainerId);
 
     let appVerifier = window.recaptchaVerifier;
@@ -38,9 +38,17 @@ export default function AuthContextProvider({ children }) {
     );
   };
 
+  function verifyOtpAndSignInUser(otp) {
+    let verificationId = window.confirmationResult.verificationId;
+    let credential = PhoneAuthProvider.credential(verificationId, otp);
+    
+    return signInWithCredential(auth, credential)
+  }
+
   const value = {
     currentUser,
-    signInWithPhone,
+    sendVerificationCode,
+    verifyOtpAndSignInUser
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
