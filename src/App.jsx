@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import SendOtp from "./pages/SendOtp";
+import SignInScreen from "./pages/SignInScreen";
 import MainScreen from "./pages/MainScreen";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -14,7 +14,7 @@ const App = () => {
           </ProtectedRoute>
         }
       />
-      <Route path="/auth" element={<SendOtp />} />
+      <Route path="/auth" element={<SignInScreen />} />
     </Routes>
   );
 };

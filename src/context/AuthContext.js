@@ -1,40 +1,46 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
-import auth from '../utils/FirebaseConfig'
-import {
-    signInWithPhoneNumber,
-    onAuthStateChanged
-} from 'firebase/auth'
+import { RecaptchaVerifier, onAuthStateChanged, signInWithPhoneNumber } from "firebase/auth";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import auth from "../utils/FirebaseConfig";
 
 const AuthContext = createContext({
   currentUser: null,
   signInWithPhoneNumber: () => Promise,
-})
+});
 
-export const useAuth = () => useContext(AuthContext)
+export const useAuth = () => useContext(AuthContext);
 
 export default function AuthContextProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState(null)
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, user => {
-      setCurrentUser(user ? user : null)
-    })
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user ? user : null);
+    });
     return () => {
-      unsubscribe()
-    }
-  }, [])
+      unsubscribe();
+    };
+  }, []);
 
-  useEffect(() => {
-    console.log('The user is', currentUser)
-  }, [currentUser])
+  function signInWithPhone(phoneNumber, captchaContainerId) {
+    generateRecaptcha(captchaContainerId);
 
-  function sendOTP(phoneNumber) {
-      return signInWithPhoneNumber(auth, phoneNumber)
+    let appVerifier = window.recaptchaVerifier;
+    return signInWithPhoneNumber(auth, phoneNumber, appVerifier);
   }
+
+  const generateRecaptcha = (captchaContainerId) => {
+    window.recaptchaVerifier = new RecaptchaVerifier(
+      captchaContainerId,
+      {
+        size: "invisible",
+      },
+      auth
+    );
+  };
 
   const value = {
     currentUser,
-    sendOTP
-  }
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+    signInWithPhone,
+  };
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
