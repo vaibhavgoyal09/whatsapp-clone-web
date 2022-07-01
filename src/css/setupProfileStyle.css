@@ -1,0 +1,120 @@
+.page {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  align-items: center;
+}
+
+.box {
+  display: flex;
+  width: 100%;
+  height: auto;
+  z-index: 2;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.logoTitleSubtitle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.logo {
+  width: 100px;
+  padding: 16px;
+}
+
+.formWrapper {
+  width: 300px;
+  height: auto;
+  padding: 20px;
+  gap: 16px;
+  background-color: var(--darkerGrey);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 18px;
+}
+
+.imageWrapper {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  border: 0px;
+  align-self: center;
+  margin-top: 40px;
+  justify-content: center;
+  align-items: center;
+}
+
+.stdImg {
+  width: 80px;
+  height: 80px;
+  z-index: 0;
+  position: fixed;
+  border-radius: 50%;
+}
+
+.cameraOverlay {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  opacity: 0;
+}
+
+.cameraOverlay:hover {
+  opacity: 100;
+}
+
+.camera {
+  width: 25px;
+  color: var(--secondaryText);
+}
+
+.field {
+  padding: 8px;
+  width: 300px;
+  border-radius: 8px;
+  font-size: 15px;
+  color: var(--white);
+  caret-color: var(--white);
+  background-color: var(--darkerGrey);
+  border: 1px solid var(--inputFieldBorder);
+}
+
+.name {
+  margin-top: 12px;
+}
+
+.about {
+  margin-top: 12px;
+  /* height */
+}
+
+.appTitle {
+  margin-top: 8px;
+  padding: 8px;
+}
+
+.appSubtitle {
+  color: var(--secondaryText);
+}
+
+.subtitle {
+  text-align: center;
+}
+
+.sBtn {
+  width: 100%;
+  margin-top: 16px;
+}
