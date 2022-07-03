@@ -2,19 +2,23 @@ import { useRef, useState } from "react";
 import "../css/setupProfileStyle.css";
 import { ReactComponent as Logo } from "../assets/logo.svg";
 import { ReactComponent as CameraImg } from "../assets/camera.svg";
+import WhatsAppApiService from "../services/WhatsAppApiService";
+import { useLocation } from "react-router-dom";
+import CreateUserRequest from "../models/CreateUserRequest";
 
-const SetupProfileScreen = () => {
+const SetupProfileScreen = (props) => {
   const [name, setName] = useState("");
   const [about, setAbout] = useState("");
   const [imageSrc, setImageSrc] = useState("avatar.png");
+  const [image, setImage] = useState(null);
+  const location = useLocation();
   const fileInputRef = useRef();
 
   const maxRowCount = 4;
   const maxCharCount = 50;
+  const phoneNumber = location.state.phoneNumber;
 
-  function onSubmit(e) {
-    e.preventDefault();
-  }
+  let apiService = new WhatsAppApiService();
 
   function handleNameFieldChange(event) {
     setName(event.target.value);
@@ -28,7 +32,23 @@ const SetupProfileScreen = () => {
     let file = event.target.files[0];
     let imgSrc = URL.createObjectURL(file);
     setImageSrc(imgSrc);
-    console.log('Handle Change called', file);
+    setImage(file);
+  }
+
+  function onSubmit(event) {
+    event.preventDefault();
+    if (image === null || image === undefined) {
+      return;
+    }
+    let request = new CreateUserRequest(name, about, phoneNumber, image);
+    apiService
+      .createUser(request)
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }
 
   return (
@@ -53,17 +73,22 @@ const SetupProfileScreen = () => {
             <span>photo so others can recognize you.</span>
           </h4>
           <div className="imageWrapper">
-            <img
-              className="stdImg"
-              src={imageSrc}
-              alt="profile"
-            />
-            <div className="cameraOverlay" onClick={() => fileInputRef.current.click()}>
-              <CameraImg className="camera"/>
+            <img className="stdImg" src={imageSrc} alt="profile" />
+            <div
+              className="cameraOverlay"
+              onClick={() => fileInputRef.current.click()}
+            >
+              <CameraImg className="camera" />
             </div>
           </div>
           <form onSubmit={onSubmit} className="form">
-            <input type="file" onChange={handleFileChange} hidden ref={fileInputRef} accept='image/png, image/jpeg, image/jpg'/>
+            <input
+              type="file"
+              onChange={handleFileChange}
+              hidden
+              ref={fileInputRef}
+              accept="image/png, image/jpeg, image/jpg"
+            />
             <input
               type="text"
               placeholder="name"

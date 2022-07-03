@@ -3,11 +3,12 @@ import { ReactComponent as Logo } from "../assets/logo.svg";
 import "../css/signInScreenStyle.css";
 import { useAuth } from "../context/AuthContext";
 import EnterOTPDialog from "../components/EnterOTPDialog";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const SignInScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [dialogVisibility, setDialogVisibility] = useState(false);
+  const navigate = useNavigate();
   const { sendVerificationCode } = useAuth();
 
   const form = useRef();
@@ -21,7 +22,6 @@ const SignInScreen = () => {
 
     sendVerificationCode(phoneNumber, "captcha-container").then(
       (confirmationResult) => {
-        console.log(window.confirmationResult);
         window.confirmationResult = confirmationResult;
         setDialogVisibility(true);
       }
@@ -29,7 +29,7 @@ const SignInScreen = () => {
   };
 
   const onOtpVerified = () => {
-    <Navigate to="/" />;
+    navigate('/setup-profile', {state:{phoneNumber: phoneNumber}})
   };
 
   return (

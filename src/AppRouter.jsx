@@ -4,7 +4,7 @@ import MainScreen from "./pages/MainScreen";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SetupProfileScreen from "./pages/SetupProfileScreen";
 
-const App = () => {
+const AppRouter = () => {
   return (
     <Routes>
       <Route
@@ -15,9 +15,10 @@ const App = () => {
           </ProtectedRoute>
         }
       />
-      <Route path="/auth" element={<SetupProfileScreen />} />
+      <Route path="/auth" element={<SignInScreen />} />
+      <Route path="/setup-profile" element={<SetupProfileScreen/>}/>
     </Routes>
   );
 };
 
-export default App;
+export default AppRouter;

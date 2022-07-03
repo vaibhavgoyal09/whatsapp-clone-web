@@ -1,4 +1,11 @@
-import { RecaptchaVerifier, onAuthStateChanged, signInWithPhoneNumber, PhoneAuthProvider, signInWithCredential } from "firebase/auth";
+import {
+  RecaptchaVerifier,
+  onAuthStateChanged,
+  signInWithPhoneNumber,
+  PhoneAuthProvider,
+  signInWithCredential,
+  getIdToken,
+} from "firebase/auth";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import auth from "../utils/FirebaseConfig";
 
@@ -14,6 +21,7 @@ export default function AuthContextProvider({ children }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      console.log("Auth State Changed", user);
       setCurrentUser(user ? user : null);
     });
     return () => {
@@ -28,7 +36,7 @@ export default function AuthContextProvider({ children }) {
     return signInWithPhoneNumber(auth, phoneNumber, appVerifier);
   }
 
-  const generateRecaptcha = (captchaContainerId) => {
+  function generateRecaptcha(captchaContainerId) {
     window.recaptchaVerifier = new RecaptchaVerifier(
       captchaContainerId,
       {
@@ -36,19 +44,34 @@ export default function AuthContextProvider({ children }) {
       },
       auth
     );
-  };
+  }
 
   function verifyOtpAndSignInUser(otp) {
     let verificationId = window.confirmationResult.verificationId;
     let credential = PhoneAuthProvider.credential(verificationId, otp);
-    
-    return signInWithCredential(auth, credential)
+
+    return signInWithCredential(auth, credential);
+  }
+
+  function getUserIdToken() {
+    if (currentUser === null) {
+      return null;
+    }
+    getIdToken(currentUser)
+      .then((token) => {
+        return token;
+      })
+      .catch((e) => {
+        console.log(e);
+        return null;
+      });
   }
 
   const value = {
     currentUser,
     sendVerificationCode,
-    verifyOtpAndSignInUser
+    verifyOtpAndSignInUser,
+    getUserIdToken,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
