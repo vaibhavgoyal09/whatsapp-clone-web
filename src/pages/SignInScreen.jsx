@@ -4,12 +4,14 @@ import "../css/signInScreenStyle.css";
 import { useAuth } from "../context/AuthContext";
 import EnterOTPDialog from "../components/EnterOTPDialog";
 import { Navigate, useNavigate } from "react-router-dom";
+import WhatsAppApiService from "../services/WhatsAppApiService";
 
 const SignInScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [dialogVisibility, setDialogVisibility] = useState(false);
   const navigate = useNavigate();
   const { sendVerificationCode } = useAuth();
+  let apiService = new WhatsAppApiService();
 
   const form = useRef();
 
@@ -29,7 +31,15 @@ const SignInScreen = () => {
   };
 
   const onOtpVerified = () => {
-    navigate('/setup-profile', {state:{phoneNumber: phoneNumber}})
+    apiService
+      .checkIfUserExists(phoneNumber)
+      .then((result) => {
+        navigate("/", { state: { user: result } });
+      })
+      .catch((e) => {
+        console.log(e);
+        navigate("/setup-profile", { state: { phoneNumber: phoneNumber } });
+      });
   };
 
   return (
