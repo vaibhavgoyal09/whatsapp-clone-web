@@ -4,7 +4,10 @@ import { useAuth } from "./AuthContext";
 import { WhatsApi } from "../utils/Constants";
 import ApiError from "../utils/ApiError";
 
-export const AxiosContext = createContext(null);
+export const AxiosContext = createContext({
+  checkIfUserExists: () => Promise,
+  registerUser: () => Promise,
+});
 export const useAxios = () => useContext(AxiosContext);
 const AxiosInstanceProvider = ({ children }) => {
   const { getUserIdToken } = useAuth();
@@ -20,64 +23,61 @@ const AxiosInstanceProvider = ({ children }) => {
   const instanceRef = useRef(axios.create(config));
 
   useEffect(() => {
+    console.log('Use effect called');
     getUserIdToken()
       .then((token) => {
         instanceRef.current.interceptors.request.use((request) => {
-          request.headers({ Authorization: `Bearer ${token}` });
+          request.headers = { Authorization: `Bearer ${token}` };
           return request;
         });
       })
       .catch((e) => {
         console.log(e);
       });
-  }, []);
+  });
 
   function checkIfUserExists(phoneNumber) {
+    console.log(phoneNumber);
     return new Promise((resolve, reject) => {
-      try {
-        instanceRef.current
-          .get(`${WhatsApi.CHECK_USER_SIGNING_IN_URL}/${phoneNumber}`)
-          .then((data) => {
-            resolve(data);
-          });
-      } catch (axios_error) {
-        if (axios_error.data !== null) {
-          reject(new ApiError(axios_error.status, axios_error.data["detail"]));
-        } else {
-          reject(new ApiError(axios_error.status, axios_error.message));
-        }
-      }
+      instanceRef.current
+        .get(`${WhatsApi.CHECK_USER_SIGNING_IN_URL}${phoneNumber}`)
+        .then((result) => {
+          resolve(result.data);
+        })
+        .catch((axios_error) => {
+          reject(new ApiError(axios_error.status));
+        });
     });
   }
 
   function registerUser(request) {
     return new Promise((resolve, reject) => {
-      try {
-        let file = new FormData();
-        file.append("file", request.getProfilePhotoAsFile());
-        instanceRef.current
-          .post(`${WhatsApi.UPLOAD_FILE_URL}`, file)
-          .then((data) => {
-            let profilePhotoUrl = data;
+      let file = new FormData();
+      file.append("file", request.getProfilePhotoAsFile());
+      instanceRef.current
+        .post(`${WhatsApi.UPLOAD_FILE_URL}`, file)
+        .then((result) => {
+          console.log(result);
+          let profilePhotoUrl = result.data['url'];
+          console.log(profilePhotoUrl);
 
-            instanceRef.current
-              .post(`${WhatsApi.REGISTER_USER_URL}`, {
-                name: request.getName(),
-                about: request.getAbout(),
-                phone_number: request.getPhoneNumber(),
-                profile_image_url: profilePhotoUrl,
-              })
-              .then((data) => {
-                resolve(data);
-              });
-          });
-      } catch (axios_error) {
-        if (axios_error.data !== null) {
-          reject(new ApiError(axios_error.status, axios_error.data["detail"]));
-        } else {
-          reject(new ApiError(axios_error.status, axios_error.message));
-        }
-      }
+          instanceRef.current
+            .post(`${WhatsApi.REGISTER_USER_URL}`, {
+              name: request.getName(),
+              about: request.getAbout(),
+              phone_number: request.getPhoneNumber(),
+              profile_image_url: profilePhotoUrl,
+            })
+            .then((result) => {
+              resolve(result.data);
+            })
+            .catch((axios_error) => {
+              reject(new ApiError(axios_error.status));
+            });
+        })
+        .catch((axios_error) => {
+          reject(new ApiError(axios_error.status));
+        });
     });
   }
 

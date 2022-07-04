@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
-import "../css/setupProfileStyle.css";
-import { ReactComponent as Logo } from "../assets/logo.svg";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ReactComponent as CameraImg } from "../assets/camera.svg";
-import WhatsAppApiService from "../services/WhatsAppApiService";
-import { useLocation } from "react-router-dom";
+import { ReactComponent as Logo } from "../assets/logo.svg";
+import { useAxios } from "../context/AxiosContext";
+import "../css/setupProfileStyle.css";
 import CreateUserRequest from "../models/CreateUserRequest";
 
 const SetupProfileScreen = (props) => {
@@ -13,12 +13,12 @@ const SetupProfileScreen = (props) => {
   const [image, setImage] = useState(null);
   const location = useLocation();
   const fileInputRef = useRef();
+  const navigate = useNavigate();
+  const { registerUser } = useAxios();
 
   const maxRowCount = 4;
   const maxCharCount = 50;
   const phoneNumber = location.state.phoneNumber;
-
-  let apiService = new WhatsAppApiService();
 
   function handleNameFieldChange(event) {
     setName(event.target.value);
@@ -40,7 +40,14 @@ const SetupProfileScreen = (props) => {
     if (image === null || image === undefined) {
       return;
     }
-    
+    let request = new CreateUserRequest(name, about, phoneNumber, image);
+    registerUser(request)
+      .then((result) => {
+        navigate("/", { state: { user: result } });
+      })
+      .catch((e) => {
+        alert(e.getCode());
+      });
   }
 
   return (
