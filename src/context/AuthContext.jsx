@@ -11,13 +11,15 @@ import auth from "../utils/FirebaseConfig";
 
 const AuthContext = createContext({
   currentUser: null,
-  signInWithPhoneNumber: () => Promise,
+  verifyOtpAndSignInUser: () => Promise,
+  sendVerificationCode: () => Promise,
+  getUserIdToken: () => Promise
 });
 
 export const useAuth = () => useContext(AuthContext);
 
 export default function AuthContextProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(auth.currentUser);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -54,17 +56,10 @@ export default function AuthContextProvider({ children }) {
   }
 
   function getUserIdToken() {
-    if (currentUser === null) {
-      return null;
+    if (currentUser === null || currentUser === undefined) {
+      return Promise.reject('user is null');
     }
-    getIdToken(currentUser)
-      .then((token) => {
-        return token;
-      })
-      .catch((e) => {
-        console.log(e);
-        return null;
-      });
+    return getIdToken(currentUser);
   }
 
   const value = {

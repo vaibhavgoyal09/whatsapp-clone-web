@@ -40,15 +40,7 @@ const SetupProfileScreen = (props) => {
     if (image === null || image === undefined) {
       return;
     }
-    let request = new CreateUserRequest(name, about, phoneNumber, image);
-    apiService
-      .createUser(request)
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    
   }
 
   return (

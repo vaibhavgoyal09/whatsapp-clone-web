@@ -1,17 +1,18 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ReactComponent as Logo } from "../assets/logo.svg";
-import "../css/signInScreenStyle.css";
-import { useAuth } from "../context/AuthContext";
 import EnterOTPDialog from "../components/EnterOTPDialog";
-import { Navigate, useNavigate } from "react-router-dom";
-import WhatsAppApiService from "../services/WhatsAppApiService";
+import { useAuth } from "../context/AuthContext";
+import { useAxios } from "../context/AxiosContext";
+import "../css/signInScreenStyle.css";
+import { WhatsApi } from "../utils/Constants";
 
 const SignInScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [dialogVisibility, setDialogVisibility] = useState(false);
   const navigate = useNavigate();
   const { sendVerificationCode } = useAuth();
-  let apiService = new WhatsAppApiService();
+  const { checkIfUserExists } = useAxios();
 
   const form = useRef();
 
@@ -31,8 +32,9 @@ const SignInScreen = () => {
   };
 
   const onOtpVerified = () => {
-    apiService
-      .checkIfUserExists(phoneNumber)
+    console.log(phoneNumber);
+    let trimmedPhoneNumber = phoneNumber.replace(/\s+/g, '');
+    checkIfUserExists(trimmedPhoneNumber)
       .then((result) => {
         navigate("/", { state: { user: result } });
       })
