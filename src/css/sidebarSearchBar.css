@@ -1,0 +1,30 @@
+.searchBox {
+  width: 90%;
+  height: 40px;
+  padding: 2px;
+  background-color: var(--background);
+  margin: 16px auto 16px auto;
+  border-radius: 8px;
+  border: 0px;
+}
+
+.searchBox span {
+  padding-left: 12px;
+  padding-bottom: 2px;
+  color: var(--secondaryText);
+  margin: auto 0px;
+  position: relative;
+  
+}
+
+.searchInput {
+  margin: auto 16px;
+  height: 100%;
+  background-color: transparent;
+  border: 0px;
+  outline: 0px;
+  width: 80%;
+  caret-color: var(--white);
+  color: var(--white);
+  font-size: 14px;
+}

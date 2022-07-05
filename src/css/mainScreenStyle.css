@@ -1,0 +1,20 @@
+.pg {
+  width: 100%;
+  min-height: 100%;
+}
+
+.container {
+  width: 25%;
+  background-color: var(--darkerGrey);
+  display: block;
+  margin: 0px 0px;
+  height: 100%;
+  position: sticky;
+  border-right: 1px solid var(--inputFieldBorder);
+}
+
+@media (max-width: 900px) {
+  .container {
+    width: 35%;
+  }
+}

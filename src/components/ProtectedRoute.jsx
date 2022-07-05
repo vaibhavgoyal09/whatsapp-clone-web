@@ -6,6 +6,8 @@ const ProtectedRoute = ({ children }) => {
 
   console.log(currentUser);
 
+  return children;
+  
   if (!currentUser) {
     return <Navigate to="/auth" />;
   } else {

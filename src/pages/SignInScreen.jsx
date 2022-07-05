@@ -5,7 +5,6 @@ import EnterOTPDialog from "../components/EnterOTPDialog";
 import { useAuth } from "../context/AuthContext";
 import { useAxios } from "../context/AxiosContext";
 import "../css/signInScreenStyle.css";
-import { WhatsApi } from "../utils/Constants";
 
 const SignInScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState("");

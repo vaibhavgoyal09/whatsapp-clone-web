@@ -4,12 +4,12 @@
 }
 
 :root {
-  --background: #3d3d3d;
-  --green: #7ad06d;
+  --background: #233138;
+  --green: #00a884;
   --white: #ffffff;
-  --darkerGrey: #202020;
-  --secondaryText: #eeeeee;
-  --inputFieldBorder: #7a7a7a;
+  --darkerGrey: #17232b;
+  --secondaryText: #cecdcd;
+  --inputFieldBorder: #30373b;
 }
 
 body {

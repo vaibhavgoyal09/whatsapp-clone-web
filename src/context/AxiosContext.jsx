@@ -1,8 +1,8 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useRef } from "react";
-import { useAuth } from "./AuthContext";
-import { WhatsApi } from "../utils/Constants";
 import ApiError from "../utils/ApiError";
+import { WhatsApi } from "../utils/Constants";
+import { useAuth } from "./AuthContext";
 
 export const AxiosContext = createContext({
   checkIfUserExists: () => Promise,
