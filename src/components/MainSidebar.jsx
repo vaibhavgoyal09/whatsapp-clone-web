@@ -1,26 +1,16 @@
-import React from "react";
 import "../css/mainSidebar.css";
-import ChatItem from "./ChatItem";
+import ChatsList from "./ChatsList";
 import SidebarHeader from "./SidebarHeader";
 import SidebarSearchBar from "./SidebarSearchBar";
 
-const MainSidebar = ({ chats }) => {
-  // if (chats === null || chats === undefined) {
-  //   return null;
-  // }
-  console.log(chats);
-
+const MainSidebar = ({ chats, onChatClicked, onProfileClick }) => {
   return (
-    <div className="container">
-      <SidebarHeader />
+    <div id="ctnt">
+      <SidebarHeader onProfileClick={() => onProfileClick()}/>
       <SidebarSearchBar />
-      <div className="chats">
-        {chats.map((chat, index) => (
-          <>
-            <div className="dividerLine" />
-            <ChatItem key={index} chat={chat} />
-          </>
-        ))}
+      <div className="dividerLine"/>
+      <div className="chatsContainer">
+        <ChatsList chats={chats} onChatClicked={(chat) => onChatClicked(chat)}/>
       </div>
     </div>
   );

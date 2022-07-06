@@ -1,20 +1,24 @@
 .pg {
-  width: 100%;
-  min-height: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: row;
 }
 
-.container {
-  width: 25%;
-  background-color: var(--darkerGrey);
-  display: block;
-  margin: 0px 0px;
-  height: 100%;
-  position: sticky;
-  border-right: 1px solid var(--inputFieldBorder);
+.sidebarContainer {
+  width: 30%;
+}
+
+.chattingContainer {
+  width: 70%;
 }
 
 @media (max-width: 900px) {
-  .container {
-    width: 35%;
+  .sidebarContainer {
+    width: 40%;
+  }
+
+  .chattingContainer {
+    width: 60%;
   }
 }

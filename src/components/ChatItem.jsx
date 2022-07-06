@@ -1,7 +1,7 @@
 import React from "react";
 import "../css/chatItemStyle.css";
 
-const ChatItem = ({ chat }) => {
+const ChatItem = ({ chat, onClick }) => {
   if (!chat) {
     return null;
   }
@@ -22,19 +22,19 @@ const ChatItem = ({ chat }) => {
   }
 
   return (
-    <>
-      <div className="cn">
-        <div className="imgWrpr">
-          <img
-            src={
-              chat.getRemoteUserProfileImageUrl()
-                ? chat.getRemoteUserProfileImageUrl()
-                : "avatar.png"
-            }
-            alt="user profile"
-            className="avatar"
-          />
-        </div>
+    <div className="cn" onClick={() => onClick()}>
+      <div className="imgWrpr">
+        <img
+          src={
+            chat.getRemoteUserProfileImageUrl()
+              ? chat.getRemoteUserProfileImageUrl()
+              : "avatar.png"
+          }
+          alt="user profile"
+          className="avatar"
+        />
+      </div>
+      <div className="infoContainer">
         <div className="unamec">
           <p className="uname">{chat.getRemoteUserName()}</p>
           <p className="umsg">{messageText}</p>
@@ -46,7 +46,7 @@ const ChatItem = ({ chat }) => {
           <p className="tstmp">{timestamp}</p>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

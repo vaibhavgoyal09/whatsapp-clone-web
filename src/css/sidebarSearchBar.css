@@ -6,6 +6,9 @@
   margin: 16px auto 16px auto;
   border-radius: 8px;
   border: 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .searchBox span {
@@ -14,12 +17,11 @@
   color: var(--secondaryText);
   margin: auto 0px;
   position: relative;
-  
 }
 
 .searchInput {
-  margin: auto 16px;
   height: 100%;
+  margin-left: 16px;
   background-color: transparent;
   border: 0px;
   outline: 0px;

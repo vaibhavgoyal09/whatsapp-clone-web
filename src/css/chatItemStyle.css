@@ -6,11 +6,17 @@
   position: relative;
   width: 100%;
   align-items: center;
+  overflow-y: auto;
+  height: 50px;
 }
 
-
-.opcnt {
+.infoContainer {
   display: flex;
+  height: 100%;
+  width: 100%;
+  border-bottom: 1px solid var(--inputFieldBorder);
+  align-items: center;
+  margin-left: 12px;
 }
 
 .imgWrpr {
@@ -28,7 +34,6 @@
 }
 
 .unamec {
-  margin-left: 12px;
   width: 200px;
 }
 

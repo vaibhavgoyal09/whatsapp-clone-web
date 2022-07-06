@@ -1,9 +1,16 @@
-.chats {
-  display: flex;
-  flex-direction: column;
+#ctnt {
   width: 100%;
+  background-color: var(--darkerGrey);
+  position: relative;
+  border-right: 1px solid var(--inputFieldBorder);
+}
+
+.chatsContainer {
+  width: 30%;
+  position: fixed;
+  overflow-y: auto;
   height: 100%;
-  margin-top: 15px;
+  overflow-x: hidden;
 }
 
 .dividerLine {

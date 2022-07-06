@@ -1,14 +1,18 @@
 import React from "react";
 import "../css/sidebarHeader.css";
 
-const SidebarHeader = (props) => {
+const SidebarHeader = ({ profileImageUrl, onProfileClick }) => {
   return (
-    <div className="opcnt">
+    <div className="hctnr">
       <img
         className="avt"
-        src={props.profileImageUrl ? props.profileImageUrl : "avatar.png"}
+        src={profileImageUrl ? profileImageUrl : "avatar.png"}
         alt="your profile"
+        onClick={() => onProfileClick()}
       />
+      <div className="optionsContainer">
+        <span><i></i></span>
+      </div>
     </div>
   );
 };
