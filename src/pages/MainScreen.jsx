@@ -22,7 +22,7 @@ const MainScreen = () => {
     new Chat(
       4,
       3,
-      "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=600",
+      null,
       "Lorem Ipsum",
       null,
       0
@@ -62,7 +62,23 @@ const MainScreen = () => {
     new Chat(
       1,
       2,
-      "https://images.pexels.com/photos/937481/pexels-photo-937481.jpeg?auto=compress&cs=tinysrgb&w=600",
+      null,
+      "Lorem Ipsum",
+      new Message(
+        1,
+        1,
+        2,
+        "video",
+        null,
+        "https://player.vimeo.com/external/371863420.sd.mp4?s=2fe8f1b2b47e1d9c5dbcc5743eb26b471b1a861d&profile_id=164&oauth2_token_id=57447761",
+        ""
+      ),
+      0
+    ),
+    new Chat(
+      1,
+      2,
+      null,
       "Lorem Ipsum",
       new Message(
         1,
@@ -164,25 +180,9 @@ const MainScreen = () => {
         1,
         1,
         2,
-        "video",
+        "text",
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
         null,
-        "https://player.vimeo.com/external/371863420.sd.mp4?s=2fe8f1b2b47e1d9c5dbcc5743eb26b471b1a861d&profile_id=164&oauth2_token_id=57447761",
-        ""
-      ),
-      0
-    ),
-    new Chat(
-      1,
-      2,
-      "https://images.pexels.com/photos/937481/pexels-photo-937481.jpeg?auto=compress&cs=tinysrgb&w=600",
-      "Lorem Ipsum",
-      new Message(
-        1,
-        1,
-        2,
-        "video",
-        null,
-        "https://player.vimeo.com/external/371863420.sd.mp4?s=2fe8f1b2b47e1d9c5dbcc5743eb26b471b1a861d&profile_id=164&oauth2_token_id=57447761",
         ""
       ),
       0

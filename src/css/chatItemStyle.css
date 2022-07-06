@@ -5,9 +5,10 @@
   flex-direction: row;
   position: relative;
   width: 100%;
-  align-items: center;
+  /* align-items: center; */
   overflow-y: auto;
   height: 50px;
+  overflow: hidden;
 }
 
 .infoContainer {
@@ -19,18 +20,11 @@
   margin-left: 12px;
 }
 
-.imgWrpr {
-  width: 45px;
-  height: 45px;
-  border: 0px;
+.avatar {
+  width: 49px;
+  height: 49px;
   border-radius: 50%;
   margin-left: 8px;
-}
-
-.avatar {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
 }
 
 .unamec {

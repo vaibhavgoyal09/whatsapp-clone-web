@@ -1,0 +1,25 @@
+.fcontnt {
+  background-color: var(--darkerGrey);
+  height: 100%;
+  display: flex;
+}
+
+.icon {
+  margin: 10px 5px;
+  padding: 5px 10px;
+  font-size: 1.25rem;
+  color: var(--secondaryText);
+  cursor: pointer;
+}
+
+.input {
+  box-shadow: none;
+  border: none;
+  outline: none;
+  margin: 10px auto;
+  width: 80%;
+  border-radius: 7px;
+  padding-left: 8px;
+  color: var(--secondaryText);
+  background: var(--background);
+}

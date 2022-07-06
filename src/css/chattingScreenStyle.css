@@ -1,0 +1,18 @@
+#content {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.headerContainer {
+  flex: 0 1 auto;
+}
+
+.messagesContainer {
+  flex: 1 1 auto;
+  overflow: auto;
+}
+
+.footerContainer {
+    flex: 0 1 50px;
+}

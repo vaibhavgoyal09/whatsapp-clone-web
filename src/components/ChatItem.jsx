@@ -23,8 +23,7 @@ const ChatItem = ({ chat, onClick }) => {
 
   return (
     <div className="cn" onClick={() => onClick()}>
-      <div className="imgWrpr">
-        <img
+      <img
           src={
             chat.getRemoteUserProfileImageUrl()
               ? chat.getRemoteUserProfileImageUrl()
@@ -33,7 +32,6 @@ const ChatItem = ({ chat, onClick }) => {
           alt="user profile"
           className="avatar"
         />
-      </div>
       <div className="infoContainer">
         <div className="unamec">
           <p className="uname">{chat.getRemoteUserName()}</p>

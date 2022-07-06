@@ -9,7 +9,7 @@
   width: 30%;
   position: fixed;
   overflow-y: auto;
-  height: 100%;
+  height: 78%;
   overflow-x: hidden;
 }
 
@@ -17,4 +17,10 @@
   width: 100%;
   height: 1px;
   background-color: var(--inputFieldBorder);
+}
+
+@media (max-width: 900px) {
+  .chatsContainer {
+    width: 40%;
+  }
 }
