@@ -7,10 +7,11 @@ import { useAuth } from "./AuthContext";
 export const AxiosContext = createContext({
   checkIfUserExists: () => Promise,
   registerUser: () => Promise,
+  getAllChats: () => Promise,
 });
 export const useAxios = () => useContext(AxiosContext);
 const AxiosInstanceProvider = ({ children }) => {
-  const { getUserIdToken } = useAuth();
+  const { getUserIdToken, currentUser } = useAuth();
 
   let config = {
     baseURL: WhatsApi.BASE_URL,
@@ -23,7 +24,7 @@ const AxiosInstanceProvider = ({ children }) => {
   const instanceRef = useRef(axios.create(config));
 
   useEffect(() => {
-    console.log('Use effect called');
+    console.log("Use effect called");
     getUserIdToken()
       .then((token) => {
         instanceRef.current.interceptors.request.use((request) => {
@@ -34,56 +35,77 @@ const AxiosInstanceProvider = ({ children }) => {
       .catch((e) => {
         console.log(e);
       });
-  });
+  }, [currentUser]);
 
-  function checkIfUserExists(phoneNumber) {
-    console.log(phoneNumber);
-    return new Promise((resolve, reject) => {
-      instanceRef.current
-        .get(`${WhatsApi.CHECK_USER_SIGNING_IN_URL}${phoneNumber}`)
-        .then((result) => {
-          resolve(result.data);
-        })
-        .catch((axios_error) => {
-          reject(new ApiError(axios_error.status));
-        });
-    });
+  async function checkIfUserExists(phoneNumber) {
+    try {
+      let response = await instanceRef.current.get(
+        `${WhatsApi.CHECK_USER_SIGNING_IN_URL}${phoneNumber}`
+      );
+      return response.data;
+    } catch (axiosError) {
+      var message = "Check Your Internet Connection";
+      if (axiosError.data) {
+        if (axiosError.data["detail"]) {
+          message = axiosError.data["detail"];
+        }
+      }
+      throw Error(message);
+    }
   }
 
-  function registerUser(request) {
-    return new Promise((resolve, reject) => {
+  async function registerUser(request) {
+    try {
       let file = new FormData();
       file.append("file", request.getProfilePhotoAsFile());
-      instanceRef.current
-        .post(`${WhatsApi.UPLOAD_FILE_URL}`, file)
-        .then((result) => {
-          console.log(result);
-          let profilePhotoUrl = result.data['url'];
-          console.log(profilePhotoUrl);
+      let fileUploadResponse = await instanceRef.current.post(
+        `${WhatsApi.UPLOAD_FILE_URL}`,
+        file
+      );
 
-          instanceRef.current
-            .post(`${WhatsApi.REGISTER_USER_URL}`, {
-              name: request.getName(),
-              about: request.getAbout(),
-              phone_number: request.getPhoneNumber(),
-              profile_image_url: profilePhotoUrl,
-            })
-            .then((result) => {
-              resolve(result.data);
-            })
-            .catch((axios_error) => {
-              reject(new ApiError(axios_error.status));
-            });
-        })
-        .catch((axios_error) => {
-          reject(new ApiError(axios_error.status));
-        });
-    });
+      let profileImageUrl = fileUploadResponse.data["url"];
+
+      let registerUserResponse = await instanceRef.current.post(
+        `${WhatsApi.REGISTER_USER_URL}`,
+        {
+          name: request.getName(),
+          about: request.getAbout(),
+          phone_number: request.getPhoneNumber(),
+          profile_image_url: profileImageUrl,
+        }
+      );
+
+      return registerUserResponse.data;
+    } catch (axiosError) {
+      var message = "Check Your Internet Connection";
+      if (axiosError.data) {
+        if (axiosError.data["detail"]) {
+          message = axiosError.data["detail"];
+        }
+      }
+      throw Error(message);
+    }
+  }
+
+  async function getAllChats() {
+    try{
+
+    }
+    catch(axiosError) {
+      var message = "Check Your Internet Connection";
+      if (axiosError.data) {
+        if (axiosError.data["detail"]) {
+          message = axiosError.data["detail"];
+        }
+      }
+      throw Error(message);
+    }
   }
 
   const value = {
     checkIfUserExists,
     registerUser,
+    getAllChats,
   };
 
   return (

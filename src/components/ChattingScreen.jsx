@@ -7,7 +7,7 @@ import MessagesList from "./MessagesList";
 const ChattingScreen = ({ currentUser, chat, onProfileClick, onVideoCallStarted, onAudioCallStarted }) => {
   return (
     <div id="content">
-      <div className="headerContainer">
+      <div className="headerContainer" onProfileClick={() => onProfileClick(chat)}>
         <ChatHeader />
       </div>
       <div className="messagesContainer">

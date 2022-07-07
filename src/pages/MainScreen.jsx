@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { useState } from "react";
 import ChattingScreen from "../components/ChattingScreen";
 import MainSidebar from "../components/MainSidebar";
 import { useAuth } from "../context/AuthContext";
+import { useAxios } from "../context/AxiosContext";
 import "../css/mainScreenStyle.css";
 import Chat from "../models/Chat";
 import Message from "../models/Message";
@@ -9,6 +11,7 @@ import Message from "../models/Message";
 const MainScreen = () => {
   const { currentUser } = useAuth();
   const [chat, setChat] = useState(null);
+  
 
   const chats = [
     new Chat(
@@ -19,14 +22,7 @@ const MainScreen = () => {
       null,
       0
     ),
-    new Chat(
-      4,
-      3,
-      null,
-      "Lorem Ipsum",
-      null,
-      0
-    ),
+    new Chat(4, 3, null, "Lorem Ipsum", null, 0),
     new Chat(
       5,
       6,
@@ -59,153 +55,14 @@ const MainScreen = () => {
       ),
       0
     ),
-    new Chat(
-      1,
-      2,
-      null,
-      "Lorem Ipsum",
-      new Message(
-        1,
-        1,
-        2,
-        "video",
-        null,
-        "https://player.vimeo.com/external/371863420.sd.mp4?s=2fe8f1b2b47e1d9c5dbcc5743eb26b471b1a861d&profile_id=164&oauth2_token_id=57447761",
-        ""
-      ),
-      0
-    ),
-    new Chat(
-      1,
-      2,
-      null,
-      "Lorem Ipsum",
-      new Message(
-        1,
-        1,
-        2,
-        "video",
-        null,
-        "https://player.vimeo.com/external/371863420.sd.mp4?s=2fe8f1b2b47e1d9c5dbcc5743eb26b471b1a861d&profile_id=164&oauth2_token_id=57447761",
-        ""
-      ),
-      0
-    ),
-    new Chat(
-      1,
-      2,
-      "https://images.pexels.com/photos/937481/pexels-photo-937481.jpeg?auto=compress&cs=tinysrgb&w=600",
-      "Lorem Ipsum",
-      new Message(
-        1,
-        1,
-        2,
-        "video",
-        null,
-        "https://player.vimeo.com/external/371863420.sd.mp4?s=2fe8f1b2b47e1d9c5dbcc5743eb26b471b1a861d&profile_id=164&oauth2_token_id=57447761",
-        ""
-      ),
-      0
-    ),
-    new Chat(
-      1,
-      2,
-      "https://images.pexels.com/photos/937481/pexels-photo-937481.jpeg?auto=compress&cs=tinysrgb&w=600",
-      "Lorem Ipsum",
-      new Message(
-        1,
-        1,
-        2,
-        "video",
-        null,
-        "https://player.vimeo.com/external/371863420.sd.mp4?s=2fe8f1b2b47e1d9c5dbcc5743eb26b471b1a861d&profile_id=164&oauth2_token_id=57447761",
-        ""
-      ),
-      0
-    ),
-    new Chat(
-      1,
-      2,
-      "https://images.pexels.com/photos/937481/pexels-photo-937481.jpeg?auto=compress&cs=tinysrgb&w=600",
-      "Lorem Ipsum",
-      new Message(
-        1,
-        1,
-        2,
-        "video",
-        null,
-        "https://player.vimeo.com/external/371863420.sd.mp4?s=2fe8f1b2b47e1d9c5dbcc5743eb26b471b1a861d&profile_id=164&oauth2_token_id=57447761",
-        ""
-      ),
-      0
-    ),
-    new Chat(
-      1,
-      2,
-      "https://images.pexels.com/photos/937481/pexels-photo-937481.jpeg?auto=compress&cs=tinysrgb&w=600",
-      "Lorem Ipsum",
-      new Message(
-        1,
-        1,
-        2,
-        "video",
-        null,
-        "https://player.vimeo.com/external/371863420.sd.mp4?s=2fe8f1b2b47e1d9c5dbcc5743eb26b471b1a861d&profile_id=164&oauth2_token_id=57447761",
-        ""
-      ),
-      0
-    ),
-    new Chat(
-      1,
-      2,
-      "https://images.pexels.com/photos/937481/pexels-photo-937481.jpeg?auto=compress&cs=tinysrgb&w=600",
-      "Lorem Ipsum",
-      new Message(
-        1,
-        1,
-        2,
-        "video",
-        null,
-        "https://player.vimeo.com/external/371863420.sd.mp4?s=2fe8f1b2b47e1d9c5dbcc5743eb26b471b1a861d&profile_id=164&oauth2_token_id=57447761",
-        ""
-      ),
-      0
-    ),
-    new Chat(
-      1,
-      2,
-      "https://images.pexels.com/photos/937481/pexels-photo-937481.jpeg?auto=compress&cs=tinysrgb&w=600",
-      "Lorem Ipsum",
-      new Message(
-        1,
-        1,
-        2,
-        "text",
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-        null,
-        ""
-      ),
-      0
-    ),
-    new Chat(
-      1,
-      2,
-      "https://images.pexels.com/photos/937481/pexels-photo-937481.jpeg?auto=compress&cs=tinysrgb&w=600",
-      "Lorem Ipsum",
-      new Message(
-        1,
-        1,
-        2,
-        "video",
-        null,
-        "https://player.vimeo.com/external/371863420.sd.mp4?s=2fe8f1b2b47e1d9c5dbcc5743eb26b471b1a861d&profile_id=164&oauth2_token_id=57447761",
-        ""
-      ),
-      0
-    ),
   ];
 
+  useEffect(() => {
+
+  });
+
   const onChatClick = (chat) => setChat(chat);
+  const onProfileClick = (chat) => {};
 
   return (
     <div className="pg">
@@ -213,7 +70,10 @@ const MainScreen = () => {
         <MainSidebar chats={chats} onChatClick={(chat) => onChatClick(chat)} />
       </div>
       <div className="chattingContainer">
-        <ChattingScreen />
+        <ChattingScreen
+          chat={chat}
+          onProfileClick={(chat) => onProfileClick(chat)}
+        />
       </div>
     </div>
   );
