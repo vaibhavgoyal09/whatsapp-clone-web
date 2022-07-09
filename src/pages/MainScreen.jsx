@@ -13,7 +13,7 @@ import Message from "../models/Message";
 const MainScreen = () => {
   const { currentUser } = useAuth();
   const [chat, setChat] = useState(null);
-  const { getAllChats, searchUsers } = useAxios();
+  const { getAllChats, searchUsers, getMessagesForChat } = useAxios();
   const [contactsList, setContactsList] = useState([]);
   const [chatsList, setChatsList] = useState([
     new Chat(
@@ -99,6 +99,15 @@ const MainScreen = () => {
     }
   }, [searchQuery]);
 
+  useEffect(() => {
+    console.log("Calling Get Messages For Chat");
+    if(chat) {
+      getMessagesForChat(chat.getId())
+      .then(result => console.log(result))
+      .catch(e => console.log(e));
+    }
+  }, [chat]);
+
   const onChatClick = (chat) => setChat(chat);
   const onProfileClick = (chat) => {};
   const onSearchQueryChange = (value) => setSearchQuery(value);
@@ -119,7 +128,7 @@ const MainScreen = () => {
       <div className="sidebarContainer">
         <MainSidebar
           chatsList={chatsList}
-          onChatClick={(chat) => onChatClick(chat)}
+          onChatClicked={(chat) => onChatClick(chat)}
           onSearchQueryChange={(value) => onSearchQueryChange(value)}
           contactsList={contactsList}
           onContactClicked={(contact) => onContactClicked(contact)}
@@ -130,6 +139,7 @@ const MainScreen = () => {
           currentUser={currentUser}
           chat={chat}
           onProfileClick={(chat) => onProfileClick(chat)}
+          messages={messagesListForChat}
         />
       </div>
     </div>

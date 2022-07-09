@@ -11,7 +11,15 @@ const SidebarHeader = ({ profileImageUrl, onProfileClick }) => {
         onClick={() => onProfileClick()}
       />
       <div className="optionsContainer">
-        <span><i></i></span>
+        <span className="smicon">
+          <i className="fa-solid fa-spinner"></i>
+        </span>
+        <span className="smicon">
+          <i className="fa-solid fa-inbox"></i>
+        </span>
+        <span className="smicon">
+          <i className="fa-solid fa-ellipsis-vertical"></i>
+        </span>
       </div>
     </div>
   );

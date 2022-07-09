@@ -8,7 +8,7 @@ const ChatsList = ({chats, onChatClicked}) => {
         <ChatItem
           key={index}
           chat={chat}
-          onClick={() => onChatClicked(chats[index])}
+          onChatClick={() => onChatClicked(chats[index])}
         />
       ))}
     </div>

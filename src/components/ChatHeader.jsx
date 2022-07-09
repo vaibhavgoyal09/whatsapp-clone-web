@@ -1,11 +1,11 @@
 import '../css/chatHeaderStyle.css';
 
-const ChatHeader = ({remoteUserProfileImageUrl, onProfileClick}) => {
+const ChatHeader = ({profileImageUrl, onProfileClick}) => {
   return (
     <div className="hctnr">
       <img
         className="avt"
-        src={remoteUserProfileImageUrl ? remoteUserProfileImageUrl : "avatar.png"}
+        src={profileImageUrl ? profileImageUrl : "avatar.png"}
         alt="your profile"
         onClick={() => onProfileClick()}
       />

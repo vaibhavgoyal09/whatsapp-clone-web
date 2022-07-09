@@ -4,12 +4,7 @@ import ApiError from "../utils/ApiError";
 import { WhatsApi } from "../utils/Constants";
 import { useAuth } from "./AuthContext";
 
-export const AxiosContext = createContext({
-  checkIfUserExists: () => Promise,
-  registerUser: () => Promise,
-  getAllChats: () => Promise,
-  searchUsers: () => Promise,
-});
+export const AxiosContext = createContext(null);
 export const useAxios = () => useContext(AxiosContext);
 const AxiosInstanceProvider = ({ children }) => {
   const { getUserIdToken, currentUser } = useAuth();
@@ -115,11 +110,26 @@ const AxiosInstanceProvider = ({ children }) => {
     }
   }
 
+  async function getMessagesForChat(chatId) {
+    try {
+      let result = await instanceRef.current.get(`${WhatsApi.GET_MESSAGES_FOR_CHAT_URL}/${chatId}`)
+      return result.data;
+    }
+    catch(axiosError) {
+      var message = "Check Your Internet Connection";
+      if (axiosError.response.data) {
+        message = axiosError.response.data["detail"];
+      }
+      throw Error(message);
+    }
+  }
+
   const value = {
     checkIfUserExists,
     registerUser,
     getAllChats,
-    searchUsers
+    searchUsers,
+    getMessagesForChat
   };
 
   return (

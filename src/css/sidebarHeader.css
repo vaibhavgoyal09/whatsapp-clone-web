@@ -1,7 +1,7 @@
 .hctnr {
   display: flex;
   width: 100%;
-  flex-direction: column;
+  flex-direction: row;
   background-color: var(--background);
 }
 
@@ -12,4 +12,18 @@
   margin-top: 12px;
   margin-left: 12px;
   margin-bottom: 12px;
+}
+
+.optionsContainer {
+  justify-self: flex-end;
+  align-self: center;
+  margin-left: auto;
+  margin-right: 20px;
+}
+
+.smicon {
+  margin: auto 16px;
+  font-size: 1.25rem;
+  color: var(--secondaryText);
+  cursor: pointer;
 }

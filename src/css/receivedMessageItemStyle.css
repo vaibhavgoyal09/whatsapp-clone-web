@@ -1,0 +1,39 @@
+.message-right-box {
+  display: flex;
+  margin: 20px;
+  color: var(--secondary-green);
+  width: 60%;
+  float: right;
+  justify-content: right;
+}
+
+.message-side-triangle {
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.message {
+  background-color: var(--secondary-green);
+  color: var(--primary-grey);
+  border-radius: 10px;
+  border-top-right-radius: 0px;
+  padding: 10px;
+}
+
+.triangle-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.message-line {
+  font-size: 1rem;
+  color: var(--primary-white);
+  margin: 0px;
+}
+
+.message-time {
+  font-size: 0.75rem;
+  color: var(--primary-white);
+  margin: 0px;
+  text-align: right;
+}

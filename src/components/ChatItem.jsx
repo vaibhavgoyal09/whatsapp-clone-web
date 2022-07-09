@@ -1,6 +1,10 @@
+import { useRef } from "react";
 import "../css/chatItemStyle.css";
 
-const ChatItem = ({ chat, onClick }) => {
+const ChatItem = ({ chat, onChatClick }) => {
+
+  const contentRef = useRef();
+
   if (!chat) {
     return null;
   }
@@ -21,7 +25,7 @@ const ChatItem = ({ chat, onClick }) => {
   }
 
   return (
-    <div className="cn" onClick={() => onClick()}>
+    <div className="cn" ref={contentRef} onClick={() => onChatClick()}>
       <img
           src={
             chat.getRemoteUserProfileImageUrl()
@@ -31,7 +35,7 @@ const ChatItem = ({ chat, onClick }) => {
           alt="user profile"
           className="avatar"
         />
-      <div className="infoContainer">
+      <div className="infoContainer" onClick={() => contentRef.current.click()}>
         <div className="unamec">
           <p className="uname unselectable">{chat.getRemoteUserName()}</p>
           <p className="umsg unselectable">{messageText}</p>
