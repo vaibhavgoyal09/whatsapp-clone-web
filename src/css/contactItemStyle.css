@@ -1,0 +1,47 @@
+.cn {
+  display: flex;
+  padding: 8px;
+  margin: 0px 0px;
+  flex-direction: row;
+  position: relative;
+  width: 100%;
+  /* align-items: center; */
+  overflow-y: auto;
+  height: 50px;
+  overflow: hidden;
+}
+
+.infoContainer {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  border-bottom: 1px solid var(--inputFieldBorder);
+  align-items: center;
+  margin-left: 12px;
+}
+
+.avatar {
+  width: 49px;
+  height: 49px;
+  border-radius: 50%;
+  margin-left: 8px;
+  object-fit: fill;
+}
+
+.unamec {
+  width: 200px;
+}
+
+.uname {
+  font-size: 14px;
+  color: var(--white);
+}
+
+.uabout {
+  font-size: 12px;
+  margin-top: 4px;
+  overflow: hidden;
+  color: var(--secondaryText);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

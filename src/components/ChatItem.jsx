@@ -1,4 +1,3 @@
-import React from "react";
 import "../css/chatItemStyle.css";
 
 const ChatItem = ({ chat, onClick }) => {
