@@ -25,6 +25,7 @@
   height: 49px;
   border-radius: 50%;
   margin-left: 8px;
+  object-fit: fill;
 }
 
 .unamec {

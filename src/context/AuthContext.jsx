@@ -13,13 +13,14 @@ const AuthContext = createContext({
   currentUser: null,
   verifyOtpAndSignInUser: () => Promise,
   sendVerificationCode: () => Promise,
-  getUserIdToken: () => Promise
+  getUserIdToken: () => Promise,
 });
 
 export const useAuth = () => useContext(AuthContext);
 
 export default function AuthContextProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(auth.currentUser);
+  console.log("Auth Context", auth.currentUser);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -55,11 +56,15 @@ export default function AuthContextProvider({ children }) {
     return signInWithCredential(auth, credential);
   }
 
-  function getUserIdToken() {
-    if (currentUser === null || currentUser === undefined) {
-      return Promise.reject('user is null');
+  async function getUserIdToken() {
+    if (!currentUser) {
+      return null;
     }
-    return getIdToken(currentUser);
+    try {
+      return await getIdToken(currentUser);
+    } catch (e) {
+      return Error(e);
+    }
   }
 
   const value = {

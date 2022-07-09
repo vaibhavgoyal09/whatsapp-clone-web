@@ -34,8 +34,8 @@ const ChatItem = ({ chat, onClick }) => {
         />
       <div className="infoContainer">
         <div className="unamec">
-          <p className="uname">{chat.getRemoteUserName()}</p>
-          <p className="umsg">{messageText}</p>
+          <p className="uname unselectable">{chat.getRemoteUserName()}</p>
+          <p className="umsg unselectable">{messageText}</p>
         </div>
         <div className="mcTstmp">
           <div className="mctnr">

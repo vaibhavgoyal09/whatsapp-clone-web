@@ -8,6 +8,7 @@ export const AxiosContext = createContext({
   checkIfUserExists: () => Promise,
   registerUser: () => Promise,
   getAllChats: () => Promise,
+  searchUsers: () => Promise,
 });
 export const useAxios = () => useContext(AxiosContext);
 const AxiosInstanceProvider = ({ children }) => {
@@ -27,10 +28,13 @@ const AxiosInstanceProvider = ({ children }) => {
     console.log("Use effect called");
     getUserIdToken()
       .then((token) => {
-        instanceRef.current.interceptors.request.use((request) => {
-          request.headers = { Authorization: `Bearer ${token}` };
-          return request;
-        });
+        console.log(token);
+        if (token) {
+          instanceRef.current.interceptors.request.use((request) => {
+            request.headers = { Authorization: `Bearer ${token}` };
+            return request;
+          });
+        }
       })
       .catch((e) => {
         console.log(e);
@@ -40,15 +44,14 @@ const AxiosInstanceProvider = ({ children }) => {
   async function checkIfUserExists(phoneNumber) {
     try {
       let response = await instanceRef.current.get(
-        `${WhatsApi.CHECK_USER_SIGNING_IN_URL}${phoneNumber}`
+        `${WhatsApi.CHECK_USER_SIGNING_IN_URL}/${phoneNumber}`
       );
       return response.data;
     } catch (axiosError) {
+      console.log(axiosError);
       var message = "Check Your Internet Connection";
-      if (axiosError.data) {
-        if (axiosError.data["detail"]) {
-          message = axiosError.data["detail"];
-        }
+      if (axiosError.response.data) {
+        message = axiosError.response.data["detail"];
       }
       throw Error(message);
     }
@@ -78,25 +81,35 @@ const AxiosInstanceProvider = ({ children }) => {
       return registerUserResponse.data;
     } catch (axiosError) {
       var message = "Check Your Internet Connection";
-      if (axiosError.data) {
-        if (axiosError.data["detail"]) {
-          message = axiosError.data["detail"];
-        }
+      if (axiosError.response.data) {
+        message = axiosError.response.data["detail"];
       }
       throw Error(message);
     }
   }
 
   async function getAllChats() {
-    try{
+    try {
+      let response = await instanceRef.current.get(WhatsApi.GET_ALL_CHATS_URL);
+      return response.data;
+    } catch (axiosError) {
+      var message = "Check Your Internet Connection";
+      if (axiosError.response.data) {
+        message = axiosError.response.data["detail"];
+      }
+      throw Error(message);
+    }
+  }
 
+  async function searchUsers(searchQuery) {
+    try{
+      let response = await instanceRef.current.get(WhatsApi.SEARCH_USERS_BY_PHONE_NUMBER_URL, { params: { phone_number: searchQuery } })
+      return response.data;
     }
     catch(axiosError) {
       var message = "Check Your Internet Connection";
-      if (axiosError.data) {
-        if (axiosError.data["detail"]) {
-          message = axiosError.data["detail"];
-        }
+      if (axiosError.response.data) {
+        message = axiosError.response.data["detail"];
       }
       throw Error(message);
     }
@@ -106,6 +119,7 @@ const AxiosInstanceProvider = ({ children }) => {
     checkIfUserExists,
     registerUser,
     getAllChats,
+    searchUsers
   };
 
   return (

@@ -2,18 +2,20 @@ import { useEffect } from "react";
 import { useState } from "react";
 import ChattingScreen from "../components/ChattingScreen";
 import MainSidebar from "../components/MainSidebar";
+import WhatsappIntroScreen from "../components/WhatsappIntroScreen";
 import { useAuth } from "../context/AuthContext";
 import { useAxios } from "../context/AxiosContext";
 import "../css/mainScreenStyle.css";
 import Chat from "../models/Chat";
+import User from "../models/User";
 import Message from "../models/Message";
 
 const MainScreen = () => {
   const { currentUser } = useAuth();
   const [chat, setChat] = useState(null);
-  
-
-  const chats = [
+  const { getAllChats, searchUsers } = useAxios();
+  const [contactsList, setContactsList] = useState([]);
+  const [chatsList, setChatsList] = useState([
     new Chat(
       1,
       2,
@@ -42,7 +44,7 @@ const MainScreen = () => {
     new Chat(
       1,
       9,
-      "https://images.pexels.com/photos/38554/girl-people-landscape-sun-38554.jpeg?auto=compress&cs=tinysrgb&w=600",
+      "http://127.0.0.1:8000/static/6e4768615410480284ab5546a0737a3b.jpg",
       "Lorem Ipsum",
       new Message(
         2,
@@ -55,22 +57,77 @@ const MainScreen = () => {
       ),
       0
     ),
-  ];
+  ]);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const [messagesListForChat, setMessagesListForChat] = useState([]);
 
   useEffect(() => {
+    setTimeout(() => {
+      getAllChats()
+        .then((result) => {
+          console.table(result);
+        })
+        .catch((e) => {});
+    }, 2000);
+  }, [currentUser]);
 
-  });
+  useEffect(() => {
+    if (searchQuery === "") {
+    } else {
+      searchUsers(searchQuery)
+        .then((result) => {
+          console.log(result);
+          let contacts = [];
+          result.forEach((element) => {
+            let c = new User(
+              element.id,
+              element.name,
+              element.about,
+              element.firebase_uid,
+              element.phone_number,
+              element.profile_image_url
+            )
+            contacts.push(c);
+          })
+          setContactsList(contacts);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  }, [searchQuery]);
 
   const onChatClick = (chat) => setChat(chat);
   const onProfileClick = (chat) => {};
+  const onSearchQueryChange = (value) => setSearchQuery(value);
+  const onContactClicked = (contact) => {
+    let chat = new Chat(
+      null,
+      contact.getId(),
+      contact.getProfileImageUrl(),
+      contact.getName(),
+      null,
+      0
+    );
+    setChat(chat);
+  };
 
   return (
     <div className="pg">
       <div className="sidebarContainer">
-        <MainSidebar chats={chats} onChatClick={(chat) => onChatClick(chat)} />
+        <MainSidebar
+          chatsList={chatsList}
+          onChatClick={(chat) => onChatClick(chat)}
+          onSearchQueryChange={(value) => onSearchQueryChange(value)}
+          contactsList={contactsList}
+          onContactClicked={(contact) => onContactClicked(contact)}
+        />
       </div>
       <div className="chattingContainer">
         <ChattingScreen
+          currentUser={currentUser}
           chat={chat}
           onProfileClick={(chat) => onProfileClick(chat)}
         />

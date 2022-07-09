@@ -17,7 +17,14 @@ const AppRouter = () => {
             </ProtectedRoute>
           }
         />
-        <Route path="/auth" element={<SignInScreen />} />
+        <Route
+          path="/auth"
+          element={
+            <ProtectedRoute>
+              <SignInScreen />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/setup-profile" element={<SetupProfileScreen />} />
       </Routes>
     </AxiosInstanceProvider>
