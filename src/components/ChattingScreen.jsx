@@ -4,9 +4,9 @@ import ChatFooter from "./ChatFooter";
 import "../css/chattingScreenStyle.css";
 import MessagesList from "./MessagesList";
 
-const ChattingScreen = ({ currentUser, chat, messages, onProfileClick }) => {
+const ChattingScreen = ({ currentUserModel, chat, messages, onProfileClick }) => {
   console.log(chat);
-  if (!chat) {
+  if (!chat || !currentUserModel) {
     return null;
   }
 
@@ -19,7 +19,7 @@ const ChattingScreen = ({ currentUser, chat, messages, onProfileClick }) => {
         />
       </div>
       <div className="messagesContainer">
-        <MessagesList messagesList={messages} currentUser={currentUser} />
+        <MessagesList messagesList={messages} currentUserId={currentUserModel.getId()} />
       </div>
       <div className="footerContainer">
         <ChatFooter />

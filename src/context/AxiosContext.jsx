@@ -1,13 +1,16 @@
 import axios from "axios";
+import { useState } from "react";
 import { createContext, useContext, useEffect, useRef } from "react";
 import ApiError from "../utils/ApiError";
 import { WhatsApi } from "../utils/Constants";
 import { useAuth } from "./AuthContext";
+import User from "../models/User";
 
 export const AxiosContext = createContext(null);
 export const useAxios = () => useContext(AxiosContext);
 const AxiosInstanceProvider = ({ children }) => {
   const { getUserIdToken, currentUser } = useAuth();
+  const [currentUserModel, setCurrentUserModel] = useState(null);
 
   let config = {
     baseURL: WhatsApi.BASE_URL,
@@ -20,20 +23,40 @@ const AxiosInstanceProvider = ({ children }) => {
   const instanceRef = useRef(axios.create(config));
 
   useEffect(() => {
-    console.log("Use effect called");
-    getUserIdToken()
-      .then((token) => {
-        console.log(token);
-        if (token) {
-          instanceRef.current.interceptors.request.use((request) => {
-            request.headers = { Authorization: `Bearer ${token}` };
-            return request;
-          });
+    getUserIdToken().then(async (token) => {
+      if(token) {
+        instanceRef.current.interceptors.request.use((config) => {
+          config.headers = { Authorization: `Bearer ${token}` };
+          return config;
+        });
+        try {
+          let data = (
+            await instanceRef.current.get(`${WhatsApi.GET_CURRENT_USER_INFO_URL}`)
+          ).data;
+          let user = new User(
+            data.id,
+            data.name,
+            data.about,
+            data.firebase_uid,
+            data.phone_number,
+            data.profile_image_url
+          );
+          setCurrentUserModel(user);
         }
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+        catch (axiosError) {
+          console.log(axiosError);
+        }
+      }
+    });
+  }, [currentUser]);
+
+  useEffect(() => {
+    async function retrieveCurrentUser() {
+      setTimeout(async () => {
+        
+      }, 2000);
+    }
+    retrieveCurrentUser();
   }, [currentUser]);
 
   async function checkIfUserExists(phoneNumber) {
@@ -97,11 +120,13 @@ const AxiosInstanceProvider = ({ children }) => {
   }
 
   async function searchUsers(searchQuery) {
-    try{
-      let response = await instanceRef.current.get(WhatsApi.SEARCH_USERS_BY_PHONE_NUMBER_URL, { params: { phone_number: searchQuery } })
+    try {
+      let response = await instanceRef.current.get(
+        WhatsApi.SEARCH_USERS_BY_PHONE_NUMBER_URL,
+        { params: { phone_number: searchQuery } }
+      );
       return response.data;
-    }
-    catch(axiosError) {
+    } catch (axiosError) {
       var message = "Check Your Internet Connection";
       if (axiosError.response.data) {
         message = axiosError.response.data["detail"];
@@ -112,10 +137,11 @@ const AxiosInstanceProvider = ({ children }) => {
 
   async function getMessagesForChat(chatId) {
     try {
-      let result = await instanceRef.current.get(`${WhatsApi.GET_MESSAGES_FOR_CHAT_URL}/${chatId}`)
+      let result = await instanceRef.current.get(
+        `${WhatsApi.GET_MESSAGES_FOR_CHAT_URL}/${chatId}`
+      );
       return result.data;
-    }
-    catch(axiosError) {
+    } catch (axiosError) {
       var message = "Check Your Internet Connection";
       if (axiosError.response.data) {
         message = axiosError.response.data["detail"];
@@ -125,11 +151,12 @@ const AxiosInstanceProvider = ({ children }) => {
   }
 
   const value = {
+    currentUserModel,
     checkIfUserExists,
     registerUser,
     getAllChats,
     searchUsers,
-    getMessagesForChat
+    getMessagesForChat,
   };
 
   return (

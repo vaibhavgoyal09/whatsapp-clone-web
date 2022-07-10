@@ -13,7 +13,7 @@ import Message from "../models/Message";
 const MainScreen = () => {
   const { currentUser } = useAuth();
   const [chat, setChat] = useState(null);
-  const { getAllChats, searchUsers, getMessagesForChat } = useAxios();
+  const { currentUserModel, getAllChats, searchUsers, getMessagesForChat } = useAxios();
   const [contactsList, setContactsList] = useState([]);
   const [chatsList, setChatsList] = useState([
     new Chat(
@@ -30,15 +30,7 @@ const MainScreen = () => {
       6,
       "https://images.pexels.com/photos/2340978/pexels-photo-2340978.jpeg?auto=compress&cs=tinysrgb&w=600",
       "Lorem Ipsum",
-      new Message(
-        21,
-        1,
-        6,
-        "text",
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia voluptatibus iste quibusdam.",
-        null,
-        ""
-      ),
+      null,
       0
     ),
     new Chat(
@@ -46,22 +38,18 @@ const MainScreen = () => {
       9,
       "http://127.0.0.1:8000/static/6e4768615410480284ab5546a0737a3b.jpg",
       "Lorem Ipsum",
-      new Message(
-        2,
-        1,
-        9,
-        "image",
-        null,
-        "https://images.pexels.com/photos/11377550/pexels-photo-11377550.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=400&h=250&fit=crop&crop=focalpoint",
-        ""
-      ),
+      null,
       0
     ),
   ]);
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [messagesListForChat, setMessagesListForChat] = useState([]);
+  const [messagesListForChat, setMessagesListForChat] = useState([
+    new Message(5, 4, "text", "Hello", null, Date.now()),
+    new Message(7, 1, "text", "Hello", null, Date.now()),
+    new Message(6, 4, "text", "Hello", null, Date.now())
+  ]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -88,9 +76,9 @@ const MainScreen = () => {
               element.firebase_uid,
               element.phone_number,
               element.profile_image_url
-            )
+            );
             contacts.push(c);
-          })
+          });
           setContactsList(contacts);
         })
         .catch((e) => {
@@ -101,10 +89,10 @@ const MainScreen = () => {
 
   useEffect(() => {
     console.log("Calling Get Messages For Chat");
-    if(chat) {
+    if (chat) {
       getMessagesForChat(chat.getId())
-      .then(result => console.log(result))
-      .catch(e => console.log(e));
+        .then((result) => console.log(result))
+        .catch((e) => console.log(e));
     }
   }, [chat]);
 
@@ -127,6 +115,7 @@ const MainScreen = () => {
     <div className="pg">
       <div className="sidebarContainer">
         <MainSidebar
+          currentUserModel={currentUserModel}
           chatsList={chatsList}
           onChatClicked={(chat) => onChatClick(chat)}
           onSearchQueryChange={(value) => onSearchQueryChange(value)}
@@ -136,7 +125,7 @@ const MainScreen = () => {
       </div>
       <div className="chattingContainer">
         <ChattingScreen
-          currentUser={currentUser}
+          currentUserModel={currentUserModel}
           chat={chat}
           onProfileClick={(chat) => onProfileClick(chat)}
           messages={messagesListForChat}

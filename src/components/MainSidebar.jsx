@@ -11,9 +11,14 @@ const MainSidebar = ({
   onProfileClick,
   onSearchQueryChange,
   contactsList,
-  onContactClicked
+  onContactClicked,
+  currentUserModel
 }) => {
   const [isSearchingForUser, setIsSearchingForUser] = useState(false);
+
+  if(!currentUserModel) {
+    return null;
+  }
 
   function handleSearchQueryChange(value) {
     if (value.length === 0) {
@@ -26,7 +31,7 @@ const MainSidebar = ({
 
   return (
     <div id="ctnt">
-      <SidebarHeader onProfileClick={() => onProfileClick()} />
+      <SidebarHeader profileImageUrl={currentUserModel.getProfileImageUrl()} onProfileClick={() => onProfileClick()} />
       <SidebarSearchBar
         onSearchQueryChange={(value) => {
           handleSearchQueryChange(value);

@@ -1,17 +1,14 @@
-import React from "react";
+import { ReactComponent as LeftTail } from '../assets/left_tail.svg';
+import '../css/receivedMessageItemStyle.css';
 
 const ReceivedMessageItem = ({ message }) => {
   return (
-    <div class="message-right-box">
-      <div class="message">
-        <p class="message-line">{ message.getText() }</p>
-        <p class="message-time">{message.getTimestamp()}</p>
+    <div className="messageRightBox">
+      <div className="messageContent">
+        <span className='ltail'><LeftTail/></span>
+        <p className="text">{ message.getText() }</p>
+        <p className="timestamp">{message.getTimestamp()}</p>
       </div>
-      <img
-        src="../assets/right_tile.png"
-        class="triangle-icon"
-        alt=""
-      />
     </div>
   );
 };
