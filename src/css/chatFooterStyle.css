@@ -5,9 +5,9 @@
 }
 
 .icon {
-  margin: 10px 5px;
+  margin: 16px 5px;
   padding: 5px 10px;
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   color: var(--secondaryText);
   cursor: pointer;
 }
@@ -19,7 +19,8 @@
   margin: 10px auto;
   width: 80%;
   border-radius: 7px;
-  padding-left: 8px;
-  color: var(--secondaryText);
+  padding-left: 16px;
+  font-size: 1.0rem;
+  color: var(--white);
   background: var(--background);
 }

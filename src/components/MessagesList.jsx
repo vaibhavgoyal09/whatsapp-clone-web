@@ -4,17 +4,14 @@ import SentMessageItem from "./SentMessageItem";
 
 const MessagesList = ({ messagesList, currentUserId }) => {
   return (
-    <div className="contnt">
-      <div className="listContainer">
-        {messagesList.map((message, index) => {
-          console.log(message);
-          message.getSenderId() === currentUserId ? (
-            <SentMessageItem key={index} message={message}/>
-          ) : (
-            <ReceivedMessageItem key={index} message={message} />
-          );
-        })}
-      </div>
+    <div className="listContainer">
+      {messagesList.map((message, index) =>
+        (message.getSenderId() === currentUserId ? (
+          <SentMessageItem message={message} key={index} />
+        ) : (
+          <ReceivedMessageItem message={message} key={index} />
+        ))
+      )}
     </div>
   );
 };

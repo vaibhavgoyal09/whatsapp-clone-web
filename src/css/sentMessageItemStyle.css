@@ -1,0 +1,33 @@
+.msTopContainer {
+  max-width: 65%;
+  display: flex;
+  flex-direction: row;
+  margin-left: auto;
+  margin-top: 8px;
+  margin-right: 5%;
+}
+
+.sentMContainer {
+  border-radius: 7.5px;
+  background-color: var(--green);
+  padding: 4px 8px 4px 10px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.msg {
+  font-size: 14px;
+  color: var(--white);
+  text-align: start;
+  padding-right: 8px;
+}
+
+.msgTimestamp {
+  font-size: 11px;
+  color: var(--secondaryText);
+  margin-right: 8px;
+  margin-left: auto;
+  position: relative;
+  left: 8px;
+}

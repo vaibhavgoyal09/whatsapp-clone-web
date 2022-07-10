@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChattingScreen from "../components/ChattingScreen";
 import MainSidebar from "../components/MainSidebar";
 import WhatsappIntroScreen from "../components/WhatsappIntroScreen";
@@ -7,8 +6,8 @@ import { useAuth } from "../context/AuthContext";
 import { useAxios } from "../context/AxiosContext";
 import "../css/mainScreenStyle.css";
 import Chat from "../models/Chat";
-import User from "../models/User";
 import Message from "../models/Message";
+import User from "../models/User";
 
 const MainScreen = () => {
   const { currentUser } = useAuth();
@@ -47,10 +46,11 @@ const MainScreen = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const [messagesListForChat, setMessagesListForChat] = useState([
-    new Message(5, 4, "text", "Hello", null, Date.now()),
+    new Message(5, 4, "text", "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis aliquid nihil ullam odio libero modi nesciunt excepturi a corporis eligendi, ratione provident vel dolores aut incidunt dolor sit? Corrupti labore hic officiis saepe repudiandae atque at nemo eaque voluptas, delectus fuga molestiae quas!", null, Date.now()),
     new Message(7, 1, "text", "Hello", null, Date.now()),
     new Message(6, 4, "text", "Hello", null, Date.now()),
   ]);
+
 
   useEffect(() => {
     setTimeout(() => {
