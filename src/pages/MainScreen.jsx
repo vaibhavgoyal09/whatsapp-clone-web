@@ -13,7 +13,8 @@ import Message from "../models/Message";
 const MainScreen = () => {
   const { currentUser } = useAuth();
   const [chat, setChat] = useState(null);
-  const { currentUserModel, getAllChats, searchUsers, getMessagesForChat } = useAxios();
+  const { currentUserModel, getAllChats, searchUsers, getMessagesForChat } =
+    useAxios();
   const [contactsList, setContactsList] = useState([]);
   const [chatsList, setChatsList] = useState([
     new Chat(
@@ -48,7 +49,7 @@ const MainScreen = () => {
   const [messagesListForChat, setMessagesListForChat] = useState([
     new Message(5, 4, "text", "Hello", null, Date.now()),
     new Message(7, 1, "text", "Hello", null, Date.now()),
-    new Message(6, 4, "text", "Hello", null, Date.now())
+    new Message(6, 4, "text", "Hello", null, Date.now()),
   ]);
 
   useEffect(() => {
@@ -123,14 +124,20 @@ const MainScreen = () => {
           onContactClicked={(contact) => onContactClicked(contact)}
         />
       </div>
-      <div className="chattingContainer">
-        <ChattingScreen
-          currentUserModel={currentUserModel}
-          chat={chat}
-          onProfileClick={(chat) => onProfileClick(chat)}
-          messages={messagesListForChat}
-        />
-      </div>
+      {chat ? (
+        <div className="chattingContainer">
+          <ChattingScreen
+            currentUserModel={currentUserModel}
+            chat={chat}
+            onProfileClick={(chat) => onProfileClick(chat)}
+            messages={messagesListForChat}
+          />
+        </div>
+      ) : (
+        <div className="whatsappIntroContainer">
+          <WhatsappIntroScreen />
+        </div>
+      )}
     </div>
   );
 };
