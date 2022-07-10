@@ -46,11 +46,65 @@ const MainScreen = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const [messagesListForChat, setMessagesListForChat] = useState([
-    new Message(5, 4, "text", "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis aliquid nihil ullam odio libero modi nesciunt excepturi a corporis eligendi, ratione provident vel dolores aut incidunt dolor sit? Corrupti labore hic officiis saepe repudiandae atque at nemo eaque voluptas, delectus fuga molestiae quas!", null, Date.now()),
+    new Message(
+      5,
+      4,
+      "text",
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis aliquid nihil ullam odio libero modi nesciunt excepturi a corporis eligendi, ratione provident vel dolores aut incidunt dolor sit? Corrupti labore hic officiis saepe repudiandae atque at nemo eaque voluptas, delectus fuga molestiae quas!",
+      null,
+      Date.now()
+    ),
     new Message(7, 1, "text", "Hello", null, Date.now()),
     new Message(6, 4, "text", "Hello", null, Date.now()),
+    new Message(
+      5,
+      1,
+      "text",
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis aliquid nihil ullam odio libero modi nesciunt excepturi a corporis eligendi, ratione provident vel dolores aut incidunt dolor sit? Corrupti labore hic officiis saepe repudiandae atque at nemo eaque voluptas, delectus fuga molestiae quas!",
+      null,
+      Date.now()
+    ),
+    new Message(
+      5,
+      4,
+      "text",
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis aliquid nihil ullam odio libero modi nesciunt excepturi a corporis eligendi, ratione provident vel dolores aut incidunt dolor sit? Corrupti labore hic officiis saepe repudiandae atque at nemo eaque voluptas, delectus fuga molestiae quas!",
+      null,
+      Date.now()
+    ),
+    new Message(
+      5,
+      4,
+      "text",
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis aliquid nihil ullam odio libero modi nesciunt excepturi a corporis eligendi, ratione provident vel dolores aut incidunt dolor sit? Corrupti labore hic officiis saepe repudiandae atque at nemo eaque voluptas, delectus fuga molestiae quas!",
+      null,
+      Date.now()
+    ),
+    new Message(
+      5,
+      4,
+      "text",
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis aliquid nihil ullam odio libero modi nesciunt excepturi a corporis eligendi, ratione provident vel dolores aut incidunt dolor sit? Corrupti labore hic officiis saepe repudiandae atque at nemo eaque voluptas, delectus fuga molestiae quas!",
+      null,
+      Date.now()
+    ),
+    new Message(
+      5,
+      4,
+      "text",
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis aliquid nihil ullam odio libero modi nesciunt excepturi a corporis eligendi, ratione provident vel dolores aut incidunt dolor sit? Corrupti labore hic officiis saepe repudiandae atque at nemo eaque voluptas, delectus fuga molestiae quas!",
+      null,
+      Date.now()
+    ),
+    new Message(
+      5,
+      4,
+      "text",
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis aliquid nihil ullam odio libero modi nesciunt excepturi a corporis eligendi, ratione provident vel dolores aut incidunt dolor sit? Corrupti labore hic officiis saepe repudiandae atque at nemo eaque voluptas, delectus fuga molestiae quas!",
+      null,
+      Date.now()
+    ),
   ]);
-
 
   useEffect(() => {
     setTimeout(() => {

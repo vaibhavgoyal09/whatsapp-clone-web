@@ -1,9 +1,22 @@
-import { ReactComponent as LeftTail } from '../assets/left_tail.svg';
+
 import '../css/receivedMessageItemStyle.css';
 
 const ReceivedMessageItem = ({ message }) => {
+
+  let date = new Date(message.getTimestamp());
+  let hours = date.getHours();
+  let minutes = date.getMinutes().toString();
+  let time = `${hours - 12}:${minutes.length === 1 ? `0${minutes}` : minutes} ${
+    hours > 12 ? "PM" : "AM"
+  }`;
+
   return (
-    <div className="">{message.getText()}</div>
+    <div className="mrTopContainer">
+      <div className="receivedMContainer">
+        <div className="msgR">{message.getText()}</div>
+        <div className="msgRTimestamp">{time}</div>
+      </div>
+    </div>
   );
 };
 

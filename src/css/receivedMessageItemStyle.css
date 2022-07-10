@@ -1,16 +1,34 @@
-.message-right-box {
+.mrTopContainer {
+  max-width: 65%;
   display: flex;
-  margin: 20px;
-  color: var(--secondary-green);
-  width: 60%;
-  float: left;
-  justify-content: left;
+  flex-direction: row;
+  margin-right: auto;
+  margin-top: 8px;
+  margin-left: 5%;
 }
 
-.message {
-  background-color: var(--secondary-green);
-  color: var(--primary-grey);
-  border-radius: 10px;
-  border-top-right-radius: 0px;
-  padding: 10px;
+.receivedMContainer {
+  border-radius: 7.5px;
+  background-color: var(--darkerGrey);
+  padding: 4px 10px 4px 8px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.msgR {
+  font-size: 14px;
+  color: var(--white);
+  text-align: end;
+  padding-left: 8px;
+}
+
+.msgRTimestamp {
+  font-size: 11px;
+  color: var(--secondaryText);
+  margin-right: auto;
+  margin-left: 8px;
+  position: relative;
+  margin-top: 1px;
+  right: 8px;
 }
