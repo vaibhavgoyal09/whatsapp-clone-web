@@ -7,4 +7,5 @@ export class WhatsApi {
   static SEARCH_USERS_BY_PHONE_NUMBER_URL = "/user/search"
   static GET_MESSAGES_FOR_CHAT_URL = "/message"
   static GET_CURRENT_USER_INFO_URL = "/user/current"
+  static CREATE_NEW_CHAT_URL = "/chat/new"
 }

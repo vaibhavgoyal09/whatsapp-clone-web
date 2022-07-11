@@ -29,6 +29,11 @@ const MainSidebar = ({
     onSearchQueryChange(value);
   }
 
+  function handleContactClicked(contact) {
+    setIsSearchingForUser(false);
+    onContactClicked(contact);
+  }
+
   return (
     <div id="ctnt">
       <SidebarHeader profileImageUrl={currentUserModel.getProfileImageUrl()} onProfileClick={() => onProfileClick()} />
@@ -40,7 +45,7 @@ const MainSidebar = ({
       <div className="dividerLine" />
       {isSearchingForUser ? (
         <div className="contactsContainer">
-          <ContactsList contacts={contactsList} onContactClicked={(contact) => {onContactClicked(contact)}} />
+          <ContactsList contacts={contactsList} onContactClicked={(contact) => {handleContactClicked(contact)}} />
         </div>
       ) : (
         <div className="chatsContainer">

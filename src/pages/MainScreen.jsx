@@ -12,36 +12,15 @@ import User from "../models/User";
 const MainScreen = () => {
   const { currentUser } = useAuth();
   const [chat, setChat] = useState(null);
-  const { currentUserModel, getAllChats, searchUsers, getMessagesForChat } =
-    useAxios();
+  const {
+    currentUserModel,
+    getAllChats,
+    searchUsers,
+    getMessagesForChat,
+    createNewChat,
+  } = useAxios();
   const [contactsList, setContactsList] = useState([]);
-  const [chatsList, setChatsList] = useState([
-    new Chat(
-      1,
-      2,
-      "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=600",
-      "Lorem Ipsum",
-      null,
-      0
-    ),
-    new Chat(4, 3, null, "Lorem Ipsum", null, 0),
-    new Chat(
-      5,
-      6,
-      "https://images.pexels.com/photos/2340978/pexels-photo-2340978.jpeg?auto=compress&cs=tinysrgb&w=600",
-      "Lorem Ipsum",
-      null,
-      0
-    ),
-    new Chat(
-      1,
-      9,
-      "http://127.0.0.1:8000/static/6e4768615410480284ab5546a0737a3b.jpg",
-      "Lorem Ipsum",
-      null,
-      0
-    ),
-  ]);
+  const [chatsList, setChatsList] = useState([]);
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -110,9 +89,23 @@ const MainScreen = () => {
     setTimeout(() => {
       getAllChats()
         .then((result) => {
-          console.table(result);
+          let chats = [];
+          result.forEach((element) => {
+            let chat = new Chat(
+              element.id,
+              element.remote_user_id,
+              element.remote_user_profile_image_url,
+              element.remote_user_name,
+              null,
+              element.unseen_message_count
+            );
+            chats.push(chat);
+          });
+          setChatsList(chats);
         })
-        .catch((e) => {});
+        .catch((e) => {
+          console.log(e);
+        });
     }, 2000);
   }, [currentUser]);
 
@@ -155,15 +148,38 @@ const MainScreen = () => {
   const onProfileClick = (chat) => {};
   const onSearchQueryChange = (value) => setSearchQuery(value);
   const onContactClicked = (contact) => {
-    let chat = new Chat(
-      null,
-      contact.getId(),
-      contact.getProfileImageUrl(),
-      contact.getName(),
-      null,
-      0
-    );
-    setChat(chat);
+    var chatId = null;
+
+    for (let i in chatsList) {
+      let c = chatsList[i];
+      console.log(`Chat ID ${c}`);
+      console.log(`Contact ID ${contact.id}`);
+      chatId = c.remoteUserId === contact.id ? c.id : null;
+      if (!chatId) {
+        continue;
+      } else {
+        setChat(c);
+        break;
+      }
+    }
+    if (!chatId) {
+      createNewChat(contact.getId())
+        .then((result) => {
+          let chat = new Chat(
+            result.id,
+            contact.getId(),
+            contact.getProfileImageUrl(),
+            contact.getName(),
+            null,
+            0
+          );
+          setChat(chat);
+          let chats = [...chatsList];
+          chats.push(chat);
+          setChatsList(chats);
+        })
+        .catch((e) => console.log(e));
+    }
   };
 
   return (

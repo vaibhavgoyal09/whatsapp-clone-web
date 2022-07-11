@@ -14,7 +14,7 @@ const ReceivedMessageItem = ({ message }) => {
     <div className="mrTopContainer">
       <div className="receivedMContainer">
         <div className="msgR">{message.getText()}</div>
-        <div className="msgRTimestamp">{time}</div>
+        <div className="msgRTimestamp unselectable">{time}</div>
       </div>
     </div>
   );

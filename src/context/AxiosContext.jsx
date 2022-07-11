@@ -24,14 +24,16 @@ const AxiosInstanceProvider = ({ children }) => {
 
   useEffect(() => {
     getUserIdToken().then(async (token) => {
-      if(token) {
+      if (token) {
         instanceRef.current.interceptors.request.use((config) => {
           config.headers = { Authorization: `Bearer ${token}` };
           return config;
         });
         try {
           let data = (
-            await instanceRef.current.get(`${WhatsApi.GET_CURRENT_USER_INFO_URL}`)
+            await instanceRef.current.get(
+              `${WhatsApi.GET_CURRENT_USER_INFO_URL}`
+            )
           ).data;
           let user = new User(
             data.id,
@@ -42,8 +44,7 @@ const AxiosInstanceProvider = ({ children }) => {
             data.profile_image_url
           );
           setCurrentUserModel(user);
-        }
-        catch (axiosError) {
+        } catch (axiosError) {
           console.log(axiosError);
         }
       }
@@ -52,9 +53,7 @@ const AxiosInstanceProvider = ({ children }) => {
 
   useEffect(() => {
     async function retrieveCurrentUser() {
-      setTimeout(async () => {
-        
-      }, 2000);
+      setTimeout(async () => {}, 2000);
     }
     retrieveCurrentUser();
   }, [currentUser]);
@@ -150,6 +149,23 @@ const AxiosInstanceProvider = ({ children }) => {
     }
   }
 
+  async function createNewChat(remoteUserId) {
+    try {
+      let result = await instanceRef.current.post(
+        WhatsApi.CREATE_NEW_CHAT_URL,
+        null,
+        { params: { remote_user_id: remoteUserId } }
+      );
+      return result.data;
+    } catch (axiosError) {
+      var message = "Check Your Internet Connection";
+      if (axiosError.response.data) {
+        message = axiosError.response.data["detail"];
+      }
+      throw Error(message);
+    }
+  }
+
   const value = {
     currentUserModel,
     checkIfUserExists,
@@ -157,6 +173,7 @@ const AxiosInstanceProvider = ({ children }) => {
     getAllChats,
     searchUsers,
     getMessagesForChat,
+    createNewChat,
   };
 
   return (

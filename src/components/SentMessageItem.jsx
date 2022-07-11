@@ -12,7 +12,7 @@ const SentMessageItem = ({ message }) => {
     <div className="msTopContainer">
       <div className="sentMContainer">
         <div className="msg">{message.getText()}</div>
-        <div className="msgTimestamp">{time}</div>
+        <div className="msgTimestamp unselectable">{time}</div>
       </div>
     </div>
   );
