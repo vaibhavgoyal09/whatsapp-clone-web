@@ -7,7 +7,7 @@ import {
   getIdToken,
 } from "firebase/auth";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import auth from "../utils/FirebaseConfig";
+import { auth } from "../utils/FirebaseConfig";
 
 const AuthContext = createContext({
   currentUser: null,
