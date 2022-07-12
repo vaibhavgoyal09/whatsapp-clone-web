@@ -6,7 +6,7 @@ const MessagesList = ({ messagesList, currentUserId }) => {
   return (
     <div className="listContainer">
       {messagesList.map((message, index) =>
-        (message.getSenderId() === currentUserId ? (
+        (message.senderId === currentUserId ? (
           <SentMessageItem message={message} key={index} />
         ) : (
           <ReceivedMessageItem message={message} key={index} />

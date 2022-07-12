@@ -12,11 +12,11 @@ const MainSidebar = ({
   onSearchQueryChange,
   contactsList,
   onContactClicked,
-  currentUserModel
+  currentUserModel,
 }) => {
   const [isSearchingForUser, setIsSearchingForUser] = useState(false);
 
-  if(!currentUserModel) {
+  if (!currentUserModel) {
     return null;
   }
 
@@ -36,7 +36,10 @@ const MainSidebar = ({
 
   return (
     <div id="ctnt">
-      <SidebarHeader profileImageUrl={currentUserModel.getProfileImageUrl()} onProfileClick={() => onProfileClick()} />
+      <SidebarHeader
+        profileImageUrl={currentUserModel.getProfileImageUrl()}
+        onProfileClick={() => onProfileClick()}
+      />
       <SidebarSearchBar
         onSearchQueryChange={(value) => {
           handleSearchQueryChange(value);
@@ -45,7 +48,12 @@ const MainSidebar = ({
       <div className="dividerLine" />
       {isSearchingForUser ? (
         <div className="contactsContainer">
-          <ContactsList contacts={contactsList} onContactClicked={(contact) => {handleContactClicked(contact)}} />
+          <ContactsList
+            contacts={contactsList}
+            onContactClicked={(contact) => {
+              handleContactClicked(contact);
+            }}
+          />
         </div>
       ) : (
         <div className="chatsContainer">

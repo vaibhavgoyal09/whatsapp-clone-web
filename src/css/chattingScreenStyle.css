@@ -11,6 +11,12 @@
 .messagesContainer {
   flex: 1 1 auto;
   overflow: auto;
+  background-image: linear-gradient(
+      rgb(13, 17, 23, 0.9) 100%,
+      rgba(0, 0, 0, 0.5) 100%
+    ),
+    url("../assets/chat_back_wallpaper.png");
+  padding-bottom: 8px;
 }
 
 .footerContainer {

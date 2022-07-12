@@ -6,12 +6,18 @@ import { useAuth } from "../context/AuthContext";
 import { useAxios } from "../context/AxiosContext";
 import "../css/mainScreenStyle.css";
 import Chat from "../models/Chat";
-import Message from "../models/Message";
 import User from "../models/User";
+import Message from "../models/Message";
+import UserSelfProfilePreview from '../components/UserSelfProfilePreview';
 
 const MainScreen = () => {
   const { currentUser } = useAuth();
   const [chat, setChat] = useState(null);
+  const [contactsList, setContactsList] = useState([]);
+  const [chatsList, setChatsList] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSelfProfileScreen, setShowSelfProfileScreen] = useState(false);
+  const [messagesListForChat, setMessagesListForChat] = useState([]);
   const {
     currentUserModel,
     getAllChats,
@@ -19,71 +25,6 @@ const MainScreen = () => {
     getMessagesForChat,
     createNewChat,
   } = useAxios();
-  const [contactsList, setContactsList] = useState([]);
-  const [chatsList, setChatsList] = useState([]);
-
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const [messagesListForChat, setMessagesListForChat] = useState([
-    new Message(
-      5,
-      4,
-      "text",
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis aliquid nihil ullam odio libero modi nesciunt excepturi a corporis eligendi, ratione provident vel dolores aut incidunt dolor sit? Corrupti labore hic officiis saepe repudiandae atque at nemo eaque voluptas, delectus fuga molestiae quas!",
-      null,
-      Date.now()
-    ),
-    new Message(7, 1, "text", "Hello", null, Date.now()),
-    new Message(6, 4, "text", "Hello", null, Date.now()),
-    new Message(
-      5,
-      1,
-      "text",
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis aliquid nihil ullam odio libero modi nesciunt excepturi a corporis eligendi, ratione provident vel dolores aut incidunt dolor sit? Corrupti labore hic officiis saepe repudiandae atque at nemo eaque voluptas, delectus fuga molestiae quas!",
-      null,
-      Date.now()
-    ),
-    new Message(
-      5,
-      4,
-      "text",
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis aliquid nihil ullam odio libero modi nesciunt excepturi a corporis eligendi, ratione provident vel dolores aut incidunt dolor sit? Corrupti labore hic officiis saepe repudiandae atque at nemo eaque voluptas, delectus fuga molestiae quas!",
-      null,
-      Date.now()
-    ),
-    new Message(
-      5,
-      4,
-      "text",
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis aliquid nihil ullam odio libero modi nesciunt excepturi a corporis eligendi, ratione provident vel dolores aut incidunt dolor sit? Corrupti labore hic officiis saepe repudiandae atque at nemo eaque voluptas, delectus fuga molestiae quas!",
-      null,
-      Date.now()
-    ),
-    new Message(
-      5,
-      4,
-      "text",
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis aliquid nihil ullam odio libero modi nesciunt excepturi a corporis eligendi, ratione provident vel dolores aut incidunt dolor sit? Corrupti labore hic officiis saepe repudiandae atque at nemo eaque voluptas, delectus fuga molestiae quas!",
-      null,
-      Date.now()
-    ),
-    new Message(
-      5,
-      4,
-      "text",
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis aliquid nihil ullam odio libero modi nesciunt excepturi a corporis eligendi, ratione provident vel dolores aut incidunt dolor sit? Corrupti labore hic officiis saepe repudiandae atque at nemo eaque voluptas, delectus fuga molestiae quas!",
-      null,
-      Date.now()
-    ),
-    new Message(
-      5,
-      4,
-      "text",
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis aliquid nihil ullam odio libero modi nesciunt excepturi a corporis eligendi, ratione provident vel dolores aut incidunt dolor sit? Corrupti labore hic officiis saepe repudiandae atque at nemo eaque voluptas, delectus fuga molestiae quas!",
-      null,
-      Date.now()
-    ),
-  ]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -136,16 +77,30 @@ const MainScreen = () => {
   }, [searchQuery]);
 
   useEffect(() => {
-    console.log("Calling Get Messages For Chat");
     if (chat) {
       getMessagesForChat(chat.getId())
-        .then((result) => console.log(result))
+        .then((result) => {
+          let messages = []
+          for (let i in result) {
+            let m = result[i];
+            let message = new Message(
+              m.id,
+              m.sender_id,
+              m.type,
+              m.message,
+              m.media_url,
+              m.chat_id,
+              m.created_at
+            );
+            messages.push(message);
+          }
+          setMessagesListForChat(messages);
+        })
         .catch((e) => console.log(e));
     }
   }, [chat]);
 
   const onChatClick = (chat) => setChat(chat);
-  const onProfileClick = (chat) => {};
   const onSearchQueryChange = (value) => setSearchQuery(value);
   const onContactClicked = (contact) => {
     var chatId = null;
@@ -181,25 +136,36 @@ const MainScreen = () => {
         .catch((e) => console.log(e));
     }
   };
+  const onRemoteUserProfileClick = (chat) => {};
+  const onUserSelfProfileClick = () => {
+    setShowSelfProfileScreen(true);
+  };
 
   return (
     <div className="pg">
       <div className="sidebarContainer">
-        <MainSidebar
-          currentUserModel={currentUserModel}
-          chatsList={chatsList}
-          onChatClicked={(chat) => onChatClick(chat)}
-          onSearchQueryChange={(value) => onSearchQueryChange(value)}
-          contactsList={contactsList}
-          onContactClicked={(contact) => onContactClicked(contact)}
-        />
+        {showSelfProfileScreen ? (
+          <UserSelfProfilePreview />
+        ) : (
+          <MainSidebar
+            currentUserModel={currentUserModel}
+            chatsList={chatsList}
+            onProfileClick={onUserSelfProfileClick}
+            onChatClicked={(chat) => onChatClick(chat)}
+            onSearchQueryChange={(value) => onSearchQueryChange(value)}
+            contactsList={contactsList}
+            onContactClicked={(contact) => onContactClicked(contact)}
+          />
+        )}
       </div>
       {chat ? (
         <div className="chattingContainer">
           <ChattingScreen
             currentUserModel={currentUserModel}
             chat={chat}
-            onProfileClick={(chat) => onProfileClick(chat)}
+            onProfileClick={(chat) => {
+              onRemoteUserProfileClick(chat);
+            }}
             messages={messagesListForChat}
           />
         </div>

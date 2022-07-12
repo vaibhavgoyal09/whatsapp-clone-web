@@ -5,6 +5,7 @@ class Message {
     type,
     text,
     mediaUrl,
+    chatId,
     timestamp
   ) {
     this.id = id;
@@ -13,30 +14,7 @@ class Message {
     this.text = text;
     this.mediaUrl = mediaUrl;
     this.timestamp = timestamp;
-  }
-
-  getId() {
-    return this.id;
-  }
-
-  getSenderId() {
-    return this.senderId;
-  }
-
-  getType() {
-    return this.type;
-  }
-
-  getText() {
-    return this.text;
-  }
-
-  getMediaUrl() {
-    return this.mediaUrl;
-  }
-
-  getTimestamp() {
-    return this.timestamp;
+    this.chatId = chatId;
   }
 }
 

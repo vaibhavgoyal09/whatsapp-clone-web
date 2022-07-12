@@ -3,7 +3,8 @@ import '../css/receivedMessageItemStyle.css';
 
 const ReceivedMessageItem = ({ message }) => {
 
-  let date = new Date(message.getTimestamp());
+  let date = new Date(message.timestamp);
+  console.log(date);
   let hours = date.getHours();
   let minutes = date.getMinutes().toString();
   let time = `${hours - 12}:${minutes.length === 1 ? `0${minutes}` : minutes} ${
@@ -13,7 +14,7 @@ const ReceivedMessageItem = ({ message }) => {
   return (
     <div className="mrTopContainer">
       <div className="receivedMContainer">
-        <div className="msgR">{message.getText()}</div>
+        <div className="msgR">{message.text}</div>
         <div className="msgRTimestamp unselectable">{time}</div>
       </div>
     </div>
