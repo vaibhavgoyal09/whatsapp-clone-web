@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
 import { createContext, useContext, useEffect, useRef } from "react";
-import ApiError from "../utils/ApiError";
 import { WhatsApi } from "../utils/Constants";
 import { useAuth } from "./AuthContext";
 import User from "../models/User";
