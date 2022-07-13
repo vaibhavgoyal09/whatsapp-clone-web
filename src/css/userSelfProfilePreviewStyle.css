@@ -1,0 +1,172 @@
+.usContainer {
+  height: 100%;
+  width: 100%;
+  background-color: var(--darkerGrey);
+  overflow: auto;
+}
+
+.usheader {
+  padding-top: 15%;
+  padding-left: 8%;
+  padding-bottom: 5%;
+  background-color: var(--background);
+  color: var(--white);
+}
+
+.usbackBtn {
+  font-size: 1.125rem;
+  cursor: pointer;
+}
+
+.usTitle {
+  position: absolute;
+  margin-left: 2%;
+}
+
+.usTitle h2 {
+  font-size: 1rem;
+}
+
+.bottomCtnt {
+  display: flex;
+  flex-direction: column;
+}
+
+.usimageWrapper {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  border: 0px;
+  align-self: center;
+  margin-top: 40px;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.usstdImg {
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  position: absolute;
+  border-radius: 50%;
+}
+
+.uscameraOverlay {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  border-radius: 50%;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  opacity: 0;
+}
+
+.uscameraOverlay:hover {
+  opacity: 100;
+}
+
+.uscamera {
+  width: 35px;
+  color: var(--secondaryText);
+}
+
+.nameContainer {
+  margin-top: 50px;
+}
+
+.nameCtnt {
+  width: 100%;
+}
+
+.nt {
+  font-size: 14px;
+  display: block;
+  margin-left: 16px;
+}
+
+.tgreen {
+  color: var(--green);
+}
+
+.nInputCtnr {
+  margin-top: 8px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: row;
+  padding: 8px 8px 8px 0px;
+}
+
+.nSub {
+  margin-top: 20px;
+  font-size: 14px;
+  color: rgb(155, 155, 155);
+  margin-left: 16px;
+}
+
+.usname {
+  background-color: transparent;
+  border: 0px;
+  color: var(--white);
+  font-size: 16px;
+  outline: none;
+}
+
+.aboutContainer {
+  margin-top: 20px;
+}
+
+.aboutCtnt {
+  width: 100%;
+}
+
+.aInputCtnr {
+  margin-top: 8px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: row;
+  padding: 8px 8px 8px 0px;
+}
+
+.usabout {
+  background-color: transparent;
+  border: 0px;
+  color: var(--white);
+  font-size: 16px;
+  outline: none;
+}
+
+.icCtnr {
+  margin-left: auto;
+  display: flex;
+  flex-direction: row;
+  align-self: center;
+}
+
+.lIc {
+  cursor: pointer;
+  color: rgb(170, 170, 170);
+}
+
+.sS {
+  font-size: 1.0rem;
+}
+
+.sM {
+  font-size: 1.25rem;
+}
+
+.gLine {
+  width: 92%;
+  height: 1px;
+  background-color: var(--green);
+  margin-left: auto;
+  margin-right: auto;
+}

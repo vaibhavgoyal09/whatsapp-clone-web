@@ -8,7 +8,7 @@ import "../css/mainScreenStyle.css";
 import Chat from "../models/Chat";
 import User from "../models/User";
 import Message from "../models/Message";
-import UserSelfProfilePreview from '../components/UserSelfProfilePreview';
+import UserSelfProfilePreview from "../components/UserSelfProfilePreview";
 
 const MainScreen = () => {
   const { currentUser } = useAuth();
@@ -16,7 +16,7 @@ const MainScreen = () => {
   const [contactsList, setContactsList] = useState([]);
   const [chatsList, setChatsList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showSelfProfileScreen, setShowSelfProfileScreen] = useState(false);
+  const [showSelfProfileScreen, setShowSelfProfileScreen] = useState(true);
   const [messagesListForChat, setMessagesListForChat] = useState([]);
   const {
     currentUserModel,
@@ -80,7 +80,7 @@ const MainScreen = () => {
     if (chat) {
       getMessagesForChat(chat.getId())
         .then((result) => {
-          let messages = []
+          let messages = [];
           for (let i in result) {
             let m = result[i];
             let message = new Message(
@@ -94,7 +94,7 @@ const MainScreen = () => {
             );
             messages.push(message);
           }
-          setMessagesListForChat(messages);
+          setMessagesListForChat(messages.reverse());
         })
         .catch((e) => console.log(e));
     }
@@ -145,7 +145,10 @@ const MainScreen = () => {
     <div className="pg">
       <div className="sidebarContainer">
         {showSelfProfileScreen ? (
-          <UserSelfProfilePreview />
+          <UserSelfProfilePreview
+            currentUserModel={currentUserModel}
+            onClose={() => setShowSelfProfileScreen(false)}
+          />
         ) : (
           <MainSidebar
             currentUserModel={currentUserModel}

@@ -5,8 +5,8 @@ const WhatsappIntroScreen = () => {
   return (
     <div className="introContainer">
       <WhatsAppIntroImage className="introImg" />
-      <h1 className="introTitle">WhatsApp Web </h1>
-      <div className="introSubtitle">
+      <h1 className="introTitle unselectable">WhatsApp Web </h1>
+      <div className="introSubtitle unselectable">
         <h2>
           Now send and receive messages without keeping your phone online.
           <br />

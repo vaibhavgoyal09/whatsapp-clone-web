@@ -18,7 +18,7 @@ const SetupProfileScreen = (props) => {
 
   const maxRowCount = 4;
   const maxCharCount = 50;
-  const phoneNumber = location.state.phoneNumber;
+  const phoneNumber = "location.state.phoneNumber";
 
   function handleNameFieldChange(event) {
     setName(event.target.value);
