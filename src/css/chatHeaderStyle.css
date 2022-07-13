@@ -25,18 +25,17 @@
   margin-left: 20px;
 }
 
-.optionsContainer {
+.choptionsContainer {
   display: flex;
   flex-direction: row-reverse;
   margin-left: auto;
+  align-items: center;
+  justify-content: center;
 }
 
 .chic {
   font-size: 1.0rem;
   color: var(--secondaryText);
   cursor: pointer;
-}
-
-.mr {
   margin-right: 30px;
 }
