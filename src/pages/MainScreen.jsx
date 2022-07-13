@@ -16,7 +16,7 @@ const MainScreen = () => {
   const [contactsList, setContactsList] = useState([]);
   const [chatsList, setChatsList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showSelfProfileScreen, setShowSelfProfileScreen] = useState(true);
+  const [showSelfProfileScreen, setShowSelfProfileScreen] = useState(false);
   const [messagesListForChat, setMessagesListForChat] = useState([]);
   const {
     currentUserModel,
