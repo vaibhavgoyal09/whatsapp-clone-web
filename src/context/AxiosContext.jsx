@@ -74,6 +74,19 @@ const AxiosInstanceProvider = ({ children }) => {
     }
   }
 
+  function updateCurrentUserModelState(name, about, profileImageUrl) {
+    setCurrentUserModel(
+      new User(
+        currentUserModel.id,
+        name ? name : currentUserModel.name,
+        about ? about : currentUserModel.about,
+        currentUserModel.firebaseUid,
+        currentUserModel.phoneNumber,
+        profileImageUrl ? profileImageUrl : currentUserModel.profileImageUrl
+      )
+    );
+  }
+
   async function registerUser(request) {
     try {
       let file = new FormData();
@@ -166,6 +179,37 @@ const AxiosInstanceProvider = ({ children }) => {
     }
   }
 
+  async function updateUserDetails(request) {
+    try {
+      var profileImageUrl = null;
+      if (!request.shouldRemoveProfileImage && request.profileImageFile) {
+        let file = new FormData();
+        file.append("file", request.profileImageFile);
+        let fileUploadResponse = await instanceRef.current.post(
+          `${WhatsApi.UPLOAD_FILE_URL}`,
+          file
+        );
+        profileImageUrl = fileUploadResponse.data["url"];
+      }
+      await instanceRef.current.put(
+        `${WhatsApi.UPDATE_USER_DETAILS_URL}`,
+        {
+          name: request.name,
+          about: request.about,
+          profile_image_url: profileImageUrl,
+          should_remove_profile_photo: request.shouldRemoveProfileImage,
+        }
+      );
+      return profileImageUrl;
+    } catch (axiosError) {
+      var message = "Check Your Internet Connection";
+      if (axiosError.response.data) {
+        message = axiosError.response.data["detail"];
+      }
+      throw Error(message);
+    }
+  }
+
   const value = {
     currentUserModel,
     checkIfUserExists,
@@ -174,6 +218,8 @@ const AxiosInstanceProvider = ({ children }) => {
     searchUsers,
     getMessagesForChat,
     createNewChat,
+    updateUserDetails,
+    updateCurrentUserModelState,
   };
 
   return (

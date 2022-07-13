@@ -9,6 +9,8 @@ import Chat from "../models/Chat";
 import User from "../models/User";
 import Message from "../models/Message";
 import UserSelfProfilePreview from "../components/UserSelfProfilePreview";
+import updateUserDetails from "../models/UpdateUserRequest";
+import UpdateUserRequest from "../models/UpdateUserRequest";
 
 const MainScreen = () => {
   const { currentUser } = useAuth();
@@ -24,6 +26,8 @@ const MainScreen = () => {
     searchUsers,
     getMessagesForChat,
     createNewChat,
+    updateUserDetails,
+    updateCurrentUserModelState
   } = useAxios();
 
   useEffect(() => {
@@ -140,6 +144,29 @@ const MainScreen = () => {
   const onUserSelfProfileClick = () => {
     setShowSelfProfileScreen(true);
   };
+  const updateUserName = (name) => {
+    updateUserDetails(new UpdateUserRequest(name, null, null, false))
+      .then((_) => {
+        updateCurrentUserModelState(name, null, null);
+      })
+      .catch((e) => console.log(e));
+  };
+  const updateUserAbout = (about) => {
+    updateUserDetails(new UpdateUserRequest(null, about, null, false))
+      .then((_) => {
+        updateCurrentUserModelState(null, about, null);
+      })
+      .catch((e) => console.log(e));
+  };
+  const updateUserProfileImage = (imageFile, shouldRemoveProfileImage) => {
+    updateUserDetails(
+      new UpdateUserRequest(null, null, imageFile, shouldRemoveProfileImage)
+    )
+      .then((result) => {
+        updateCurrentUserModelState(null, null, result);
+      })
+      .catch((e) => console.log(e));
+  };
 
   return (
     <div className="pg">
@@ -148,6 +175,13 @@ const MainScreen = () => {
           <UserSelfProfilePreview
             currentUserModel={currentUserModel}
             onClose={() => setShowSelfProfileScreen(false)}
+            updateUserName={(name) => {
+              updateUserName(name);
+            }}
+            updateUserAbout={(about) => updateUserAbout(about)}
+            updateUserProfileImage={(imageFile, shouldRemoveProfileImage) =>
+              updateUserProfileImage(imageFile, shouldRemoveProfileImage)
+            }
           />
         ) : (
           <MainSidebar

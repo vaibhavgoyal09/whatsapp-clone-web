@@ -2,16 +2,32 @@ import { useRef, useState } from "react";
 import "../css/userSelfProfilePreviewStyle.css";
 import { ReactComponent as CameraImage } from "../assets/camera.svg";
 
-const UserSelfProfilePreview = ({ currentUserModel, onClose }) => {
+const UserSelfProfilePreview = ({
+  currentUserModel,
+  onClose,
+  updateUserName,
+  updateUserAbout,
+  updateUserProfileImage,
+}) => {
   const fileInputRef = useRef();
+  const nameFieldRef = useRef();
+  const aboutFieldRef = useRef();
   const [isUserNameFieldFocused, setIsUserNameFieldFocused] = useState(false);
   const [isUserNameFieldEditable, setIsUserNameFieldEditable] = useState(false);
   const [isUserAboutFieldFocused, setIsUserAboutFieldFocused] = useState(false);
   const [isUserAboutFieldEditable, setIsUserAboutEditable] = useState(false);
+  const [imageSrc, setImageSrc] = useState(currentUserModel.profileImageUrl);
 
   if (!currentUserModel) {
     return null;
   }
+
+  const handleFileChange = (event) => {
+    let file = event.target.files[0]
+    console.log(file);
+    setImageSrc(URL.createObjectURL(file));
+    updateUserProfileImage(event.target.files[0], event.target.files[0] ? false: true)
+  };
 
   return (
     <div className="usContainer">
@@ -24,14 +40,19 @@ const UserSelfProfilePreview = ({ currentUserModel, onClose }) => {
         </span>
       </div>
       <div className="bottomCtnt">
+        <form>
+          <input
+            type="file"
+            onChange={handleFileChange}
+            hidden
+            ref={fileInputRef}
+            accept="image/png, image/jpeg, image/jpg"
+          />
+        </form>
         <div className="usimageWrapper">
           <img
             className="usstdImg"
-            src={
-              currentUserModel.profileImageUrl
-                ? currentUserModel.profileImageUrl
-                : "avatar.png"
-            }
+            src={imageSrc ? imageSrc : "avatar.png"}
             alt="profile"
           />
           <div
@@ -47,6 +68,7 @@ const UserSelfProfilePreview = ({ currentUserModel, onClose }) => {
             <div className="nInputCtnr">
               <div
                 className="usname"
+                ref={nameFieldRef}
                 contentEditable={isUserNameFieldEditable}
                 onClick={() => setIsUserNameFieldFocused(true)}
               >
@@ -61,16 +83,22 @@ const UserSelfProfilePreview = ({ currentUserModel, onClose }) => {
                   }}
                 >
                   {isUserNameFieldEditable ? (
-                  <i class="fa-solid fa-check sM"/>
-                ) : (
-                  <i
-                    className="fa-solid fa-pen sS"
-                    onClick={() => {
-                      setIsUserNameFieldFocused(true);
-                      setIsUserNameFieldFocused(true);
-                    }}
-                  />
-                )}
+                    <i
+                      class="fa-solid fa-check sM"
+                      onClick={() => {
+                        setIsUserNameFieldEditable(false);
+                        updateUserName(nameFieldRef.current.innerText);
+                      }}
+                    />
+                  ) : (
+                    <i
+                      className="fa-solid fa-pen sS"
+                      onClick={() => {
+                        setIsUserNameFieldFocused(true);
+                        setIsUserNameFieldFocused(true);
+                      }}
+                    />
+                  )}
                 </span>
               </div>
             </div>
@@ -88,6 +116,7 @@ const UserSelfProfilePreview = ({ currentUserModel, onClose }) => {
           <div className="aInputCtnr">
             <div
               className="usabout"
+              ref={aboutFieldRef}
               contentEditable={isUserAboutFieldEditable}
               onClick={() => isUserAboutFieldFocused(true)}
             >
@@ -96,7 +125,13 @@ const UserSelfProfilePreview = ({ currentUserModel, onClose }) => {
             <div className="icCtnr">
               <span className="lIc">
                 {isUserAboutFieldEditable ? (
-                  <i class="fa-solid fa-check sM"/>
+                  <i
+                    class="fa-solid fa-check sM"
+                    onClick={() => {
+                      setIsUserAboutEditable(false);
+                      updateUserAbout(aboutFieldRef.current.innerText);
+                    }}
+                  />
                 ) : (
                   <i
                     className="fa-solid fa-pen sS"
