@@ -77,16 +77,13 @@ const UserSelfProfilePreview = ({
               <div className="icCtnr">
                 <span
                   className="lIc"
-                  onClick={() => {
-                    setIsUserNameFieldEditable(true);
-                    setIsUserNameFieldFocused(true);
-                  }}
                 >
                   {isUserNameFieldEditable ? (
                     <i
-                      class="fa-solid fa-check sM"
+                      className="fa-solid fa-check sM"
                       onClick={() => {
                         setIsUserNameFieldEditable(false);
+                        setIsUserNameFieldFocused(false);
                         updateUserName(nameFieldRef.current.innerText);
                       }}
                     />
@@ -126,9 +123,10 @@ const UserSelfProfilePreview = ({
               <span className="lIc">
                 {isUserAboutFieldEditable ? (
                   <i
-                    class="fa-solid fa-check sM"
+                    className="fa-solid fa-check sM"
                     onClick={() => {
                       setIsUserAboutEditable(false);
+                      setIsUserAboutFieldFocused(false);
                       updateUserAbout(aboutFieldRef.current.innerText);
                     }}
                   />
