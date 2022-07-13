@@ -14,12 +14,13 @@ const ChattingScreen = ({ currentUserModel, chat, messages, onProfileClick }) =>
     <div id="content">
       <div className="headerContainer">
         <ChatHeader
-          profileImageUrl={chat.getRemoteUserProfileImageUrl()}
+          profileImageUrl={chat.remoteUserProfileImageUrl}
           onProfileClick={() => onProfileClick(chat)}
+          userName={chat.remoteUserName}
         />
       </div>
       <div className="messagesContainer">
-        <MessagesList messagesList={messages} currentUserId={currentUserModel.getId()} />
+        <MessagesList messagesList={messages} currentUserId={currentUserModel.id} />
       </div>
       <div className="footerContainer">
         <ChatFooter />

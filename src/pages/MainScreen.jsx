@@ -9,7 +9,6 @@ import Chat from "../models/Chat";
 import User from "../models/User";
 import Message from "../models/Message";
 import UserSelfProfilePreview from "../components/UserSelfProfilePreview";
-import updateUserDetails from "../models/UpdateUserRequest";
 import UpdateUserRequest from "../models/UpdateUserRequest";
 
 const MainScreen = () => {

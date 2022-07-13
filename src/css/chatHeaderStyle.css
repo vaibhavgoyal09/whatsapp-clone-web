@@ -1,9 +1,9 @@
-#content {
+.chtnr {
   display: flex;
   width: 100%;
-  flex-direction: column;
+  flex-direction: row;
   background-color: var(--background);
-  /* border-bottom: 1px solid var(--inputFieldBorder); */
+  justify-content: center;
 }
 
 .avt {
@@ -13,4 +13,30 @@
   margin-top: 12px;
   margin-left: 12px;
   margin-bottom: 12px;
+}
+
+.chname {
+  font-size: 0.9rem;
+  color: var(--white);
+  margin-top: auto;
+  margin-bottom: auto;
+  text-align: center;
+  position: relative;
+  margin-left: 20px;
+}
+
+.optionsContainer {
+  display: flex;
+  flex-direction: row-reverse;
+  margin-left: auto;
+}
+
+.chic {
+  font-size: 1.0rem;
+  color: var(--secondaryText);
+  cursor: pointer;
+}
+
+.mr {
+  margin-right: 30px;
 }
