@@ -5,6 +5,7 @@ export class WhatsApi {
   static GET_CURRENT_USER_INFO_URL = "/user/current";
   static CHECK_USER_SIGNING_IN_URL = "/user/check_exists";
   static UPDATE_USER_DETAILS_URL = "/user/update"
+  static GET_REMOTE_USER_DETAILS_URL = "/user/details"
   static UPLOAD_FILE_URL = "file/new";
   static GET_ALL_CHATS_URL = "chat/all";
   static CREATE_NEW_CHAT_URL = "/chat/new";

@@ -40,7 +40,7 @@ const ChattingScreen = ({
       <div className="headerContainer">
         <ChatHeader
           profileImageUrl={chat.remoteUserProfileImageUrl}
-          onProfileClick={() => onProfileClick(chat)}
+          onProfileClick={() => onProfileClick()}
           userName={chat.remoteUserName}
         />
       </div>

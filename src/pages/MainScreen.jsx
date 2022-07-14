@@ -11,14 +11,18 @@ import User from "../models/User";
 import Message from "../models/Message";
 import UserSelfProfilePreview from "../components/UserSelfProfilePreview";
 import UpdateUserRequest from "../models/UpdateUserRequest";
+import RemoteUserProfilePreview from "../components/RemoteUserProfilePreview";
 
 const MainScreen = () => {
   const { currentUser } = useAuth();
   const [chat, setChat] = useState(null);
+  const [remoteUser, setRemoteUser] = useState(null);
   const [contactsList, setContactsList] = useState([]);
   const [chatsList, setChatsList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [showSelfProfileScreen, setShowSelfProfileScreen] = useState(false);
+  const [showRemoteUserProfileScreen, setShowRemoteUserProfileScreen] =
+    useState(true);
   const [messagesListForChat, setMessagesListForChat] = useState([]);
   const {
     currentUserModel,
@@ -27,7 +31,8 @@ const MainScreen = () => {
     getMessagesForChat,
     createNewChat,
     updateUserDetails,
-    updateCurrentUserModelState
+    updateCurrentUserModelState,
+    getRemoteUserDetails
   } = useAxios();
   const { sendChatMessage, lastChatMessage } = useWhatsappWebSocket();
 
@@ -106,13 +111,29 @@ const MainScreen = () => {
   }, [chat]);
 
   useEffect(() => {
+    if (chat) {
+      getRemoteUserDetails(chat.remoteUserId).then((result) => {
+        let user = new User(
+          result.id,
+          result.name,
+          result.about,
+          result.firebase_uid,
+          result.phone_number,
+          result.profile_image_url
+        );
+        setRemoteUser(user);
+      });
+    }
+  }, [chat]);
+
+  useEffect(() => {
     console.log(lastChatMessage);
     if (lastChatMessage && chat.id === lastChatMessage.chatId) {
       let mList = [...messagesListForChat.reverse()];
       mList.push(lastChatMessage);
       console.log(mList);
       setMessagesListForChat(mList.reverse());
-    } 
+    }
   }, [lastChatMessage]);
 
   const onChatClick = (chat) => setChat(chat);
@@ -151,7 +172,9 @@ const MainScreen = () => {
         .catch((e) => console.log(e));
     }
   };
-  const onRemoteUserProfileClick = (chat) => {};
+  const onRemoteUserProfileClick = () => {
+    setShowRemoteUserProfileScreen(true);
+  };
   const onUserSelfProfileClick = () => {
     setShowSelfProfileScreen(true);
   };
@@ -211,12 +234,18 @@ const MainScreen = () => {
         )}
       </div>
       {chat ? (
-        <div className="chattingContainer">
+        <div
+          className={
+            showRemoteUserProfileScreen
+              ? "chattingContainer small"
+              : "chattingContainer max"
+          }
+        >
           <ChattingScreen
             currentUserModel={currentUserModel}
             chat={chat}
-            onProfileClick={(chat) => {
-              onRemoteUserProfileClick(chat);
+            onProfileClick={() => {
+              onRemoteUserProfileClick();
             }}
             messages={messagesListForChat}
             onSendMessage={(request) => handleSendChatMessage(request)}
@@ -227,6 +256,14 @@ const MainScreen = () => {
           <WhatsappIntroScreen />
         </div>
       )}
+      {showRemoteUserProfileScreen ? (
+        <div className="remoteUserProfileContainer">
+          <RemoteUserProfilePreview
+            user={remoteUser}
+            onClose={() => setShowRemoteUserProfileScreen(false)}
+          />
+        </div>
+      ) : null}
     </div>
   );
 };

@@ -209,6 +209,20 @@ const AxiosInstanceProvider = ({ children }) => {
     }
   }
 
+  async function getRemoteUserDetails(userId) {
+    try {
+      let result = await instanceRef.current.get(`${WhatsApi.GET_REMOTE_USER_DETAILS_URL}/${userId}`)
+      return result.data;
+    }
+    catch(axiosError) {
+      var message = "Check Your Internet Connection";
+      if (axiosError.response.data) {
+        message = axiosError.response.data["detail"];
+      }
+      throw Error(message);
+    }
+  }
+
   const value = {
     currentUserModel,
     checkIfUserExists,
@@ -219,6 +233,7 @@ const AxiosInstanceProvider = ({ children }) => {
     createNewChat,
     updateUserDetails,
     updateCurrentUserModelState,
+    getRemoteUserDetails
   };
 
   return (

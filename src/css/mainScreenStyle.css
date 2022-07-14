@@ -2,20 +2,29 @@
   height: 100vh;
   overflow-x: hidden;
   display: flex;
+  flex-grow: 2 1 1;
 }
 
 .sidebarContainer {
-  width: 30%;
+  flex: 0 0 30%;
 }
 
-.chattingContainer {
-  width: 70%;
+.small {
+  flex: 0 0 40%;
+}
+
+.max {
+  flex: 70%;
 }
 
 .whatsappIntroContainer {
-  width: 70%;
-  margin-left: auto;
-  margin-right: auto;
+  flex: 70%;
+}
+
+.remoteUserProfileContainer {
+  flex: 0 0 30%;
+  height: 100%;
+  justify-self: flex-end;
 }
 
 @media (max-width: 1000px) {
