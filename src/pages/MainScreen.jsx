@@ -22,7 +22,7 @@ const MainScreen = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSelfProfileScreen, setShowSelfProfileScreen] = useState(false);
   const [showRemoteUserProfileScreen, setShowRemoteUserProfileScreen] =
-    useState(true);
+    useState(false);
   const [messagesListForChat, setMessagesListForChat] = useState([]);
   const {
     currentUserModel,

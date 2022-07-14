@@ -37,7 +37,7 @@ const RemoteUserProfilePreview = ({ onClose, user }) => {
             <p>{user.about}</p>
           </div>
         </div>
-        <div className="rmOptionsContainer">
+        <div className="rmOptionsContainer unselectable">
           <div className="rmOpCtnr">
             <div className="rmOpCtnt">
               <span className="rmWarnIcon">
