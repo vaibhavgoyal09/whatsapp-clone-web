@@ -10,6 +10,7 @@ export const useAxios = () => useContext(AxiosContext);
 const AxiosInstanceProvider = ({ children }) => {
   const { getUserIdToken, currentUser } = useAuth();
   const [currentUserModel, setCurrentUserModel] = useState(null);
+  const [accessToken, setAccessToken] = useState(null); // Just a fake token
 
   let config = {
     baseURL: WhatsApi.BASE_URL,
@@ -22,12 +23,20 @@ const AxiosInstanceProvider = ({ children }) => {
   const instanceRef = useRef(axios.create(config));
 
   useEffect(() => {
-    getUserIdToken().then(async (token) => {
+    getUserIdToken().then((token) => {
       if (token) {
+        setAccessToken(token.substring(8, 5));
         instanceRef.current.interceptors.request.use((config) => {
           config.headers = { Authorization: `Bearer ${token}` };
           return config;
         });
+      }
+    });
+  }, [currentUser]);
+
+  useEffect(() => {
+    async function retrieveCurrentUser() {
+      if (accessToken) {
         try {
           let data = (
             await instanceRef.current.get(
@@ -47,15 +56,9 @@ const AxiosInstanceProvider = ({ children }) => {
           console.log(axiosError);
         }
       }
-    });
-  }, [currentUser]);
-
-  useEffect(() => {
-    async function retrieveCurrentUser() {
-      setTimeout(async () => {}, 2000);
     }
     retrieveCurrentUser();
-  }, [currentUser]);
+  }, [accessToken]);
 
   async function checkIfUserExists(phoneNumber) {
     try {
@@ -233,7 +236,8 @@ const AxiosInstanceProvider = ({ children }) => {
     createNewChat,
     updateUserDetails,
     updateCurrentUserModelState,
-    getRemoteUserDetails
+    getRemoteUserDetails,
+    accessToken
   };
 
   return (

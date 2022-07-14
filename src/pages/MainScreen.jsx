@@ -32,12 +32,13 @@ const MainScreen = () => {
     createNewChat,
     updateUserDetails,
     updateCurrentUserModelState,
-    getRemoteUserDetails
+    getRemoteUserDetails,
+    accessToken
   } = useAxios();
   const { sendChatMessage, lastChatMessage } = useWhatsappWebSocket();
 
   useEffect(() => {
-    setTimeout(() => {
+    if (accessToken) {
       getAllChats()
         .then((result) => {
           let chats = [];
@@ -57,8 +58,8 @@ const MainScreen = () => {
         .catch((e) => {
           console.log(e);
         });
-    }, 2000);
-  }, [currentUser]);
+    }
+  }, [accessToken]);
 
   useEffect(() => {
     if (searchQuery === "") {
