@@ -1,14 +1,18 @@
+import { useEffect } from "react";
 import { useState } from "react";
 import "../css/chatFooterStyle.css";
 
-const ChatFooter = ({ onSendMessage }) => {
-  const [messageText, setMessageText] = useState("");
-  const sendMessage = () => {
-    onSendMessage(messageText);
-  };
+const ChatFooter = ({ onSendMessage, messageText, onMessageTextChange }) => {
+
+  const [text, setText] = useState("");
+
   const handleMessageTextChange = (event) => {
-    setMessageText(event.target.value);
+    setText(event.target.value);
   };
+
+  useEffect(() => {
+    onMessageTextChange(text);
+  }, [text]);
 
   return (
     <div className="fcontnt">
@@ -28,7 +32,7 @@ const ChatFooter = ({ onSendMessage }) => {
       <span
         className="icon"
         onClick={() => {
-          sendMessage();
+          onSendMessage(messageText);
         }}
       >
         <i className="fa-solid fa-paper-plane" />

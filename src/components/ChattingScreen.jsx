@@ -3,17 +3,36 @@ import ChatHeader from "./ChatHeader";
 import ChatFooter from "./ChatFooter";
 import "../css/chattingScreenStyle.css";
 import MessagesList from "./MessagesList";
-import SendMessageRequest from '../models/SendMessageRequest';
+import SendMessageRequest from "../models/SendMessageRequest";
+import { useState } from "react";
 
-const ChattingScreen = ({ currentUserModel, chat, messages, onProfileClick, onSendMessage }) => {
-  console.log(chat);
+const ChattingScreen = ({
+  currentUserModel,
+  chat,
+  messages,
+  onProfileClick,
+  onSendMessage,
+}) => {
+  const [messageText, setMessageText] = useState("");
+
   if (!chat || !currentUserModel) {
     return null;
   }
 
-  const sendMessage = (messageText) => {
-    let request = new SendMessageRequest(0, currentUserModel.id, chat.remoteUserId, chat.id, null, messageText);
+  const sendMessage = () => {
+    if (messageText === "") {
+      return;
+    }
+    let request = new SendMessageRequest(
+      0,
+      currentUserModel.id,
+      chat.remoteUserId,
+      chat.id,
+      null,
+      messageText
+    );
     onSendMessage(request);
+    setMessageText("");
   };
 
   return (
@@ -26,10 +45,17 @@ const ChattingScreen = ({ currentUserModel, chat, messages, onProfileClick, onSe
         />
       </div>
       <div className="messagesContainer">
-        <MessagesList messagesList={messages} currentUserId={currentUserModel.id} />
+        <MessagesList
+          messagesList={messages}
+          currentUserId={currentUserModel.id}
+        />
       </div>
       <div className="footerContainer">
-        <ChatFooter onSendMessage={(messageText) => sendMessage(messageText)}/>
+        <ChatFooter
+          onSendMessage={() => sendMessage()}
+          messageText={messageText}
+          onMessageTextChange={(value) => setMessageText(value)}
+        />
       </div>
     </div>
   );

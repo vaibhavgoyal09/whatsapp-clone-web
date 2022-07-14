@@ -108,9 +108,10 @@ const MainScreen = () => {
   useEffect(() => {
     console.log(lastChatMessage);
     if (lastChatMessage && chat.id === lastChatMessage.chatId) {
-      let mList = [...messagesListForChat];
+      let mList = [...messagesListForChat.reverse()];
       mList.push(lastChatMessage);
-      setMessagesListForChat(mList);
+      console.log(mList);
+      setMessagesListForChat(mList.reverse());
     } 
   }, [lastChatMessage]);
 
