@@ -1,9 +1,9 @@
 import { useState } from "react";
 import "../css/mainSidebar.css";
-import ChatsList from "./ChatsList";
 import SidebarHeader from "./SidebarHeader";
 import SidebarSearchBar from "./SidebarSearchBar";
-import ContactsList from "./ContactsList";
+import ContactItem from './ContactItem';
+import ChatItem from './ChatItem';
 
 const MainSidebar = ({
   chatsList,
@@ -15,6 +15,7 @@ const MainSidebar = ({
   currentUserModel,
 }) => {
   const [isSearchingForUser, setIsSearchingForUser] = useState(false);
+  const [selectedChat, setSelectedChat] = useState(null);
 
   if (!currentUserModel) {
     return null;
@@ -27,6 +28,11 @@ const MainSidebar = ({
       setIsSearchingForUser(true);
     }
     onSearchQueryChange(value);
+  }
+
+  function handleChatClicked(chat) {
+    setSelectedChat(chat);
+    onChatClicked(chat);
   }
 
   function handleContactClicked(contact) {
@@ -48,19 +54,28 @@ const MainSidebar = ({
       <div className="dividerLine" />
       {isSearchingForUser ? (
         <div className="contactsContainer">
-          <ContactsList
-            contacts={contactsList}
-            onContactClicked={(contact) => {
-              handleContactClicked(contact);
-            }}
-          />
+          <div className="contacts">
+            {contactsList.map((contact, index) => (
+              <ContactItem
+                key={index}
+                contact={contact}
+                onClick={() => handleContactClicked(contactsList[index])}
+              />
+            ))}
+          </div>
         </div>
       ) : (
         <div className="chatsContainer">
-          <ChatsList
-            chats={chatsList}
-            onChatClicked={(chat) => onChatClicked(chat)}
-          />
+          <div className="chats">
+            {chatsList.map((chat, index) => (
+              <ChatItem
+                key={index}
+                chat={chat}
+                isSelected={selectedChat ? selectedChat.id === chat.id: false}
+                onChatClick={() => handleChatClicked(chatsList[index])}
+              />
+            ))}
+          </div>
         </div>
       )}
     </div>

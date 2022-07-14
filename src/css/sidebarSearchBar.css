@@ -17,6 +17,7 @@
   color: var(--secondaryText);
   margin: auto 0px;
   position: relative;
+  cursor: pointer;
 }
 
 .searchInput {

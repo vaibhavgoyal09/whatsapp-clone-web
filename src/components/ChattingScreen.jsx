@@ -2,9 +2,10 @@ import React from "react";
 import ChatHeader from "./ChatHeader";
 import ChatFooter from "./ChatFooter";
 import "../css/chattingScreenStyle.css";
-import MessagesList from "./MessagesList";
 import SendMessageRequest from "../models/SendMessageRequest";
 import { useState } from "react";
+import ReceivedMessageItem from "./ReceivedMessageItem";
+import SentMessageItem from "./SentMessageItem";
 
 const ChattingScreen = ({
   currentUserModel,
@@ -45,10 +46,15 @@ const ChattingScreen = ({
         />
       </div>
       <div className="messagesContainer">
-        <MessagesList
-          messagesList={messages}
-          currentUserId={currentUserModel.id}
-        />
+        <div className="listContainer">
+          {messages.map((message, index) =>
+            message.senderId === currentUserModel.id ? (
+              <SentMessageItem message={message} key={index} />
+            ) : (
+              <ReceivedMessageItem message={message} key={index} />
+            )
+          )}
+        </div>
       </div>
       <div className="footerContainer">
         <ChatFooter

@@ -14,7 +14,6 @@ const SidebarSearchBar = ({ onSearchQueryChange }) => {
 
   const handleSearchValueChange = (event) => {
     setSearchFieldValue(event.target.value);
-    console.log("Handle Value Change Called");
   };
 
   useEffect(() => {

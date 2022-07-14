@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import "../css/chatItemStyle.css";
 
-const ChatItem = ({ chat, onChatClick }) => {
+const ChatItem = ({ chat, onChatClick, isSelected }) => {
   const contentRef = useRef();
 
   if (!chat) {
@@ -30,7 +30,7 @@ const ChatItem = ({ chat, onChatClick }) => {
   }
 
   return (
-    <div className="cn" ref={contentRef} onClick={() => onChatClick()}>
+    <div className={isSelected ? "cn cnWithBg" : "cn"} ref={contentRef} onClick={() => onChatClick()}>
       <img
         src={
           chat.getRemoteUserProfileImageUrl()
@@ -40,7 +40,7 @@ const ChatItem = ({ chat, onChatClick }) => {
         alt="user profile"
         className="avatar"
       />
-      <div className="infoContainer" onClick={() => contentRef.current.click()}>
+      <div className="infoContainer">
         <div className="unamec">
           <p className="uname unselectable">{chat.getRemoteUserName()}</p>
           <p className="umsg unselectable">{messageText}</p>

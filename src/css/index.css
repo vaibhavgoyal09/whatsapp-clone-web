@@ -32,7 +32,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 /* Track */
@@ -42,12 +42,13 @@ body {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: rgb(51, 58, 54);
+  background: rgb(63, 63, 63);
+  border-radius: 5px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(77, 80, 78);
+  background: rgb(71, 71, 71);
 }
 
 code {

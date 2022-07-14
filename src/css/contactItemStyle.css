@@ -1,14 +1,14 @@
 .cn {
   display: flex;
-  padding: 8px;
   margin: 0px 0px;
   flex-direction: row;
   position: relative;
   width: 100%;
-  /* align-items: center; */
+  height: 68px;
   overflow-y: auto;
-  height: 50px;
   overflow: hidden;
+  box-sizing: border-box;
+  padding: 8px;
 }
 
 .infoContainer {

@@ -137,7 +137,10 @@ const MainScreen = () => {
     }
   }, [lastChatMessage]);
 
-  const onChatClick = (chat) => setChat(chat);
+  const onChatClick = (chat) => {
+    setShowRemoteUserProfileScreen(false);
+    setChat(chat);
+  }
   const onSearchQueryChange = (value) => setSearchQuery(value);
   const onContactClicked = (contact) => {
     var chatId = null;

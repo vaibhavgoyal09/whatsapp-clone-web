@@ -10,11 +10,22 @@
 .chatsContainer {
   width: 100%;
   overflow-y: auto;
+  cursor: pointer;
+}
+
+.chats {
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .contactsContainer {
   width: 100%;
   overflow-y: auto;
+  cursor: pointer;
+}
+
+.contacts {
+  width: 100%;
   overflow-x: hidden;
 }
 

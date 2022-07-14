@@ -10,15 +10,24 @@
 
 .messagesContainer {
   flex: 1 1 auto;
-  overflow: auto;
+  overflow-y: auto;
   background-image: linear-gradient(
       rgb(13, 17, 23, 0.9) 100%,
       rgba(0, 0, 0, 0.5) 100%
     ),
     url("../assets/chat_back_wallpaper.png");
   padding-bottom: 8px;
+  padding-top: 8px;
+}
+
+.listContainer {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  overflow-y: auto;
 }
 
 .footerContainer {
-    flex: 0 1 60px;
+  flex: 0 1 50px;
 }
