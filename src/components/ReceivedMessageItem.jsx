@@ -4,7 +4,6 @@ import '../css/receivedMessageItemStyle.css';
 const ReceivedMessageItem = ({ message }) => {
 
   let date = new Date(message.timestamp);
-  console.log(date);
   let hours = date.getHours();
   let minutes = date.getMinutes().toString();
   let time = `${hours - 12}:${minutes.length === 1 ? `0${minutes}` : minutes} ${

@@ -1,10 +1,9 @@
-import { useState } from "react";
-import { useCallback } from "react";
-import { createContext, useContext } from "react";
+import React, { createContext, useCallback, useContext, useState } from "react";
+import { useEffect } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { WhatsApi } from "../utils/Constants";
 import { useAxios } from "./AxiosContext";
-import React from 'react'
+import Message from "../models/Message";
 
 export const WhatsAppWebSocketContext = createContext(null);
 export const useWhatsappWebSocket = () => useContext(WhatsAppWebSocketContext);
@@ -24,16 +23,26 @@ function WhatsAppWebSocketContextProvider({ children }) {
   const { sendJsonMessage, lastJsonMessage, readyState } =
     useWebSocket(getSocketUrl);
 
-  const connectionStatus = {
-    [ReadyState.CONNECTING]: "Connecting",
-    [ReadyState.OPEN]: "Open",
-    [ReadyState.CLOSING]: "Closing",
-    [ReadyState.CLOSED]: "Closed",
-    [ReadyState.UNINSTANTIATED]: "Uninstantiated",
-  }[readyState];
+  const [lastChatMessage, setLastChatMessage] = useState(null);
+
+  useEffect(() => {
+    if (lastJsonMessage) {
+      console.log(`Received Message ${lastJsonMessage}`);
+      let message = new Message(
+        lastJsonMessage.id,
+        lastJsonMessage.sender_id,
+        lastJsonMessage.type,
+        lastJsonMessage.message,
+        lastJsonMessage.media_url,
+        lastJsonMessage.chat_id,
+        lastJsonMessage.created_at
+      );
+      setLastChatMessage(message);
+    }
+  }, [lastJsonMessage]);
 
   function sendChatMessage(message) {
-    if(connectionStatus !== ReadyState.OPEN) {
+    if (readyState !== ReadyState.OPEN) {
       return;
     }
     sendJsonMessage({
@@ -44,7 +53,7 @@ function WhatsAppWebSocketContextProvider({ children }) {
 
   const value = {
     sendChatMessage,
-    lastJsonMessage
+    lastChatMessage,
   };
 
   return (

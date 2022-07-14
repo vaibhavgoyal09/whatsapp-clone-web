@@ -4,6 +4,7 @@ import MainSidebar from "../components/MainSidebar";
 import WhatsappIntroScreen from "../components/WhatsappIntroScreen";
 import { useAuth } from "../context/AuthContext";
 import { useAxios } from "../context/AxiosContext";
+import { useWhatsappWebSocket } from "../context/WhatsAppWebSocketContext";
 import "../css/mainScreenStyle.css";
 import Chat from "../models/Chat";
 import User from "../models/User";
@@ -28,6 +29,7 @@ const MainScreen = () => {
     updateUserDetails,
     updateCurrentUserModelState
   } = useAxios();
+  const { sendChatMessage, lastChatMessage } = useWhatsappWebSocket();
 
   useEffect(() => {
     setTimeout(() => {
@@ -103,6 +105,15 @@ const MainScreen = () => {
     }
   }, [chat]);
 
+  useEffect(() => {
+    console.log(lastChatMessage);
+    if (lastChatMessage && chat.id === lastChatMessage.chatId) {
+      let mList = [...messagesListForChat];
+      mList.push(lastChatMessage);
+      setMessagesListForChat(mList);
+    } 
+  }, [lastChatMessage]);
+
   const onChatClick = (chat) => setChat(chat);
   const onSearchQueryChange = (value) => setSearchQuery(value);
   const onContactClicked = (contact) => {
@@ -166,6 +177,10 @@ const MainScreen = () => {
       })
       .catch((e) => console.log(e));
   };
+  const handleSendChatMessage = (request) => {
+    console.log(`Send Message Request: ${request}`);
+    sendChatMessage(request);
+  };
 
   return (
     <div className="pg">
@@ -203,6 +218,7 @@ const MainScreen = () => {
               onRemoteUserProfileClick(chat);
             }}
             messages={messagesListForChat}
+            onSendMessage={(request) => handleSendChatMessage(request)}
           />
         </div>
       ) : (
