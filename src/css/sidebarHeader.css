@@ -19,11 +19,85 @@
   align-self: center;
   margin-left: auto;
   margin-right: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .smicon {
-  margin: auto 16px;
-  font-size: 1.25rem;
-  color: var(--secondaryText);
+  margin: 0px 16px;
   cursor: pointer;
+}
+
+.shdropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.shOptionBtnCtnr {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btnSelected {
+  background-color: var(--darkerGrey);
+  border-radius: 50%;
+}
+
+#moreButton {
+  height: 18px;
+  width: 24px;
+  margin: 0px;
+}
+
+.dropCtnt {
+  position: absolute;
+  display: none;
+  background-color: var(--darkerGrey);
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  padding: 8px 0px;
+  min-width: 190px;
+  right: 16px;
+  top: 42px;
+  cursor: pointer;
+}
+
+.shShowDrop {
+  animation: boxIn 0.1s;
+  display: inline-block;
+}
+
+.shDropOption {
+  padding: 12px 20px;
+  display: block;
+}
+
+.shDropOption:hover {
+  background-color: var(--background);
+}
+
+.shDropOption p{
+  color: var(--secondaryText);
+  font-size: 0.9rem;
+  text-align: start;
+}
+
+@keyframes boxIn {
+  0% {
+    width: 0px;
+    height: 0px;
+  }
+  50% {
+    width: 5%;
+    height: 25%;
+  }
+  100% {
+    width: 100%;
+    height: 100%;
+  }
 }

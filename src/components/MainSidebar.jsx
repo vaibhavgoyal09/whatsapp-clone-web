@@ -13,6 +13,7 @@ const MainSidebar = ({
   contactsList,
   onContactClicked,
   currentUserModel,
+  onShowStatusScreen
 }) => {
   const [isSearchingForUser, setIsSearchingForUser] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
@@ -45,6 +46,7 @@ const MainSidebar = ({
       <SidebarHeader
         profileImageUrl={currentUserModel.getProfileImageUrl()}
         onProfileClick={() => onProfileClick()}
+        onShowStatusScreen={() => onShowStatusScreen()}
       />
       <SidebarSearchBar
         onSearchQueryChange={(value) => {

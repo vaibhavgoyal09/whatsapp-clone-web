@@ -1,7 +1,19 @@
 import React from "react";
+import { useState } from "react";
 import "../css/sidebarHeader.css";
+import { ReactComponent as ChatImage } from "../assets/chat.svg";
+import { ReactComponent as StatusImage } from "../assets/status.svg";
+import { ReactComponent as OptionsImage } from "../assets/more.svg";
 
-const SidebarHeader = ({ profileImageUrl, onProfileClick }) => {
+const SidebarHeader = ({
+  profileImageUrl,
+  onProfileClick,
+  onShowStatusScreen,
+  onCreateNewGroupClicked,
+  onLogOutClicked,
+}) => {
+  const [showOptionsDropdown, setShowOptionsDropdown] = useState(false);
+
   return (
     <div className="hctnr">
       <img
@@ -11,15 +23,38 @@ const SidebarHeader = ({ profileImageUrl, onProfileClick }) => {
         onClick={() => onProfileClick()}
       />
       <div className="optionsContainer">
-        <span className="smicon">
-          <i className="fa-solid fa-spinner"></i>
-        </span>
-        <span className="smicon">
-          <i className="fa-solid fa-inbox"></i>
-        </span>
-        <span className="smicon">
-          <i className="fa-solid fa-ellipsis-vertical"></i>
-        </span>
+        <StatusImage className="smicon" onClick={() => onShowStatusScreen()} />
+        <ChatImage className="smicon" />
+        <div className="shdropdown">
+          <div
+            className={
+              showOptionsDropdown
+                ? "shOptionBtnCtnr btnSelected"
+                : "shOptionBtnCtnr"
+            }
+          >
+            <OptionsImage
+              id="moreButton"
+              className="smicon"
+              onClick={() => setShowOptionsDropdown(!showOptionsDropdown)}
+            />
+          </div>
+          <div
+            className={showOptionsDropdown ? "dropCtnt shShowDrop" : "dropCtnt"}
+          >
+            <div className="shDropOption">
+              <p className="unselectable shNewGroup shMb">New Group</p>
+            </div>
+            <div className="shDropOption">
+              <p className="unselectable shStarredMessages shMb">
+                Starred Messages
+              </p>
+            </div>
+            <div className="shDropOption">
+              <p className="unselectable shLogOut">Log Out</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

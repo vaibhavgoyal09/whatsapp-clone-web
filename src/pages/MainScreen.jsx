@@ -12,6 +12,7 @@ import Message from "../models/Message";
 import UserSelfProfilePreview from "../components/UserSelfProfilePreview";
 import UpdateUserRequest from "../models/UpdateUserRequest";
 import RemoteUserProfilePreview from "../components/RemoteUserProfilePreview";
+import StatusScreen from "../components/StatusScreen";
 
 const MainScreen = () => {
   const { currentUser } = useAuth();
@@ -23,6 +24,7 @@ const MainScreen = () => {
   const [showSelfProfileScreen, setShowSelfProfileScreen] = useState(false);
   const [showRemoteUserProfileScreen, setShowRemoteUserProfileScreen] =
     useState(false);
+  const [showStatusScreen, setShowStatusScreen] = useState(false);
   const [messagesListForChat, setMessagesListForChat] = useState([]);
   const {
     currentUserModel,
@@ -33,7 +35,7 @@ const MainScreen = () => {
     updateUserDetails,
     updateCurrentUserModelState,
     getRemoteUserDetails,
-    accessToken
+    accessToken,
   } = useAxios();
   const { sendChatMessage, lastChatMessage } = useWhatsappWebSocket();
 
@@ -140,7 +142,7 @@ const MainScreen = () => {
   const onChatClick = (chat) => {
     setShowRemoteUserProfileScreen(false);
     setChat(chat);
-  }
+  };
   const onSearchQueryChange = (value) => setSearchQuery(value);
   const onContactClicked = (contact) => {
     var chatId = null;
@@ -212,6 +214,7 @@ const MainScreen = () => {
 
   return (
     <div className="pg">
+      {showStatusScreen ? <StatusScreen /> : null}
       <div className="sidebarContainer">
         {showSelfProfileScreen ? (
           <UserSelfProfilePreview
@@ -233,6 +236,7 @@ const MainScreen = () => {
             onChatClicked={(chat) => onChatClick(chat)}
             onSearchQueryChange={(value) => onSearchQueryChange(value)}
             contactsList={contactsList}
+            onShowStatusScreen={() => setShowStatusScreen(true)}
             onContactClicked={(contact) => onContactClicked(contact)}
           />
         )}
