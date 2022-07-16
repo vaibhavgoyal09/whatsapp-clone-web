@@ -42,16 +42,19 @@ const SidebarHeader = ({
           <div
             className={showOptionsDropdown ? "dropCtnt shShowDrop" : "dropCtnt"}
           >
-            <div className="shDropOption">
-              <p className="unselectable shNewGroup shMb">New Group</p>
+            <div className="shDropOption" onClick={() => onCreateNewGroupClicked()}>
+              <p className="unselectable">New Group</p>
             </div>
             <div className="shDropOption">
-              <p className="unselectable shStarredMessages shMb">
+              <p className="unselectable">
                 Starred Messages
               </p>
             </div>
             <div className="shDropOption">
-              <p className="unselectable shLogOut">Log Out</p>
+              <p className="unselectable">Settings</p>
+            </div>
+            <div className="shDropOption" onClick={() => onLogOutClicked()}>
+              <p className="unselectable">Log Out</p>
             </div>
           </div>
         </div>

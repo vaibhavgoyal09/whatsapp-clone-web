@@ -13,7 +13,9 @@ const MainSidebar = ({
   contactsList,
   onContactClicked,
   currentUserModel,
-  onShowStatusScreen
+  onShowStatusScreen,
+  onCreateNewGroupClicked,
+  onLogOutClicked
 }) => {
   const [isSearchingForUser, setIsSearchingForUser] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
@@ -44,9 +46,11 @@ const MainSidebar = ({
   return (
     <div id="ctnt">
       <SidebarHeader
-        profileImageUrl={currentUserModel.getProfileImageUrl()}
+        profileImageUrl={currentUserModel.profileImageUrl}
         onProfileClick={() => onProfileClick()}
         onShowStatusScreen={() => onShowStatusScreen()}
+        onLogOutClicked={() => onLogOutClicked()}
+        onCreateNewGroupClicked={() => onCreateNewGroupClicked()}
       />
       <SidebarSearchBar
         onSearchQueryChange={(value) => {

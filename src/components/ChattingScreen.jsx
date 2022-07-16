@@ -2,7 +2,6 @@ import React from "react";
 import ChatHeader from "./ChatHeader";
 import ChatFooter from "./ChatFooter";
 import "../css/chattingScreenStyle.css";
-import SendMessageRequest from "../models/SendMessageRequest";
 import { useState } from "react";
 import ReceivedMessageItem from "./ReceivedMessageItem";
 import SentMessageItem from "./SentMessageItem";
@@ -24,14 +23,14 @@ const ChattingScreen = ({
     if (messageText === "") {
       return;
     }
-    let request = new SendMessageRequest(
-      0,
-      currentUserModel.id,
-      chat.remoteUserId,
-      chat.id,
-      null,
-      messageText
-    );
+    let request = {
+      type: 0,
+      own_user_id: currentUserModel.id,
+      to_user_id: chat.remoteUserId,
+      chat_id: chat.id,
+      media_url: null,
+      text: messageText,
+    };
     onSendMessage(request);
     setMessageText("");
   };

@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { WhatsApi } from "../utils/Constants";
 import { useAxios } from "./AxiosContext";
-import Message from "../models/Message";
 
 export const WhatsAppWebSocketContext = createContext(null);
 export const useWhatsappWebSocket = () => useContext(WhatsAppWebSocketContext);
@@ -28,15 +27,15 @@ function WhatsAppWebSocketContextProvider({ children }) {
   useEffect(() => {
     if (lastJsonMessage) {
       console.log(`Received Message ${lastJsonMessage}`);
-      let message = new Message(
-        lastJsonMessage.id,
-        lastJsonMessage.sender_id,
-        lastJsonMessage.type,
-        lastJsonMessage.message,
-        lastJsonMessage.media_url,
-        lastJsonMessage.chat_id,
-        lastJsonMessage.created_at
-      );
+      let message = {
+        id: lastJsonMessage.id,
+        senderId: lastJsonMessage.sender_id,
+        type: lastJsonMessage.type,
+        text: lastJsonMessage.message,
+        mediaUrl: lastJsonMessage.media_url,
+        chatId: lastJsonMessage.chat_id,
+        timestamp: lastJsonMessage.created_at
+      }
       setLastChatMessage(message);
     }
   }, [lastJsonMessage]);

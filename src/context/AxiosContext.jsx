@@ -3,7 +3,6 @@ import { useState } from "react";
 import { createContext, useContext, useEffect, useRef } from "react";
 import { WhatsApi } from "../utils/Constants";
 import { useAuth } from "./AuthContext";
-import User from "../models/User";
 
 export const AxiosContext = createContext(null);
 export const useAxios = () => useContext(AxiosContext);
@@ -43,14 +42,14 @@ const AxiosInstanceProvider = ({ children }) => {
               `${WhatsApi.GET_CURRENT_USER_INFO_URL}`
             )
           ).data;
-          let user = new User(
-            data.id,
-            data.name,
-            data.about,
-            data.firebase_uid,
-            data.phone_number,
-            data.profile_image_url
-          );
+          let user = {
+            id: data.id,
+            name: data.name,
+            about: data.about,
+            firebaseUid: data.firebase_uid,
+            phoneNumber: data.phone_number,
+            profileImageUrl: data.profile_image_url,
+          };
           setCurrentUserModel(user);
         } catch (axiosError) {
           console.log(axiosError);
@@ -77,16 +76,16 @@ const AxiosInstanceProvider = ({ children }) => {
   }
 
   function updateCurrentUserModelState(name, about, profileImageUrl) {
-    setCurrentUserModel(
-      new User(
-        currentUserModel.id,
-        name ? name : currentUserModel.name,
-        about ? about : currentUserModel.about,
-        currentUserModel.firebaseUid,
-        currentUserModel.phoneNumber,
-        profileImageUrl ? profileImageUrl : currentUserModel.profileImageUrl
-      )
-    );
+    setCurrentUserModel({
+      id: currentUserModel.id,
+      name: name ? name : currentUserModel.name,
+      about: about ? about : currentUserModel.about,
+      firebaseUid: currentUserModel.firebaseUid,
+      phoneNumber: currentUserModel.phoneNumber,
+      profileImageUrl: profileImageUrl
+        ? profileImageUrl
+        : currentUserModel.profileImageUrl,
+    });
   }
 
   async function registerUser(request) {
@@ -193,15 +192,12 @@ const AxiosInstanceProvider = ({ children }) => {
         );
         profileImageUrl = fileUploadResponse.data["url"];
       }
-      await instanceRef.current.put(
-        `${WhatsApi.UPDATE_USER_DETAILS_URL}`,
-        {
-          name: request.name,
-          about: request.about,
-          profile_image_url: profileImageUrl,
-          should_remove_profile_photo: request.shouldRemoveProfileImage,
-        }
-      );
+      await instanceRef.current.put(`${WhatsApi.UPDATE_USER_DETAILS_URL}`, {
+        name: request.name,
+        about: request.about,
+        profile_image_url: profileImageUrl,
+        should_remove_profile_photo: request.shouldRemoveProfileImage,
+      });
       return profileImageUrl;
     } catch (axiosError) {
       var message = "Check Your Internet Connection";
@@ -214,10 +210,39 @@ const AxiosInstanceProvider = ({ children }) => {
 
   async function getRemoteUserDetails(userId) {
     try {
-      let result = await instanceRef.current.get(`${WhatsApi.GET_REMOTE_USER_DETAILS_URL}/${userId}`)
+      let result = await instanceRef.current.get(
+        `${WhatsApi.GET_REMOTE_USER_DETAILS_URL}/${userId}`
+      );
       return result.data;
+    } catch (axiosError) {
+      var message = "Check Your Internet Connection";
+      if (axiosError.response.data) {
+        message = axiosError.response.data["detail"];
+      }
+      throw Error(message);
     }
-    catch(axiosError) {
+  }
+
+  async function createNewGroup(request) {
+    try {
+      let file = new FormData();
+      file.append("file", request.profileImageFile);
+      let fileUploadResponse = await instanceRef.current.post(
+        `${WhatsApi.UPLOAD_FILE_URL}`,
+        file
+      );
+      let profileImageUrl = fileUploadResponse.data["url"];
+      let result = await instanceRef.current.post(
+        `${WhatsApi.CREATE_NEW_GROUP_URL}`,
+        {
+          name: request.name,
+          description: request.description,
+          profile_image_url: profileImageUrl,
+          user_ids: request.userIds,
+        }
+      );
+      return result.data;
+    } catch (axiosError) {
       var message = "Check Your Internet Connection";
       if (axiosError.response.data) {
         message = axiosError.response.data["detail"];
@@ -237,7 +262,8 @@ const AxiosInstanceProvider = ({ children }) => {
     updateUserDetails,
     updateCurrentUserModelState,
     getRemoteUserDetails,
-    accessToken
+    accessToken,
+    createNewGroup,
   };
 
   return (

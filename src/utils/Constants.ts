@@ -10,6 +10,7 @@ export class WhatsApi {
   static GET_ALL_CHATS_URL = "chat/all";
   static CREATE_NEW_CHAT_URL = "/chat/new";
   static GET_MESSAGES_FOR_CHAT_URL = "/message";
+  static CREATE_NEW_GROUP_URL = "/group/new"
 
   static CHAT_WEBSOCKET_BASE_URL = "ws://127.0.0.1:8000/ws/chat";
 }

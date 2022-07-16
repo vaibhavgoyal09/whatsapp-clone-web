@@ -1,3 +1,4 @@
+import React from "react";
 import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AxiosInstanceProvider from "./context/AxiosContext";
@@ -6,7 +7,7 @@ import MainScreen from "./pages/MainScreen";
 import SetupProfileScreen from "./pages/SetupProfileScreen";
 import SignInScreen from "./pages/SignInScreen";
 
-const AppRouter = () => {
+export const AppRouter: React.FC = () => {
   return (
     <AxiosInstanceProvider>
       <WhatsAppWebSocketContextProvider>
@@ -34,4 +35,3 @@ const AppRouter = () => {
   );
 };
 
-export default AppRouter;

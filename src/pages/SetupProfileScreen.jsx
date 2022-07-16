@@ -4,7 +4,6 @@ import { ReactComponent as CameraImg } from "../assets/camera.svg";
 import { ReactComponent as Logo } from "../assets/logo.svg";
 import { useAxios } from "../context/AxiosContext";
 import "../css/setupProfileStyle.css";
-import CreateUserRequest from "../models/CreateUserRequest";
 
 const SetupProfileScreen = (props) => {
   const [name, setName] = useState("");
@@ -18,7 +17,7 @@ const SetupProfileScreen = (props) => {
 
   const maxRowCount = 4;
   const maxCharCount = 50;
-  const phoneNumber = "location.state.phoneNumber";
+  const phoneNumber = location.state.phoneNumber;
 
   function handleNameFieldChange(event) {
     setName(event.target.value);
@@ -40,7 +39,12 @@ const SetupProfileScreen = (props) => {
     if (image === null || image === undefined) {
       return;
     }
-    let request = new CreateUserRequest(name, about, phoneNumber, image);
+    let request = {
+      name: name,
+      about: about,
+      phoneNumber: phoneNumber,
+      profileImageFile: image,
+    };
     registerUser(request)
       .then((result) => {
         navigate("/", { state: { user: result } });

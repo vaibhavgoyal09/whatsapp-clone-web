@@ -5,6 +5,7 @@ import {
   PhoneAuthProvider,
   signInWithCredential,
   getIdToken,
+  signOut
 } from "firebase/auth";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../utils/FirebaseConfig";
@@ -20,7 +21,6 @@ export const useAuth = () => useContext(AuthContext);
 
 export default function AuthContextProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(auth.currentUser);
-  console.log("Auth Context", auth.currentUser);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -67,11 +67,16 @@ export default function AuthContextProvider({ children }) {
     }
   }
 
+  function logOut() {
+    return signOut(auth);
+  }
+
   const value = {
     currentUser,
     sendVerificationCode,
     verifyOtpAndSignInUser,
     getUserIdToken,
+    logOut
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
