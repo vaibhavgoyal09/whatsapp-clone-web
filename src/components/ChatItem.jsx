@@ -8,7 +8,7 @@ const ChatItem = ({ chat, onChatClick, isSelected }) => {
     return null;
   }
 
-  const message = chat.getLastMessage();
+  const message = chat.lastMessage;
   var messageText = "Tap to start chatting";
 
   var timestamp = "";

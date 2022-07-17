@@ -1,37 +1,49 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import '../css/otpDialogStyle.css';
+import "../css/otpDialogStyle.css";
 
-const EnterOTPDialog = ({
-    open,
+interface Props {
+  open: boolean;
+  phoneNumber: string;
+  onClose: () => void;
+  onOtpVerified: () => void;
+}
+
+const EnterOTPDialog: React.FC<Props> = ({
+  open,
   phoneNumber,
   onClose,
   onOtpVerified,
 }) => {
   const [otp, setOtp] = useState("");
-  const { verifyOtpAndSignInUser } = useAuth();
+  const auth = useAuth();
 
-  if(!open) {
-      return null;
+  if (!open) {
+    return null;
   }
 
-  function handleSubmitOtp(e) {
-    if (e !== null) {
-      e.preventDefault();
-    }
-    verifyOtpAndSignInUser(otp)
-      .then((_) => {
+  function handleSubmitOtp(e?: React.FormEvent) {
+    e?.preventDefault();
+    auth
+      ?.verifyOtpAndSignInUser(otp)
+      .then((_: any) => {
         onOtpVerified();
       })
-      .catch((e) => {
-        console.log(e);
+      .catch((e: any) => {
+        console.log(e.message);
+        (window as any).recaptchaVerifier.recaptcha.reset(
+          (window as any).recaptchaWidgetId
+        );
+        onClose();
       });
   }
 
-  function handleOtpFieldChange(event) {
+  function handleOtpFieldChange(event: React.ChangeEvent<HTMLInputElement>) {
     setOtp(event.target.value);
     if (otp.length === 6) {
-      handleSubmitOtp(null);
+      setTimeout(() => {
+        handleSubmitOtp();
+      }, 2000);
     }
   }
 

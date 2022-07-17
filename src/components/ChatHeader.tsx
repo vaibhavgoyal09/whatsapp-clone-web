@@ -1,6 +1,14 @@
 import "../css/chatHeaderStyle.css";
 
-const ChatHeader = ({ profileImageUrl, onProfileClick, userName }) => {
+
+interface Props {
+  profileImageUrl?: string,
+  onProfileClick: () => void,
+  userName: string
+}
+
+
+const ChatHeader: React.FC<Props> = ({ profileImageUrl, onProfileClick, userName }) => {
   return (
     <div className="chtnr" onClick={() => onProfileClick()}>
       <img

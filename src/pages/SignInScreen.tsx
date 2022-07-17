@@ -1,45 +1,77 @@
-import { useRef, useState } from "react";
+import React, { createRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ReactComponent as Logo } from "../assets/logo.svg";
 import EnterOTPDialog from "../components/EnterOTPDialog";
 import { useAuth } from "../context/AuthContext";
 import { useAxios } from "../context/AxiosContext";
 import "../css/signInScreenStyle.css";
+import { WhatsApi } from "../utils/Constants";
+import { auth as FirebaseAuth } from "../utils/FirebaseConfig";
+import { RecaptchaVerifier } from "firebase/auth";
 
-const SignInScreen = () => {
+const SignInScreen: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [dialogVisibility, setDialogVisibility] = useState(false);
   const navigate = useNavigate();
-  const { sendVerificationCode } = useAuth();
-  const { checkIfUserExists } = useAxios();
+  const auth = useAuth();
+  const axios = useAxios();
+  const sendVerificationCode = auth?.sendVerificationCode!;
 
-  const form = useRef();
+  const form = createRef<HTMLFormElement>();
 
-  const handlePhoneFieldChange = (event) => {
+  const handlePhoneFieldChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setPhoneNumber(event.target.value);
   };
 
-  const onSendOtpClicked = async (e) => {
-    e.preventDefault();
-
-    sendVerificationCode(phoneNumber, "captcha-container").then(
-      (confirmationResult) => {
-        window.confirmationResult = confirmationResult;
-        setDialogVisibility(true);
-      }
+  useEffect(() => {
+    (window as any).recaptchaVerifier = new RecaptchaVerifier(
+      "captcha-container",
+      {
+        size: "invisible",
+      },
+      FirebaseAuth
     );
+    (window as any).recaptchaVerifier.render().then((widgetId: any) => {
+      (window as any).recaptchaWidgetId = widgetId;
+    });
+  }, []);
+
+  const onSendOtpClicked = async (e: React.FormEvent) => {
+    e.preventDefault();
+    sendOTP();
   };
+
+  function sendOTP() {
+    console.log(phoneNumber);
+    sendVerificationCode(phoneNumber)
+      .then((confirmationResult) => {
+        (window as any).confirmationResult = confirmationResult;
+        setDialogVisibility(true);
+      })
+      .catch((e: any) => {
+        setDialogVisibility(false);
+        console.log(e);
+        (window as any).recaptchaVerifier.recaptcha.reset(
+          (window as any).recaptchaWidgetId
+        );
+      });
+  }
 
   const onOtpVerified = () => {
     console.log(phoneNumber);
-    let trimmedPhoneNumber = phoneNumber.replace(/\s+/g, '');
-    checkIfUserExists(trimmedPhoneNumber)
-      .then((result) => {
-        navigate("/", { state: { user: result } });
+    let trimmedPhoneNumber = phoneNumber.replace(/\s+/g, "");
+    axios
+      ?.getRequest<boolean>(WhatsApi.CHECK_USER_SIGNING_IN_URL, {
+        phone_number: trimmedPhoneNumber,
+      })
+      .then((_) => {
+        navigate("/");
       })
       .catch((e) => {
-        console.log(e);
-        navigate("/setup-profile", { state: { phoneNumber: phoneNumber } });
+        setDialogVisibility(false);
+        alert(e?.message);
       });
   };
 

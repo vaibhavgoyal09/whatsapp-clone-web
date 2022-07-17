@@ -1,18 +1,25 @@
+import React from "react";
 import "../css/contactItemStyle.css";
+import User from '../models/User';
 
-const ContactItem = ({ contact, onClick }) => {
+
+interface Props {
+  contact: User,
+  onClick: () => void
+}
+
+
+const ContactItem: React.FC<Props> = ({ contact, onClick }) => {
   if (!contact) {
     return null;
   }
-
-  console.log(contact);
 
   return (
     <div className="cn" onClick={() => onClick()}>
       <img
           src={
-            contact.getProfileImageUrl()
-              ? contact.getProfileImageUrl()
+            contact.profileImageUrl
+              ? contact.profileImageUrl
               : "avatar.png"
           }
           alt="user profile"
@@ -20,8 +27,8 @@ const ContactItem = ({ contact, onClick }) => {
         />
       <div className="infoContainer">
         <div className="unamec">
-          <p className="uname unselectable">{contact.getName()}</p>
-          <p className="uabout unselectable">{contact.getAbout()}</p>
+          <p className="uname unselectable">{contact.name}</p>
+          <p className="uabout unselectable">{contact.about}</p>
         </div>
       </div>
     </div>

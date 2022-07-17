@@ -50,7 +50,7 @@ const SetupProfileScreen = (props) => {
         navigate("/", { state: { user: result } });
       })
       .catch((e) => {
-        alert(e.getCode());
+        console.log(e);
       });
   }
 

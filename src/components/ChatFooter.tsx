@@ -1,18 +1,12 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { createRef, useRef } from "react";
 import "../css/chatFooterStyle.css";
 
-const ChatFooter = ({ onSendMessage, messageText, onMessageTextChange }) => {
+interface Props {
+  onSendMessage: (text?: string) => void;
+}
 
-  const [text, setText] = useState("");
-
-  const handleMessageTextChange = (event) => {
-    setText(event.target.value);
-  };
-
-  useEffect(() => {
-    onMessageTextChange(text);
-  }, [text]);
+const ChatFooter: React.FC<Props> = ({ onSendMessage }) => {
+  const messageFieldRef = createRef<HTMLInputElement>();
 
   return (
     <div className="fcontnt">
@@ -23,16 +17,15 @@ const ChatFooter = ({ onSendMessage, messageText, onMessageTextChange }) => {
         <i className="fa-solid fa-paperclip" />
       </span>
       <input
+        ref={messageFieldRef}
         type="text"
         placeholder="Type a message"
-        value={messageText}
-        onChange={handleMessageTextChange}
         className="input"
       />
       <span
         className="icon"
         onClick={() => {
-          onSendMessage(messageText);
+          onSendMessage(messageFieldRef?.current?.value);
         }}
       >
         <i className="fa-solid fa-paper-plane" />

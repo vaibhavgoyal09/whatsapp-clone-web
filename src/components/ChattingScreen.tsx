@@ -5,8 +5,20 @@ import "../css/chattingScreenStyle.css";
 import { useState } from "react";
 import ReceivedMessageItem from "./ReceivedMessageItem";
 import SentMessageItem from "./SentMessageItem";
+import User from '../models/User';
+import Message from '../models/Message';
 
-const ChattingScreen = ({
+
+interface Props {
+  currentUserModel: User,
+  chat: any,
+  messages :any,
+  onProfileClick: () => void,
+  onSendMessage: any
+}
+
+
+const ChattingScreen: React.FC<Props> = ({
   currentUserModel,
   chat,
   messages,
@@ -19,8 +31,8 @@ const ChattingScreen = ({
     return null;
   }
 
-  const sendMessage = () => {
-    if (messageText === "") {
+  const sendMessage = (text?: string) => {
+    if (text === "") {
       return;
     }
     let request = {
@@ -46,20 +58,18 @@ const ChattingScreen = ({
       </div>
       <div className="messagesContainer">
         <div className="listContainer">
-          {messages.map((message, index) =>
+          {messages.map((message: Message, index: number) =>
             message.senderId === currentUserModel.id ? (
-              <SentMessageItem message={message} key={index} />
+              <SentMessageItem message={message} key={message.id} />
             ) : (
-              <ReceivedMessageItem message={message} key={index} />
+              <ReceivedMessageItem message={message} key={message.id} />
             )
           )}
         </div>
       </div>
       <div className="footerContainer">
         <ChatFooter
-          onSendMessage={() => sendMessage()}
-          messageText={messageText}
-          onMessageTextChange={(value) => setMessageText(value)}
+          onSendMessage={(text?: string) => sendMessage(text)}
         />
       </div>
     </div>
