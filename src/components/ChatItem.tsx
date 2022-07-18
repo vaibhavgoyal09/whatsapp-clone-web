@@ -1,40 +1,51 @@
-import { useRef } from "react";
+import React, { createRef } from "react";
 import "../css/chatItemStyle.css";
+import Chat from "../models/Chat";
 
-const ChatItem = ({ chat, onChatClick, isSelected }) => {
-  const contentRef = useRef();
+interface Props {
+  chat: Chat;
+  onChatClick: () => void;
+  isSelected: boolean;
+}
+
+const ChatItem: React.FC<Props> = ({ chat, onChatClick, isSelected }) => {
+  const contentRef = createRef<HTMLDivElement>();
 
   if (!chat) {
     return null;
   }
 
   const message = chat.lastMessage;
-  var messageText = "Tap to start chatting";
+  let messageText: string = "Tap to start chatting";
 
   var timestamp = "";
   if (message !== null && message !== undefined) {
-    let date = new Date(message.getTimestamp());
+    let date = new Date(message.timestamp);
     let hours = date.getHours();
     let minutes = date.getMinutes().toString();
     timestamp = `${hours - 12}:${
       minutes.length === 1 ? `0${minutes}` : minutes
     } ${hours > 12 ? "PM" : "AM"}`;
 
-    if (message.getType() === "image") {
+    if (message.type === 1) {
       messageText = "Image";
-    } else if (message.getType() === "video") {
+    } else if (message.type === 2) {
       messageText = "Video";
-    } else if (message.getType() === "text") {
-      messageText = message.getText();
+    } else if (message.type === 0) {
+      messageText = message.text ? message.text : "Tap to start chatting";
     }
   }
 
   return (
-    <div className={isSelected ? "cn cnWithBg" : "cn"} ref={contentRef} onClick={() => onChatClick()}>
+    <div
+      className={isSelected ? "cn cnWithBg" : "cn"}
+      ref={contentRef}
+      onClick={() => onChatClick()}
+    >
       <img
         src={
-          chat.getRemoteUserProfileImageUrl()
-            ? chat.getRemoteUserProfileImageUrl()
+          chat.remoteUserProfileImageUrl
+            ? chat.remoteUserProfileImageUrl
             : "avatar.png"
         }
         alt="user profile"
@@ -42,13 +53,13 @@ const ChatItem = ({ chat, onChatClick, isSelected }) => {
       />
       <div className="infoContainer">
         <div className="unamec">
-          <p className="uname unselectable">{chat.getRemoteUserName()}</p>
+          <p className="uname unselectable">{chat.remoteUserName}</p>
           <p className="umsg unselectable">{messageText}</p>
         </div>
         <div className="mcTstmp">
           {chat.unseenMessageCount > 0 ? (
             <div className="mctnr">
-              <p className="mc">{chat.getUnseenMessageCount()}</p>
+              <p className="mc">{chat.unseenMessageCount}</p>
             </div>
           ) : null}
           <p className="tstmp">{timestamp}</p>

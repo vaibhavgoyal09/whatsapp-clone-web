@@ -1,7 +1,8 @@
+import React from "react";
 import { ReactComponent as WhatsAppIntroImage } from "../assets/chats_logo.svg";
 import "../css/whatsappIntroScreenStyle.css";
 
-const WhatsappIntroScreen = () => {
+const WhatsappIntroScreen: React.FC = () => {
   return (
     <div className="introContainer">
       <WhatsAppIntroImage className="introImg" />

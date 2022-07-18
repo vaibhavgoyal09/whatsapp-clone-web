@@ -3,7 +3,6 @@ import {
   getIdToken,
   onAuthStateChanged,
   PhoneAuthProvider,
-  RecaptchaVerifier,
   signInWithCredential,
   signInWithPhoneNumber,
   signOut,
@@ -23,9 +22,7 @@ interface AuthContextInterface {
   currentUser: FirebaseUser | null;
   isUserLoggedIn: boolean;
   verifyOtpAndSignInUser: (otp: string) => Promise<UserCredential>;
-  sendVerificationCode: (
-    phoneNumber: string,
-  ) => Promise<ConfirmationResult>;
+  sendVerificationCode: (phoneNumber: string) => Promise<ConfirmationResult>;
   getUserIdToken: () => Promise<string | null>;
   logOut: () => void;
   setUserLoggedIn: () => void;
@@ -40,9 +37,7 @@ export default function AuthContextProvider({
 }: {
   children: ReactNode;
 }) {
-  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(
-    auth.currentUser
-  );
+  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
@@ -53,11 +48,9 @@ export default function AuthContextProvider({
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [auth.currentUser]);
 
-  async function sendVerificationCode(
-    phoneNumber: string,
-  ) {
+  async function sendVerificationCode(phoneNumber: string) {
     let appVerifier = (window as any).recaptchaVerifier;
     return await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
   }

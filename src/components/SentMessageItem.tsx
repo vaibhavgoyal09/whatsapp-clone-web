@@ -1,6 +1,7 @@
 import "../css/sentMessageItemStyle.css";
+import Message from "../models/Message";
 
-const SentMessageItem = ({ message }) => {
+const SentMessageItem = ({ message }: {message: Message}) => {
   let date = new Date(message.timestamp);
   let hours = date.getHours();
   let minutes = date.getMinutes().toString();

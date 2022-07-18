@@ -1,7 +1,9 @@
 
 import '../css/receivedMessageItemStyle.css';
+import Message from '../models/Message';
 
-const ReceivedMessageItem = ({ message }) => {
+
+const ReceivedMessageItem = ({ message }: {message: Message}) => {
 
   let date = new Date(message.timestamp);
   let hours = date.getHours();

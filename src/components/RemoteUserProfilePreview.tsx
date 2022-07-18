@@ -1,8 +1,16 @@
 import React from "react";
 import "../css/remoteUserProfilePreviewStyle.css";
 import { parsePhoneNumber } from "libphonenumber-js";
+import User from '../models/User';
 
-const RemoteUserProfilePreview = ({ onClose, user }) => {
+
+interface Props {
+  onClose: () => void;
+  user: User
+}
+
+
+const RemoteUserProfilePreview: React.FC<Props> = ({ onClose, user }) => {
   if (!user) {
     return null;
   }

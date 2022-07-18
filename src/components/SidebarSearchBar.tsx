@@ -3,7 +3,11 @@ import { useEffect } from "react";
 import { useState } from "react";
 import "../css/sidebarSearchBar.css";
 
-const SidebarSearchBar = ({ onSearchQueryChange }) => {
+interface Props {
+  onSearchQueryChange: (value: string) => void;
+}
+
+const SidebarSearchBar: React.FC<Props> = ({ onSearchQueryChange }) => {
   const [isInputFieldEmpty, setIsInputFieldEmpty] = useState(true);
   const [searchFieldValue, setSearchFieldValue] = useState("");
 
@@ -12,7 +16,7 @@ const SidebarSearchBar = ({ onSearchQueryChange }) => {
     setIsInputFieldEmpty(true);
   }
 
-  const handleSearchValueChange = (event) => {
+  const handleSearchValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchFieldValue(event.target.value);
   };
 

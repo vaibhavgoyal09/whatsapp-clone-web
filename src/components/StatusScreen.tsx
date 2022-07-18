@@ -1,6 +1,10 @@
 import React from "react";
 
-const StatusScreen = () => {
+interface Props {
+  
+}
+
+const StatusScreen: React.FC<Props> = () => {
   return <div>StatusScreen</div>;
 };
 

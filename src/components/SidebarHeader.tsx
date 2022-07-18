@@ -5,7 +5,15 @@ import { ReactComponent as ChatImage } from "../assets/chat.svg";
 import { ReactComponent as StatusImage } from "../assets/status.svg";
 import { ReactComponent as OptionsImage } from "../assets/more.svg";
 
-const SidebarHeader = ({
+interface Props {
+  profileImageUrl: string | null | undefined;
+  onProfileClick: () => void;
+  onShowStatusScreen: () => void;
+  onCreateNewGroupClicked: () => void;
+  onLogOutClicked: () => void;
+}
+
+const SidebarHeader: React.FC<Props> = ({
   profileImageUrl,
   onProfileClick,
   onShowStatusScreen,
@@ -42,13 +50,14 @@ const SidebarHeader = ({
           <div
             className={showOptionsDropdown ? "dropCtnt shShowDrop" : "dropCtnt"}
           >
-            <div className="shDropOption" onClick={() => onCreateNewGroupClicked()}>
+            <div
+              className="shDropOption"
+              onClick={() => onCreateNewGroupClicked()}
+            >
               <p className="unselectable">New Group</p>
             </div>
             <div className="shDropOption">
-              <p className="unselectable">
-                Starred Messages
-              </p>
+              <p className="unselectable">Starred Messages</p>
             </div>
             <div className="shDropOption">
               <p className="unselectable">Settings</p>
