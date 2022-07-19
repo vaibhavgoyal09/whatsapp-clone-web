@@ -1,11 +1,26 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "../css/mainSidebar.css";
 import SidebarHeader from "./SidebarHeader";
 import SidebarSearchBar from "./SidebarSearchBar";
-import ContactItem from './ContactItem';
-import ChatItem from './ChatItem';
+import ContactItem from "./ContactItem";
+import ChatItem from "./ChatItem";
+import Chat from "../models/Chat";
+import User from "../models/User";
 
-const MainSidebar = ({
+interface Props {
+  chatsList: Chat[];
+  onProfileClick: () => void;
+  onSearchQueryChange: (value: string) => void;
+  contactsList: User[];
+  onContactClicked: (contact: User) => void;
+  onChatClicked: (chat: Chat) => void;
+  currentUserModel: User;
+  onShowStatusScreen: () => void;
+  onCreateNewGroupClicked: () => void;
+  onLogOutClicked: () => void;
+}
+
+const MainSidebar: React.FC<Props> = ({
   chatsList,
   onChatClicked,
   onProfileClick,
@@ -15,16 +30,12 @@ const MainSidebar = ({
   currentUserModel,
   onShowStatusScreen,
   onCreateNewGroupClicked,
-  onLogOutClicked
+  onLogOutClicked,
 }) => {
-  const [isSearchingForUser, setIsSearchingForUser] = useState(false);
-  const [selectedChat, setSelectedChat] = useState(null);
+  const [isSearchingForUser, setIsSearchingForUser] = useState<boolean>(false);
+  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
 
-  if (!currentUserModel) {
-    return null;
-  }
-
-  function handleSearchQueryChange(value) {
+  function handleSearchQueryChange(value: string) {
     if (value.length === 0) {
       setIsSearchingForUser(false);
     } else {
@@ -33,12 +44,12 @@ const MainSidebar = ({
     onSearchQueryChange(value);
   }
 
-  function handleChatClicked(chat) {
+  function handleChatClicked(chat: Chat) {
     setSelectedChat(chat);
     onChatClicked(chat);
   }
 
-  function handleContactClicked(contact) {
+  function handleContactClicked(contact: User) {
     setIsSearchingForUser(false);
     onContactClicked(contact);
   }
@@ -77,7 +88,7 @@ const MainSidebar = ({
               <ChatItem
                 key={index}
                 chat={chat}
-                isSelected={selectedChat ? selectedChat.id === chat.id: false}
+                isSelected={selectedChat ? selectedChat.id === chat.id : false}
                 onChatClick={() => handleChatClicked(chatsList[index])}
               />
             ))}

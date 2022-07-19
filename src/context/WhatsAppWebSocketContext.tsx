@@ -11,9 +11,10 @@ import useWebSocket, { ReadyState } from "react-use-websocket";
 import { WhatsApi } from "../utils/Constants";
 import { useAxios } from "./AxiosContext";
 import Message from "../models/Message";
+import SendMessageRequest from "../models/SendMessageRequest";
 
 interface WhatsAppWebSocketContextInterface {
-  sendChatMessage: (message: Message) => void;
+  sendChatMessage: (message: SendMessageRequest) => void;
   lastChatMessage: Message | null;
 }
 
@@ -60,7 +61,7 @@ function WhatsAppWebSocketContextProvider({
     }
   }, [lastMessage]);
 
-  function sendChatMessage(message: Message) {
+  function sendChatMessage(message: SendMessageRequest) {
     if (readyState !== ReadyState.OPEN) {
       return;
     }

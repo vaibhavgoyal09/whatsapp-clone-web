@@ -1,56 +1,67 @@
-import { useRef, useState } from "react";
+import React, { createRef, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ReactComponent as CameraImg } from "../assets/camera.svg";
 import { ReactComponent as Logo } from "../assets/logo.svg";
 import { useAxios } from "../context/AxiosContext";
 import "../css/setupProfileStyle.css";
+import CreateUserRequest from "../models/CreateUserRequest";
+import { WhatsApi } from "../utils/Constants";
 
-const SetupProfileScreen = (props) => {
-  const [name, setName] = useState("");
-  const [about, setAbout] = useState("");
-  const [imageSrc, setImageSrc] = useState("avatar.png");
-  const [image, setImage] = useState(null);
+interface SetupProfileScreenState {
+  phoneNumber: string;
+} 
+
+const SetupProfileScreen = () => {
+  const [name, setName] = useState<string>("");
+  const [about, setAbout] = useState<string>("");
+  const [imageSrc, setImageSrc] = useState<string>("avatar.png");
+  const [image, setImage] = useState<File | null>(null);
   const location = useLocation();
-  const fileInputRef = useRef();
+  const fileInputRef = createRef<HTMLInputElement>();
   const navigate = useNavigate();
-  const { registerUser } = useAxios();
+  const axios = useAxios();
+  const state = location.state as SetupProfileScreenState;
+  const { phoneNumber } = state; 
 
   const maxRowCount = 4;
   const maxCharCount = 50;
-  const phoneNumber = location.state.phoneNumber;
 
-  function handleNameFieldChange(event) {
+  function handleNameFieldChange(event: React.ChangeEvent<HTMLInputElement>) {
     setName(event.target.value);
   }
 
-  function handleAboutFieldChange(event) {
+  function handleAboutFieldChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     setAbout(event.target.value);
   }
 
-  function handleFileChange(event) {
-    let file = event.target.files[0];
-    let imgSrc = URL.createObjectURL(file);
-    setImageSrc(imgSrc);
-    setImage(file);
+  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    let file = event.target.files ? event.target.files[0] : null;
+
+    if (file) {
+      let imgSrc = URL.createObjectURL(file);
+      setImageSrc(imgSrc);
+      setImage(file);
+    }
   }
 
-  function onSubmit(event) {
+  function onSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (image === null || image === undefined) {
       return;
     }
-    let request = {
+    let request: CreateUserRequest = {
       name: name,
       about: about,
       phoneNumber: phoneNumber,
       profileImageFile: image,
     };
-    registerUser(request)
-      .then((result) => {
-        navigate("/", { state: { user: result } });
+    axios!
+      .postRequest(request, null, WhatsApi.REGISTER_USER_URL)
+      .then((_) => {
+        navigate("/");
       })
-      .catch((e) => {
-        console.log(e);
+      .catch((e: any) => {
+        alert(e.message);
       });
   }
 
@@ -79,7 +90,7 @@ const SetupProfileScreen = (props) => {
             <img className="stdImg" src={imageSrc} alt="profile" />
             <div
               className="cameraOverlay"
-              onClick={() => fileInputRef.current.click()}
+              onClick={() => fileInputRef!.current!.click()}
             >
               <CameraImg className="camera" />
             </div>

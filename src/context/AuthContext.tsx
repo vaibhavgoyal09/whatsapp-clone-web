@@ -24,7 +24,7 @@ interface AuthContextInterface {
   verifyOtpAndSignInUser: (otp: string) => Promise<UserCredential>;
   sendVerificationCode: (phoneNumber: string) => Promise<ConfirmationResult>;
   getUserIdToken: () => Promise<string | null>;
-  logOut: () => void;
+  logOut: () => Promise<void>;
   setUserLoggedIn: () => void;
 }
 

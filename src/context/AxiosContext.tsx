@@ -21,16 +21,16 @@ interface AxiosContextInterface {
   ) => void;
   postRequest: <T>(
     requestBody: any,
-    params: object,
+    params: object | null,
     requestPath: string
   ) => Promise<T>;
   putRequest: <T>(
     requestBody: any,
-    params: object,
+    params: object | null,
     requestPath: string
   ) => Promise<T>;
   uploadFile: (file: File) => Promise<string>;
-  getRequest: <T>(requestPath: string, params: object) => Promise<T>;
+  getRequest: <T>(requestPath: string, params: object | null) => Promise<T>;
 }
 
 export const AxiosContext = createContext<AxiosContextInterface | null>(null);
@@ -129,9 +129,9 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     });
   }
 
-  async function postRequest<T>(
+  async function postRequest<T = any>(
     requestBody: any,
-    params: object,
+    params: object | null = null,
     requestPath: string
   ): Promise<T> {
     return await safeApiRequest<T>(async () => {
@@ -146,9 +146,9 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     });
   }
 
-  async function getRequest<T>(
+  async function getRequest<T = any>(
     requestPath: string,
-    params: object
+    params: object | null
   ): Promise<T> {
     return await safeApiRequest<T>(async () => {
       let response = await instanceRef.current.get(requestPath, {
@@ -158,9 +158,9 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     });
   }
 
-  async function putRequest<T>(
+  async function putRequest<T = any>(
     requestPath: string,
-    params: object,
+    params: object | null,
     requestBody: any
   ): Promise<T> {
     return await safeApiRequest<T>(async () => {

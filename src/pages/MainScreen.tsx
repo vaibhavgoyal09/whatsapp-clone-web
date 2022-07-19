@@ -10,41 +10,37 @@ import UserSelfProfilePreview from "../components/UserSelfProfilePreview";
 import RemoteUserProfilePreview from "../components/RemoteUserProfilePreview";
 import StatusScreen from "../components/StatusScreen";
 import { useNavigate } from "react-router-dom";
+import Chat from "../models/Chat";
+import User from "../models/User";
+import Message from "../models/Message";
+import { WhatsApi } from "../utils/Constants";
+import SendMessageRequest from "../models/SendMessageRequest";
 
 const MainScreen = () => {
-  const [chat, setChat] = useState(null);
-  const [remoteUser, setRemoteUser] = useState(null);
-  const [contactsList, setContactsList] = useState([]);
-  const [chatsList, setChatsList] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [showSelfProfileScreen, setShowSelfProfileScreen] = useState(false);
+  const [chat, setChat] = useState<Chat | null>(null);
+  const [remoteUser, setRemoteUser] = useState<User | null>(null);
+  const [contactsList, setContactsList] = useState<User[]>([]);
+  const [chatsList, setChatsList] = useState<Chat[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [showSelfProfileScreen, setShowSelfProfileScreen] =
+    useState<boolean>(false);
   const [showRemoteUserProfileScreen, setShowRemoteUserProfileScreen] =
-    useState(false);
-  const [showCreateGroup, setShowCreateGroup] = useState(false);
-  const [showStatusScreen, setShowStatusScreen] = useState(false);
-  const [messagesListForChat, setMessagesListForChat] = useState([]);
+    useState<boolean>(false);
+  const [showCreateGroup, setShowCreateGroup] = useState<boolean>(false);
+  const [showStatusScreen, setShowStatusScreen] = useState<boolean>(false);
+  const [messagesListForChat, setMessagesListForChat] = useState<Message[]>([]);
   const navigate = useNavigate();
-  const { currentUser, logOut } = useAuth();
-  const { sendChatMessage, lastChatMessage } = useWhatsappWebSocket();
-  const {
-    currentUserModel,
-    getAllChats,
-    searchUsers,
-    getMessagesForChat,
-    createNewChat,
-    updateUserDetails,
-    updateCurrentUserModelState,
-    getRemoteUserDetails,
-    accessToken,
-    createNewGroup,
-  } = useAxios();
+  const auth = useAuth();
+  const webSockets = useWhatsappWebSocket();
+  const axios = useAxios();
 
   useEffect(() => {
-    if (accessToken) {
-      getAllChats()
-        .then((result) => {
-          let chats = [];
-          result.forEach((element) => {
+    if (axios?.accessToken) {
+      axios
+        ?.getRequest(WhatsApi.GET_ALL_CHATS_URL, null)
+        .then((result: any) => {
+          let chats: Chat[] = [];
+          result.forEach((element: any) => {
             let chat = {
               id: element.id,
               remoteUserId: element.remote_user_id,
@@ -61,39 +57,39 @@ const MainScreen = () => {
           console.log(e);
         });
     }
-  }, [accessToken]);
+  }, [axios?.accessToken]);
 
   useEffect(() => {
-    if (searchQuery === "") {
-    } else {
-      searchUsers(searchQuery)
-        .then((result) => {
-          console.log(result);
-          let contacts = [];
-          result.forEach((element) => {
-            let c = {
-              id: element.id,
-              name: element.name,
-              about: element.about,
-              firebaseUid: element.firebase_uid,
-              phoneNumber: element.phone_number,
-              profileImageUrl: element.profile_image_url,
-            };
-            contacts.push(c);
-          });
-          setContactsList(contacts);
-        })
-        .catch((e) => {
-          console.log(e);
+    axios
+      ?.getRequest(WhatsApi.SEARCH_USERS_BY_PHONE_NUMBER_URL, {
+        phone_number: searchQuery,
+      })
+      .then((result: any) => {
+        let contacts: User[] = [];
+        result.forEach((element: any) => {
+          let c = {
+            id: element.id,
+            name: element.name,
+            about: element.about,
+            firebaseUid: element.firebase_uid,
+            phoneNumber: element.phone_number,
+            profileImageUrl: element.profile_image_url,
+          };
+          contacts.push(c);
         });
-    }
+        setContactsList(contacts);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }, [searchQuery]);
 
   useEffect(() => {
     if (chat) {
-      getMessagesForChat(chat.getId())
-        .then((result) => {
-          let messages = [];
+      axios
+        ?.getRequest(`${WhatsApi.GET_MESSAGES_FOR_CHAT_URL}/${chat.id}`, null)
+        .then((result: any) => {
+          let messages: Message[] = [];
           for (let i in result) {
             let m = result[i];
             let message = {
@@ -115,41 +111,47 @@ const MainScreen = () => {
 
   useEffect(() => {
     if (chat) {
-      getRemoteUserDetails(chat.remoteUserId).then((result) => {
-        let user = {
-          id: result.id,
-          name: result.name,
-          about: result.about,
-          firebaseUid: result.firebase_uid,
-          phoneNumber: result.phone_number,
-          profileImageUrl: result.profile_image_url,
-        };
-        setRemoteUser(user);
-      });
+      axios
+        ?.getRequest(
+          `${WhatsApi.GET_REMOTE_USER_DETAILS_URL}/${chat.remoteUserId}`,
+          null
+        )
+        .then((result: any) => {
+          let user = {
+            id: result.id,
+            name: result.name,
+            about: result.about,
+            firebaseUid: result.firebase_uid,
+            phoneNumber: result.phone_number,
+            profileImageUrl: result.profile_image_url,
+          };
+          setRemoteUser(user);
+        });
     }
   }, [chat]);
 
   useEffect(() => {
-    if (lastChatMessage && chat.id === lastChatMessage.chatId) {
-      let mList = [...messagesListForChat.reverse()];
-      mList.push(lastChatMessage);
+    if (
+      webSockets?.lastChatMessage &&
+      chat?.id === webSockets?.lastChatMessage.chatId
+    ) {
+      let mList: Message[] = [...messagesListForChat.reverse()];
+      mList.push(webSockets?.lastChatMessage);
       console.log(mList);
       setMessagesListForChat(mList.reverse());
     }
-  }, [lastChatMessage]);
+  }, [webSockets?.lastChatMessage]);
 
-  const onChatClick = (chat) => {
+  const onChatClick = (chat: Chat) => {
     setShowRemoteUserProfileScreen(false);
     setChat(chat);
   };
-  const onSearchQueryChange = (value) => setSearchQuery(value);
-  const onContactClicked = (contact) => {
+  const onSearchQueryChange = (value: string) => setSearchQuery(value);
+  const onContactClicked = (contact: User) => {
     var chatId = null;
 
     for (let i in chatsList) {
       let c = chatsList[i];
-      console.log(`Chat ID ${c}`);
-      console.log(`Contact ID ${contact.id}`);
       chatId = c.remoteUserId === contact.id ? c.id : null;
       if (!chatId) {
         continue;
@@ -159,13 +161,18 @@ const MainScreen = () => {
       }
     }
     if (!chatId) {
-      createNewChat(contact.getId())
-        .then((result) => {
-          let chat = {
+      axios
+        ?.postRequest(
+          null,
+          { remote_user_id: contact.id },
+          WhatsApi.CREATE_NEW_CHAT_URL
+        )
+        .then((result: any) => {
+          let chat: Chat = {
             id: result.id,
-            remoteUserId: contact.getId(),
-            remoteUserProfileImageUrl: contact.getProfileImageUrl(),
-            remoteUserName: contact.getName(),
+            remoteUserId: contact.id,
+            remoteUserProfileImageUrl: contact.profileImageUrl,
+            remoteUserName: contact.name,
             lastMessage: null,
             unseenMessageCount: 0,
           };
@@ -174,7 +181,7 @@ const MainScreen = () => {
           chats.push(chat);
           setChatsList(chats);
         })
-        .catch((e) => console.log(e));
+        .catch((e: any) => console.log(e));
     }
   };
   const onRemoteUserProfileClick = () => {
@@ -183,54 +190,70 @@ const MainScreen = () => {
   const onUserSelfProfileClick = () => {
     setShowSelfProfileScreen(true);
   };
-  const updateUserName = (name) => {
-    updateUserDetails({
-      name: name,
-      about: null,
-      profileImageFile: null,
-      shouldRemoveProfileImage: false,
-    })
+
+  const updateUserDetails = async (
+    name: string | null = null,
+    about: string | null = null,
+    imageFile: File | null = null,
+    shouldRemoveProfileImage: boolean = false
+  ) => {
+    let profileImageUrl: string | undefined | null = null;
+    if (imageFile) {
+      profileImageUrl = await axios?.uploadFile(imageFile);
+    }
+    await axios?.putRequest(
+      {
+        name: name,
+        about: about,
+        profile_image_url: profileImageUrl,
+        should_remove_profile_image: shouldRemoveProfileImage,
+      },
+      null,
+      WhatsApi.UPDATE_USER_DETAILS_URL
+    );
+  };
+
+  const updateUserName = (name: string) => {
+    updateUserDetails(name)
       .then((_) => {
-        updateCurrentUserModelState(name, null, null);
+        axios?.updateCurrentUserModelState(name);
       })
       .catch((e) => console.log(e));
   };
-  const updateUserAbout = (about) => {
-    updateUserDetails({
-      name: null,
-      about: about,
-      profileImageFile: null,
-      shouldRemoveProfileImage: false,
-    })
+  const updateUserAbout = (about: string) => {
+    updateUserDetails(null, about)
       .then((_) => {
-        updateCurrentUserModelState(null, about, null);
+        axios?.updateCurrentUserModelState(undefined, about);
       })
       .catch((e) => console.log(e));
   };
-  const updateUserProfileImage = (imageFile, shouldRemoveProfileImage) => {
-    updateUserDetails({
-      name: null,
-      about: null,
-      profileImageFile: imageFile,
-      shouldRemoveProfileImage: shouldRemoveProfileImage,
-    })
-      .then((result) => {
-        updateCurrentUserModelState(null, null, result);
+  const updateUserProfileImage = (
+    imageFile: File | null,
+    shouldRemoveProfileImage: boolean
+  ) => {
+    updateUserDetails(null, null, imageFile, shouldRemoveProfileImage)
+      .then((result: any) => {
+        axios?.updateCurrentUserModelState(undefined, undefined, result);
       })
-      .catch((e) => console.log(e));
+      .catch((e: any) => console.log(e.message));
   };
-  const handleSendChatMessage = (request) => {
+  const handleSendChatMessage = (request: SendMessageRequest) => {
     console.log(`Send Message Request: ${request}`);
-    sendChatMessage(request);
+    webSockets?.sendChatMessage(request);
   };
   const handleCreateNewGroup = () => {};
   const handleLogOut = () => {
-    logOut()
+    auth
+      ?.logOut()
       .then((_) => {
         navigate("/auth");
       })
       .catch((e) => console.log(e));
   };
+
+  if (!axios?.currentUserModel) {
+    return null;
+  }
 
   return (
     <div className="pg">
@@ -238,7 +261,7 @@ const MainScreen = () => {
       <div className="sidebarContainer">
         {showSelfProfileScreen ? (
           <UserSelfProfilePreview
-            currentUserModel={currentUserModel}
+            currentUserModel={axios.currentUserModel}
             onClose={() => setShowSelfProfileScreen(false)}
             updateUserName={(name) => {
               updateUserName(name);
@@ -250,7 +273,7 @@ const MainScreen = () => {
           />
         ) : (
           <MainSidebar
-            currentUserModel={currentUserModel}
+            currentUserModel={axios.currentUserModel}
             chatsList={chatsList}
             onProfileClick={onUserSelfProfileClick}
             onChatClicked={(chat) => onChatClick(chat)}
@@ -272,13 +295,15 @@ const MainScreen = () => {
           }
         >
           <ChattingScreen
-            currentUserModel={currentUserModel}
+            currentUserModel={axios.currentUserModel}
             chat={chat}
             onProfileClick={() => {
               onRemoteUserProfileClick();
             }}
             messages={messagesListForChat}
-            onSendMessage={(request) => handleSendChatMessage(request)}
+            onSendMessage={(request: SendMessageRequest) =>
+              handleSendChatMessage(request)
+            }
           />
         </div>
       ) : (
@@ -289,7 +314,7 @@ const MainScreen = () => {
       {showRemoteUserProfileScreen ? (
         <div className="remoteUserProfileContainer">
           <RemoteUserProfilePreview
-            user={remoteUser}
+            user={remoteUser!}
             onClose={() => setShowRemoteUserProfileScreen(false)}
           />
         </div>

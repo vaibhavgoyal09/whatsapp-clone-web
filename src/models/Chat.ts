@@ -5,7 +5,7 @@ interface Chat {
   remoteUserId: number;
   remoteUserProfileImageUrl?: string;
   remoteUserName: string;
-  lastMessage?: Message;
+  lastMessage?: Message | null;
   unseenMessageCount: number;
 }
 
