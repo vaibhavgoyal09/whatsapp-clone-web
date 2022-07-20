@@ -36,7 +36,7 @@ interface AxiosContextInterface {
 export const AxiosContext = createContext<AxiosContextInterface | null>(null);
 export const useAxios = () => useContext(AxiosContext);
 const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
-  const auth = useAuth();
+  const auth = useAuth()!;
   const [currentUserModel, setCurrentUserModel] = useState<User | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null); // Just a fake token
 
@@ -51,7 +51,7 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
   const instanceRef = useRef(axios.create(config));
 
   useEffect(() => {
-    auth?.getUserIdToken().then((token) => {
+    auth.getUserIdToken().then((token) => {
       if (token) {
         setAccessToken(token.substring(8, 5));
         instanceRef.current.interceptors.request.use((config) => {
@@ -60,11 +60,11 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
         });
       }
     });
-  }, [auth?.currentUser]);
+  }, [auth.currentUser]);
 
   useEffect(() => {
     async function retrieveCurrentUser() {
-      if (accessToken && auth?.isUserLoggedIn) {
+      if (accessToken) {
         try {
           let data = (
             await instanceRef.current.get(
@@ -86,7 +86,7 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
       }
     }
     retrieveCurrentUser();
-  }, [accessToken, auth?.isUserLoggedIn]);
+  }, [accessToken, auth.isUserLoggedIn]);
 
   async function safeApiRequest<T>(request: () => Promise<T>) {
     try {
@@ -123,7 +123,7 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
       formData.append("file", file);
       let fileUploadResponse = await instanceRef.current.post(
         `${WhatsApi.UPLOAD_FILE_URL}`,
-        file
+        formData
       );
       return fileUploadResponse.data["url"];
     });

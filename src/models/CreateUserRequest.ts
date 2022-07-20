@@ -1,8 +1,8 @@
 interface CreateUserRequest {
   name: string;
-  about?: string;
-  phoneNumber: string;
-  profileImageFile?: File;
+  about: string | null;
+  phone_number: string;
+  profile_image_url: string | null;
 }
 
 export default CreateUserRequest;

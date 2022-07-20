@@ -13,9 +13,9 @@ const SignInScreen: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [dialogVisibility, setDialogVisibility] = useState(false);
   const navigate = useNavigate();
-  const auth = useAuth();
-  const axios = useAxios();
-  const sendVerificationCode = auth?.sendVerificationCode!;
+  const auth = useAuth()!;
+  const axios = useAxios()!;
+  const sendVerificationCode = auth.sendVerificationCode;
 
   const form = createRef<HTMLFormElement>();
 
@@ -38,13 +38,12 @@ const SignInScreen: React.FC = () => {
     });
   }, []);
 
-  const onSendOtpClicked = async (e: React.FormEvent) => {
+  const onSendOtpClicked = (e: React.FormEvent) => {
     e.preventDefault();
     sendOTP();
   };
 
   function sendOTP() {
-    console.log(phoneNumber);
     sendVerificationCode(phoneNumber)
       .then((confirmationResult) => {
         (window as any).confirmationResult = confirmationResult;
@@ -60,14 +59,15 @@ const SignInScreen: React.FC = () => {
   }
 
   const onOtpVerified = () => {
-    console.log(phoneNumber);
     let trimmedPhoneNumber = phoneNumber.replace(/\s+/g, "");
-    axios
-      ?.getRequest<boolean>(WhatsApi.CHECK_USER_SIGNING_IN_URL, {
-        phone_number: trimmedPhoneNumber,
-      })
-      .then((_) => {
-        navigate("/");
+    axios.getRequest<boolean>(`${WhatsApi.CHECK_USER_SIGNING_IN_URL}/${trimmedPhoneNumber}`, null)
+      .then((result) => {
+        if (result) {
+          auth.setUserLoggedIn();
+          navigate("/");
+        } else {
+          navigate("/setup-profile", { state: { phoneNumber: phoneNumber } });
+        }
       })
       .catch((e) => {
         setDialogVisibility(false);

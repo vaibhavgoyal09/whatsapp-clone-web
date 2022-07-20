@@ -48,7 +48,7 @@ export default function AuthContextProvider({
     return () => {
       unsubscribe();
     };
-  }, [auth.currentUser]);
+  }, []);
 
   async function sendVerificationCode(phoneNumber: string) {
     let appVerifier = (window as any).recaptchaVerifier;

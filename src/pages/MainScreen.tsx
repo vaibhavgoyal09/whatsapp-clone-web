@@ -30,14 +30,13 @@ const MainScreen = () => {
   const [showStatusScreen, setShowStatusScreen] = useState<boolean>(false);
   const [messagesListForChat, setMessagesListForChat] = useState<Message[]>([]);
   const navigate = useNavigate();
-  const auth = useAuth();
-  const webSockets = useWhatsappWebSocket();
-  const axios = useAxios();
+  const auth = useAuth()!;
+  const webSockets = useWhatsappWebSocket()!;
+  const axios = useAxios()!;
 
   useEffect(() => {
-    if (axios?.accessToken) {
-      axios
-        ?.getRequest(WhatsApi.GET_ALL_CHATS_URL, null)
+    if (axios.accessToken) {
+      axios.getRequest(WhatsApi.GET_ALL_CHATS_URL, null)
         .then((result: any) => {
           let chats: Chat[] = [];
           result.forEach((element: any) => {
@@ -57,11 +56,11 @@ const MainScreen = () => {
           console.log(e);
         });
     }
-  }, [axios?.accessToken]);
+  }, [axios.accessToken]);
 
   useEffect(() => {
     axios
-      ?.getRequest(WhatsApi.SEARCH_USERS_BY_PHONE_NUMBER_URL, {
+      .getRequest(WhatsApi.SEARCH_USERS_BY_PHONE_NUMBER_URL, {
         phone_number: searchQuery,
       })
       .then((result: any) => {
@@ -86,8 +85,7 @@ const MainScreen = () => {
 
   useEffect(() => {
     if (chat) {
-      axios
-        ?.getRequest(`${WhatsApi.GET_MESSAGES_FOR_CHAT_URL}/${chat.id}`, null)
+      axios.getRequest(`${WhatsApi.GET_MESSAGES_FOR_CHAT_URL}/${chat.id}`, null)
         .then((result: any) => {
           let messages: Message[] = [];
           for (let i in result) {
@@ -132,15 +130,15 @@ const MainScreen = () => {
 
   useEffect(() => {
     if (
-      webSockets?.lastChatMessage &&
-      chat?.id === webSockets?.lastChatMessage.chatId
+      webSockets.lastChatMessage &&
+      chat?.id === webSockets.lastChatMessage.chatId
     ) {
       let mList: Message[] = [...messagesListForChat.reverse()];
-      mList.push(webSockets?.lastChatMessage);
+      mList.push(webSockets.lastChatMessage);
       console.log(mList);
       setMessagesListForChat(mList.reverse());
     }
-  }, [webSockets?.lastChatMessage]);
+  }, [webSockets.lastChatMessage]);
 
   const onChatClick = (chat: Chat) => {
     setShowRemoteUserProfileScreen(false);
@@ -199,9 +197,9 @@ const MainScreen = () => {
   ) => {
     let profileImageUrl: string | undefined | null = null;
     if (imageFile) {
-      profileImageUrl = await axios?.uploadFile(imageFile);
+      profileImageUrl = await axios.uploadFile(imageFile);
     }
-    await axios?.putRequest(
+    await axios.putRequest(
       {
         name: name,
         about: about,
@@ -216,14 +214,14 @@ const MainScreen = () => {
   const updateUserName = (name: string) => {
     updateUserDetails(name)
       .then((_) => {
-        axios?.updateCurrentUserModelState(name);
+        axios.updateCurrentUserModelState(name);
       })
       .catch((e) => console.log(e));
   };
   const updateUserAbout = (about: string) => {
     updateUserDetails(null, about)
       .then((_) => {
-        axios?.updateCurrentUserModelState(undefined, about);
+        axios.updateCurrentUserModelState(undefined, about);
       })
       .catch((e) => console.log(e));
   };
@@ -233,7 +231,7 @@ const MainScreen = () => {
   ) => {
     updateUserDetails(null, null, imageFile, shouldRemoveProfileImage)
       .then((result: any) => {
-        axios?.updateCurrentUserModelState(undefined, undefined, result);
+        axios.updateCurrentUserModelState(undefined, undefined, result);
       })
       .catch((e: any) => console.log(e.message));
   };
@@ -243,15 +241,14 @@ const MainScreen = () => {
   };
   const handleCreateNewGroup = () => {};
   const handleLogOut = () => {
-    auth
-      ?.logOut()
+    auth.logOut()
       .then((_) => {
         navigate("/auth");
       })
       .catch((e) => console.log(e));
   };
 
-  if (!axios?.currentUserModel) {
+  if (!axios.currentUserModel) {
     return null;
   }
 

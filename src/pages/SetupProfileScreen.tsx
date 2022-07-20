@@ -2,6 +2,7 @@ import React, { createRef, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ReactComponent as CameraImg } from "../assets/camera.svg";
 import { ReactComponent as Logo } from "../assets/logo.svg";
+import { useAuth } from "../context/AuthContext";
 import { useAxios } from "../context/AxiosContext";
 import "../css/setupProfileStyle.css";
 import CreateUserRequest from "../models/CreateUserRequest";
@@ -9,7 +10,7 @@ import { WhatsApi } from "../utils/Constants";
 
 interface SetupProfileScreenState {
   phoneNumber: string;
-} 
+}
 
 const SetupProfileScreen = () => {
   const [name, setName] = useState<string>("");
@@ -19,9 +20,10 @@ const SetupProfileScreen = () => {
   const location = useLocation();
   const fileInputRef = createRef<HTMLInputElement>();
   const navigate = useNavigate();
+  const auth = useAuth();
   const axios = useAxios();
   const state = location.state as SetupProfileScreenState;
-  const { phoneNumber } = state; 
+  const { phoneNumber } = state;
 
   const maxRowCount = 4;
   const maxCharCount = 50;
@@ -30,7 +32,9 @@ const SetupProfileScreen = () => {
     setName(event.target.value);
   }
 
-  function handleAboutFieldChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
+  function handleAboutFieldChange(
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) {
     setAbout(event.target.value);
   }
 
@@ -46,18 +50,31 @@ const SetupProfileScreen = () => {
 
   function onSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if (image === null || image === undefined) {
-      return;
+    if (image) {
+      axios!
+        .uploadFile(image)
+        .then((result) => {
+          registerUser(result);
+        })
+        .catch((e: any) => {
+          console.log(e.message);
+        });
+    } else {
+      registerUser(null);
     }
+  }
+
+  function registerUser(profileImageUrl: string | null) {
     let request: CreateUserRequest = {
       name: name,
       about: about,
-      phoneNumber: phoneNumber,
-      profileImageFile: image,
+      phone_number: phoneNumber,
+      profile_image_url: profileImageUrl,
     };
     axios!
       .postRequest(request, null, WhatsApi.REGISTER_USER_URL)
       .then((_) => {
+        auth?.setUserLoggedIn();
         navigate("/");
       })
       .catch((e: any) => {
