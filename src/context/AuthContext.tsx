@@ -12,6 +12,7 @@ import {
 import {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -32,6 +33,10 @@ const AuthContext = createContext<AuthContextInterface | null>(null);
 
 export const useAuth = () => useContext(AuthContext);
 
+interface AuthPreferences {
+  isUserLoggedIn: boolean
+}
+
 export default function AuthContextProvider({
   children,
 }: {
@@ -50,12 +55,21 @@ export default function AuthContextProvider({
     };
   }, []);
 
+  useEffect(() => {
+    if (localStorage.getItem("authPreferences")) {
+      const prefs = JSON.parse(localStorage.getItem("authPreferences")!)
+      setIsUserLoggedIn(prefs.isUserLoggedIn ? prefs.isUserLoggedIn: false); 
+    }
+  }, []);
+
   async function sendVerificationCode(phoneNumber: string) {
     let appVerifier = (window as any).recaptchaVerifier;
     return await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
   }
 
   function setUserLoggedIn() {
+    const prefs: AuthPreferences = { isUserLoggedIn: true }
+    localStorage.setItem("authPreferences", JSON.stringify(prefs));
     setIsUserLoggedIn(true);
   }
 

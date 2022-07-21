@@ -15,6 +15,7 @@ import User from "../models/User";
 import Message from "../models/Message";
 import { WhatsApi } from "../utils/Constants";
 import SendMessageRequest from "../models/SendMessageRequest";
+import SelectUsersForGroup from "../components/SelectUsersForGroup";
 
 const MainScreen = () => {
   const [chat, setChat] = useState<Chat | null>(null);
@@ -26,7 +27,11 @@ const MainScreen = () => {
     useState<boolean>(false);
   const [showRemoteUserProfileScreen, setShowRemoteUserProfileScreen] =
     useState<boolean>(false);
-  const [showCreateGroup, setShowCreateGroup] = useState<boolean>(false);
+  const [showSelectUsersForGroup, setShowSelectUsersForGroup] =
+    useState<boolean>(true);
+  const [showCreateGroupSidebar, setShowCreateGroupSidebar] =
+    useState<boolean>(true);
+  const [contactNameSearchQuery, setContactNameSearchQuery] = useState<string>("");
   const [showStatusScreen, setShowStatusScreen] = useState<boolean>(false);
   const [messagesListForChat, setMessagesListForChat] = useState<Message[]>([]);
   const navigate = useNavigate();
@@ -36,7 +41,8 @@ const MainScreen = () => {
 
   useEffect(() => {
     if (axios.accessToken) {
-      axios.getRequest(WhatsApi.GET_ALL_CHATS_URL, null)
+      axios
+        .getRequest(WhatsApi.GET_ALL_CHATS_URL, null)
         .then((result: any) => {
           let chats: Chat[] = [];
           result.forEach((element: any) => {
@@ -84,8 +90,34 @@ const MainScreen = () => {
   }, [searchQuery]);
 
   useEffect(() => {
+    axios
+      .getRequest(WhatsApi.SEARCH_CONTACTS_BY_NAME_URL, {
+        name: contactNameSearchQuery,
+      })
+      .then((result: any) => {
+        let contacts: User[] = [];
+        result.forEach((element: any) => {
+          let c = {
+            id: element.id,
+            name: element.name,
+            about: element.about,
+            firebaseUid: element.firebase_uid,
+            phoneNumber: element.phone_number,
+            profileImageUrl: element.profile_image_url,
+          };
+          contacts.push(c);
+        });
+        setContactsList(contacts);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, [contactNameSearchQuery]);
+
+  useEffect(() => {
     if (chat) {
-      axios.getRequest(`${WhatsApi.GET_MESSAGES_FOR_CHAT_URL}/${chat.id}`, null)
+      axios
+        .getRequest(`${WhatsApi.GET_MESSAGES_FOR_CHAT_URL}/${chat.id}`, null)
         .then((result: any) => {
           let messages: Message[] = [];
           for (let i in result) {
@@ -239,9 +271,10 @@ const MainScreen = () => {
     console.log(`Send Message Request: ${request}`);
     webSockets?.sendChatMessage(request);
   };
-  const handleCreateNewGroup = () => {};
+  const handleCreateNewGroup = () => { };
   const handleLogOut = () => {
-    auth.logOut()
+    auth
+      .logOut()
       .then((_) => {
         navigate("/auth");
       })
@@ -252,37 +285,52 @@ const MainScreen = () => {
     return null;
   }
 
+  const searchContactsByName = (name: string) => { setContactNameSearchQuery(name) };
+
+  let sidebarComponent: JSX.Element = (
+    <MainSidebar
+      currentUserModel={axios.currentUserModel}
+      chatsList={chatsList}
+      onProfileClick={onUserSelfProfileClick}
+      onChatClicked={(chat) => onChatClick(chat)}
+      onSearchQueryChange={(value) => onSearchQueryChange(value)}
+      contactsList={contactsList}
+      onShowStatusScreen={() => setShowStatusScreen(true)}
+      onContactClicked={(contact) => onContactClicked(contact)}
+      onCreateNewGroupClicked={() => handleCreateNewGroup()}
+      onLogOutClicked={() => handleLogOut()}
+    />
+  );
+
+  if (showSelfProfileScreen) {
+    sidebarComponent = (
+      <UserSelfProfilePreview
+        currentUserModel={axios.currentUserModel}
+        onClose={() => setShowSelfProfileScreen(false)}
+        updateUserName={(name) => {
+          updateUserName(name);
+        }}
+        updateUserAbout={(about) => updateUserAbout(about)}
+        updateUserProfileImage={(imageFile, shouldRemoveProfileImage) =>
+          updateUserProfileImage(imageFile, shouldRemoveProfileImage)
+        }
+      />
+    );
+  } else if (showSelectUsersForGroup) {
+    sidebarComponent = (
+      <SelectUsersForGroup
+        onUsersSelected={(userIds: number[]) => { }}
+        onClose={() => setShowSelectUsersForGroup(false)}
+        contacts={contactsList}
+      />
+    );
+  } else if (showCreateGroupSidebar) {
+  }
+
   return (
     <div className="pg">
       {showStatusScreen ? <StatusScreen /> : null}
-      <div className="sidebarContainer">
-        {showSelfProfileScreen ? (
-          <UserSelfProfilePreview
-            currentUserModel={axios.currentUserModel}
-            onClose={() => setShowSelfProfileScreen(false)}
-            updateUserName={(name) => {
-              updateUserName(name);
-            }}
-            updateUserAbout={(about) => updateUserAbout(about)}
-            updateUserProfileImage={(imageFile, shouldRemoveProfileImage) =>
-              updateUserProfileImage(imageFile, shouldRemoveProfileImage)
-            }
-          />
-        ) : (
-          <MainSidebar
-            currentUserModel={axios.currentUserModel}
-            chatsList={chatsList}
-            onProfileClick={onUserSelfProfileClick}
-            onChatClicked={(chat) => onChatClick(chat)}
-            onSearchQueryChange={(value) => onSearchQueryChange(value)}
-            contactsList={contactsList}
-            onShowStatusScreen={() => setShowStatusScreen(true)}
-            onContactClicked={(contact) => onContactClicked(contact)}
-            onCreateNewGroupClicked={() => handleCreateNewGroup()}
-            onLogOutClicked={() => handleLogOut()}
-          />
-        )}
-      </div>
+      <div className="sidebarContainer">{sidebarComponent}</div>
       {chat ? (
         <div
           className={

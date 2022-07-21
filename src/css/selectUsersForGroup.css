@@ -1,0 +1,59 @@
+.suCtnr {
+  width: 100%;
+  height:100%;
+  background-color: var(--darkerGrey);
+  border-right: 1px solid var(--inputFieldBorder);
+}
+ 
+.suHeader {
+  padding-top: 15%;
+  padding-left: 8%;
+  padding-bottom: 5%;
+  background-color: var(--background);
+  color: var(--white);
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+}
+
+.subackBtn {
+  font-size: 1.125rem;
+  cursor: pointer;
+}
+
+.suTitle {
+  position: relative;
+  margin-left: 40px;
+}
+
+.suTitle h2 {
+  font-size: 1rem;
+}
+
+.suSearchField {
+  width: 90%;
+  padding: 8px;
+  box-sizing: border-box;
+  margin-left: auto;
+  margin-right: auto;
+  border-bottom: 1px solid var(--inputFieldBorder);
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.suSearchField input {
+  width: 100%;
+  height: 100%;
+  outline: none;
+  background-color: transparent;
+  border: 0px;
+  font-size: 0.9rem;
+  color: var(--white);
+  caret-color: var(--secondaryText);
+}
+
+.suContactsCtnr {
+  width: 100%;
+  overflow-y: auto;
+  cursor: pointer;
+}

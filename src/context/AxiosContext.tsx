@@ -19,18 +19,18 @@ interface AxiosContextInterface {
     about?: string,
     profileImageUrl?: string
   ) => void;
-  postRequest: <T>(
+  postRequest: <T = any>(
     requestBody: any,
     params: object | null,
     requestPath: string
   ) => Promise<T>;
-  putRequest: <T>(
+  putRequest: <T = any>(
     requestBody: any,
     params: object | null,
     requestPath: string
   ) => Promise<T>;
   uploadFile: (file: File) => Promise<string>;
-  getRequest: <T>(requestPath: string, params: object | null) => Promise<T>;
+  getRequest: <T = any>(requestPath: string, params: object | null) => Promise<T>;
 }
 
 export const AxiosContext = createContext<AxiosContextInterface | null>(null);
