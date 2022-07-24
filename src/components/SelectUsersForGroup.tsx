@@ -1,27 +1,30 @@
 import { useState } from "react";
-import "../css/selectUsersForGroup.css"
+import "../css/selectUsersForGroup.css";
 import User from "../models/User";
 import ContactItem from "./ContactItem";
 
 interface Props {
   onUsersSelected: (userIds: number[]) => void;
   onClose: () => void;
-  contacts: User[]
+  contacts: User[];
 }
 
-const SelectUserForGroup: React.FC<Props> = ({ onUsersSelected, onClose, contacts }) => {
+const SelectUserForGroup: React.FC<Props> = ({
+  onUsersSelected,
+  onClose,
+  contacts,
+}) => {
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
 
-  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
-
-  const onSelectUser = (userId: number) => {
+  const onSelectUser = (userId: string) => {
     const users = [...selectedUsers];
     if (selectedUsers.includes(userId)) {
-      users.splice(users.at(userId)!);
+      users.splice(users.indexOf(userId), 1);
     } else {
       users.push(userId);
     }
     setSelectedUsers(users);
-  }
+  };
 
   return (
     <div className="suCtnr">
@@ -35,16 +38,23 @@ const SelectUserForGroup: React.FC<Props> = ({ onUsersSelected, onClose, contact
       </div>
       <div className="suBtmCtnt">
         <div className="suSearchField">
-
           <input type="text" name="name" placeholder="Type User Name" />
         </div>
       </div>
-      <div className="suContactsCtnr" >
-        {
-          contacts.map((element: User, index: number) => (
-            <ContactItem key={element.id} contact={element} onClick={() => onSelectUser(element.id)} />
-          ))
-        }
+      <div className="suContactsCtnr">
+        {contacts.map((element: User) => (
+          <ContactItem
+            key={element.id}
+            contact={element}
+            onClick={() => onSelectUser(element.id)}
+            isSelected={selectedUsers.includes(element.id)}
+          />
+        ))}
+      </div>
+      <div className="suDoneBtnCtnr">
+        <span className="addic">
+          <i className="fa-solid fa-check"></i>
+        </span>
       </div>
     </div>
   );

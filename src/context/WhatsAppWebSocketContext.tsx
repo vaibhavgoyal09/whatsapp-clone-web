@@ -48,16 +48,16 @@ function WhatsAppWebSocketContextProvider({
     if (receivedMessage) {
       console.log(`Received Message ${receivedMessage}`);
       let jsonObject = JSON.parse(receivedMessage);
-      // let message: Message = {
-      //   id: lastJsonMessage["id"],
-      //   senderId: lastJsonMessage.sender_id,
-      //   type: lastJsonMessage.type,
-      //   text: lastJsonMessage.message,
-      //   mediaUrl: lastJsonMessage.media_url,
-      //   chatId: lastJsonMessage.chat_id,
-      //   timestamp: lastJsonMessage.created_at,
-      // };
-      // setLastChatMessage(message);
+      let message: Message = {
+        id: jsonObject.id,
+        senderId: jsonObject.sender_id,
+        type: jsonObject.type,
+        text: jsonObject.message,
+        mediaUrl: jsonObject.media_url,
+        chatId: jsonObject.chat_id,
+        timestamp: jsonObject.created_at,
+      };
+      setLastChatMessage(message);
     }
   }, [lastMessage]);
 

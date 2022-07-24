@@ -11,6 +11,10 @@
   padding: 8px;
 }
 
+.cnWithBg {
+  background-color: var(--background);
+}
+
 .infoContainer {
   display: flex;
   height: 100%;

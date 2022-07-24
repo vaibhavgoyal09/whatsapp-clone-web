@@ -6,15 +6,17 @@ import { useState } from "react";
 import ReceivedMessageItem from "./ReceivedMessageItem";
 import SentMessageItem from "./SentMessageItem";
 import User from '../models/User';
-import Message from '../models/Message';
+import Chat from "../models/Chat";
+import Message from "../models/Message";
+import SendMessageRequest from "../models/SendMessageRequest";
 
 
 interface Props {
   currentUserModel: User,
-  chat: any,
-  messages :any,
+  chat: Chat,
+  messages: Message[],
   onProfileClick: () => void,
-  onSendMessage: any
+  onSendMessage: (request: SendMessageRequest) => void;
 }
 
 
@@ -35,10 +37,13 @@ const ChattingScreen: React.FC<Props> = ({
     if (text === "") {
       return;
     }
-    let request = {
+    let remoteUser = chat.users.filter((user: User) => {
+      return user.id !== currentUserModel.id;
+    })[0];
+    let request: SendMessageRequest = {
       type: 0,
       own_user_id: currentUserModel.id,
-      to_user_id: chat.remoteUserId,
+      to_user_id: remoteUser.id,
       chat_id: chat.id,
       media_url: null,
       text: messageText,
@@ -51,14 +56,14 @@ const ChattingScreen: React.FC<Props> = ({
     <div id="content">
       <div className="headerContainer">
         <ChatHeader
-          profileImageUrl={chat.remoteUserProfileImageUrl}
+          profileImageUrl={chat.profileImageUrl}
           onProfileClick={() => onProfileClick()}
-          userName={chat.remoteUserName}
+          userName={chat.name}
         />
       </div>
       <div className="messagesContainer">
         <div className="listContainer">
-          {messages.map((message: Message, index: number) =>
+          {messages.map((message: Message,) =>
             message.senderId === currentUserModel.id ? (
               <SentMessageItem message={message} key={message.id} />
             ) : (

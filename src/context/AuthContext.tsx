@@ -34,7 +34,7 @@ const AuthContext = createContext<AuthContextInterface | null>(null);
 export const useAuth = () => useContext(AuthContext);
 
 interface AuthPreferences {
-  isUserLoggedIn: boolean
+  isUserLoggedIn: boolean;
 }
 
 export default function AuthContextProvider({
@@ -57,8 +57,8 @@ export default function AuthContextProvider({
 
   useEffect(() => {
     if (localStorage.getItem("authPreferences")) {
-      const prefs = JSON.parse(localStorage.getItem("authPreferences")!)
-      setIsUserLoggedIn(prefs.isUserLoggedIn ? prefs.isUserLoggedIn: false); 
+      const prefs = JSON.parse(localStorage.getItem("authPreferences")!);
+      setIsUserLoggedIn(prefs.isUserLoggedIn ? prefs.isUserLoggedIn : false);
     }
   }, []);
 
@@ -68,7 +68,7 @@ export default function AuthContextProvider({
   }
 
   function setUserLoggedIn() {
-    const prefs: AuthPreferences = { isUserLoggedIn: true }
+    const prefs: AuthPreferences = { isUserLoggedIn: true };
     localStorage.setItem("authPreferences", JSON.stringify(prefs));
     setIsUserLoggedIn(true);
   }
@@ -93,8 +93,17 @@ export default function AuthContextProvider({
     });
   }
 
-  function logOut() {
-    return signOut(auth);
+  async function logOut() {
+    return new Promise(
+      async (resolve: (value: void) => void) => {
+        await signOut(auth);
+        if (localStorage.getItem("authPreferences")) {
+          const prefs: AuthPreferences = { isUserLoggedIn: false };
+          localStorage.setItem("authPreferences", JSON.stringify(prefs));
+          resolve(setIsUserLoggedIn(false));
+        }
+      }
+    );
   }
 
   const value: AuthContextInterface = {

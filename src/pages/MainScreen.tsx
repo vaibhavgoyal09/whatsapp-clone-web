@@ -1,37 +1,39 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ChattingScreen from "../components/ChattingScreen";
 import MainSidebar from "../components/MainSidebar";
+import RemoteUserProfilePreview from "../components/RemoteUserProfilePreview";
+import SelectUsersForGroup from "../components/SelectUsersForGroup";
+import StatusScreen from "../components/StatusScreen";
+import UserSelfProfilePreview from "../components/UserSelfProfilePreview";
 import WhatsappIntroScreen from "../components/WhatsappIntroScreen";
 import { useAuth } from "../context/AuthContext";
 import { useAxios } from "../context/AxiosContext";
 import { useWhatsappWebSocket } from "../context/WhatsAppWebSocketContext";
 import "../css/mainScreenStyle.css";
-import UserSelfProfilePreview from "../components/UserSelfProfilePreview";
-import RemoteUserProfilePreview from "../components/RemoteUserProfilePreview";
-import StatusScreen from "../components/StatusScreen";
-import { useNavigate } from "react-router-dom";
-import Chat from "../models/Chat";
-import User from "../models/User";
+import Chat, { ChatType } from "../models/Chat";
 import Message from "../models/Message";
-import { WhatsApi } from "../utils/Constants";
 import SendMessageRequest from "../models/SendMessageRequest";
-import SelectUsersForGroup from "../components/SelectUsersForGroup";
+import User from "../models/User";
+import { WhatsApi } from "../utils/Constants";
 
 const MainScreen = () => {
   const [chat, setChat] = useState<Chat | null>(null);
   const [remoteUser, setRemoteUser] = useState<User | null>(null);
   const [contactsList, setContactsList] = useState<User[]>([]);
   const [chatsList, setChatsList] = useState<Chat[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string | null>(null);
   const [showSelfProfileScreen, setShowSelfProfileScreen] =
     useState<boolean>(false);
   const [showRemoteUserProfileScreen, setShowRemoteUserProfileScreen] =
     useState<boolean>(false);
   const [showSelectUsersForGroup, setShowSelectUsersForGroup] =
-    useState<boolean>(true);
+    useState<boolean>(false);
   const [showCreateGroupSidebar, setShowCreateGroupSidebar] =
-    useState<boolean>(true);
-  const [contactNameSearchQuery, setContactNameSearchQuery] = useState<string>("");
+    useState<boolean>(false);
+  const [contactNameSearchQuery, setContactNameSearchQuery] = useState<
+    string | null
+  >(null);
   const [showStatusScreen, setShowStatusScreen] = useState<boolean>(false);
   const [messagesListForChat, setMessagesListForChat] = useState<Message[]>([]);
   const navigate = useNavigate();
@@ -46,13 +48,27 @@ const MainScreen = () => {
         .then((result: any) => {
           let chats: Chat[] = [];
           result.forEach((element: any) => {
-            let chat = {
+            console.log(`${element} Type is ${typeof element}`);
+            let message: Message | null = null;
+            if (element.last_message !== null) {
+              message = {
+                id: element.last_message.id,
+                senderId: element.last_message.sender_id,
+                type: element.last_message.type,
+                text: element.last_message.message,
+                mediaUrl: element.last_message.media_url,
+                chatId: element.last_message.chat_id,
+                timestamp: element.last_message.created_at,
+              }
+            }
+            let chat: Chat = {
               id: element.id,
-              remoteUserId: element.remote_user_id,
-              remoteUserProfileImageUrl: element.remote_user_profile_image_url,
-              remoteUserName: element.remote_user_name,
-              lastMessage: element.last_message,
-              unseenMessageCount: element.unseen_message_count,
+              type: element.type,
+              name: element.name,
+              profileImageUrl: element.profile_image_url,
+              groupId: element.group_id,
+              users: element.users,
+              lastMessage: message
             };
             chats.push(chat);
           });
@@ -65,53 +81,59 @@ const MainScreen = () => {
   }, [axios.accessToken]);
 
   useEffect(() => {
-    axios
-      .getRequest(WhatsApi.SEARCH_USERS_BY_PHONE_NUMBER_URL, {
-        phone_number: searchQuery,
-      })
-      .then((result: any) => {
-        let contacts: User[] = [];
-        result.forEach((element: any) => {
-          let c = {
-            id: element.id,
-            name: element.name,
-            about: element.about,
-            firebaseUid: element.firebase_uid,
-            phoneNumber: element.phone_number,
-            profileImageUrl: element.profile_image_url,
-          };
-          contacts.push(c);
+    if (searchQuery !== null && searchQuery.length >= 1) {
+      axios
+        .getRequest(WhatsApi.SEARCH_USERS_BY_PHONE_NUMBER_URL, {
+          phone_number: searchQuery,
+        })
+        .then((result: any) => {
+          console.log(result);
+          let contacts: User[] = [];
+          result.forEach((element: any) => {
+            let c = {
+              id: element.id,
+              name: element.name,
+              about: element.about,
+              firebaseUid: element.firebase_uid,
+              phoneNumber: element.phone_number,
+              profileImageUrl: element.profile_image_url,
+            };
+            contacts.push(c);
+          });
+          setContactsList(contacts);
+        })
+        .catch((e) => {
+          console.log(e);
         });
-        setContactsList(contacts);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    }
   }, [searchQuery]);
 
   useEffect(() => {
-    axios
-      .getRequest(WhatsApi.SEARCH_CONTACTS_BY_NAME_URL, {
-        name: contactNameSearchQuery,
-      })
-      .then((result: any) => {
-        let contacts: User[] = [];
-        result.forEach((element: any) => {
-          let c = {
-            id: element.id,
-            name: element.name,
-            about: element.about,
-            firebaseUid: element.firebase_uid,
-            phoneNumber: element.phone_number,
-            profileImageUrl: element.profile_image_url,
-          };
-          contacts.push(c);
+    if (contactNameSearchQuery !== null) {
+      axios
+        .getRequest(WhatsApi.SEARCH_CONTACTS_BY_NAME_URL, {
+          name: contactNameSearchQuery,
+        })
+        .then((result: any) => {
+          console.log(result);
+          let contacts: User[] = [];
+          result.forEach((element: any) => {
+            let c = {
+              id: element.id,
+              name: element.name,
+              about: element.about,
+              firebaseUid: element.firebase_uid,
+              phoneNumber: element.phone_number,
+              profileImageUrl: element.profile_image_url,
+            };
+            contacts.push(c);
+          });
+          setContactsList(contacts);
+        })
+        .catch((e) => {
+          console.log(e);
         });
-        setContactsList(contacts);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    }
   }, [contactNameSearchQuery]);
 
   useEffect(() => {
@@ -140,14 +162,18 @@ const MainScreen = () => {
   }, [chat]);
 
   useEffect(() => {
-    if (chat) {
+    if (chat && chat.type == ChatType.oneToOne) {
+      let remoteUser = chat.users.filter((user: User) => {
+        return user.id != axios.currentUserModel?.id;
+      })[0];
+      console.log(remoteUser.id);
       axios
         ?.getRequest(
-          `${WhatsApi.GET_REMOTE_USER_DETAILS_URL}/${chat.remoteUserId}`,
+          `${WhatsApi.GET_REMOTE_USER_DETAILS_URL}/${remoteUser.id}`,
           null
         )
         .then((result: any) => {
-          let user = {
+          let user: User = {
             id: result.id,
             name: result.name,
             about: result.about,
@@ -176,13 +202,19 @@ const MainScreen = () => {
     setShowRemoteUserProfileScreen(false);
     setChat(chat);
   };
-  const onSearchQueryChange = (value: string) => setSearchQuery(value);
+  const onSearchQueryChange = (value: string) => {
+    setSearchQuery(value);
+    console.log("search query changed");
+  };
   const onContactClicked = (contact: User) => {
     var chatId = null;
 
     for (let i in chatsList) {
       let c = chatsList[i];
-      chatId = c.remoteUserId === contact.id ? c.id : null;
+      let remoteUser = c.users.filter((user: User) => {
+        return user.id != axios.currentUserModel?.id;
+      })[0];
+      chatId = remoteUser.id === contact.id ? c.id : null;
       if (!chatId) {
         continue;
       } else {
@@ -192,7 +224,7 @@ const MainScreen = () => {
     }
     if (!chatId) {
       axios
-        ?.postRequest(
+        .postRequest(
           null,
           { remote_user_id: contact.id },
           WhatsApi.CREATE_NEW_CHAT_URL
@@ -200,11 +232,12 @@ const MainScreen = () => {
         .then((result: any) => {
           let chat: Chat = {
             id: result.id,
-            remoteUserId: contact.id,
-            remoteUserProfileImageUrl: contact.profileImageUrl,
-            remoteUserName: contact.name,
-            lastMessage: null,
-            unseenMessageCount: 0,
+            type: result.type,
+            name: result.name,
+            profileImageUrl: result.profile_image_url,
+            groupId: result.group_id,
+            users: result.users,
+            lastMessage: null
           };
           setChat(chat);
           let chats = [...chatsList];
@@ -272,6 +305,10 @@ const MainScreen = () => {
     webSockets?.sendChatMessage(request);
   };
   const handleCreateNewGroup = () => { };
+  const handleSelectUsersForGroup = () => {
+    setContactNameSearchQuery("");
+    setShowSelectUsersForGroup(true);
+  };
   const handleLogOut = () => {
     auth
       .logOut()
@@ -285,7 +322,9 @@ const MainScreen = () => {
     return null;
   }
 
-  const searchContactsByName = (name: string) => { setContactNameSearchQuery(name) };
+  const searchContactsByName = (name: string) => {
+    setContactNameSearchQuery(name);
+  };
 
   let sidebarComponent: JSX.Element = (
     <MainSidebar
@@ -297,8 +336,9 @@ const MainScreen = () => {
       contactsList={contactsList}
       onShowStatusScreen={() => setShowStatusScreen(true)}
       onContactClicked={(contact) => onContactClicked(contact)}
-      onCreateNewGroupClicked={() => handleCreateNewGroup()}
+      onCreateNewGroupClicked={() => handleSelectUsersForGroup()}
       onLogOutClicked={() => handleLogOut()}
+      selectedChat={chat}
     />
   );
 

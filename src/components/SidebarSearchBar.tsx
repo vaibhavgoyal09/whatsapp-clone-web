@@ -1,6 +1,4 @@
-import React, { useCallback } from "react";
-import { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../css/sidebarSearchBar.css";
 
 interface Props {
@@ -20,7 +18,7 @@ const SidebarSearchBar: React.FC<Props> = ({ onSearchQueryChange }) => {
     setSearchFieldValue(event.target.value);
   };
 
-  useCallback(() => {
+  useEffect(() => {
     onSearchQueryChange(searchFieldValue);
     if (searchFieldValue.length === 0) {
       setIsInputFieldEmpty(true);

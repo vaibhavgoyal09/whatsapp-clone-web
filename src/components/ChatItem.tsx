@@ -44,8 +44,8 @@ const ChatItem: React.FC<Props> = ({ chat, onChatClick, isSelected }) => {
     >
       <img
         src={
-          chat.remoteUserProfileImageUrl
-            ? chat.remoteUserProfileImageUrl
+          chat.profileImageUrl
+            ? chat.profileImageUrl
             : "avatar.png"
         }
         alt="user profile"
@@ -53,15 +53,15 @@ const ChatItem: React.FC<Props> = ({ chat, onChatClick, isSelected }) => {
       />
       <div className="infoContainer">
         <div className="unamec">
-          <p className="uname unselectable">{chat.remoteUserName}</p>
+          <p className="uname unselectable">{chat.name}</p>
           <p className="umsg unselectable">{messageText}</p>
         </div>
         <div className="mcTstmp">
-          {chat.unseenMessageCount > 0 ? (
+          {/* {chat.unseenMessageCount > 0 ? (
             <div className="mctnr">
               <p className="mc">{chat.unseenMessageCount}</p>
             </div>
-          ) : null}
+          ) : null} */}
           <p className="tstmp">{timestamp}</p>
         </div>
       </div>

@@ -1,10 +1,11 @@
 .suCtnr {
   width: 100%;
-  height:100%;
+  height: 100%;
   background-color: var(--darkerGrey);
   border-right: 1px solid var(--inputFieldBorder);
+  position: relative;
 }
- 
+
 .suHeader {
   padding-top: 15%;
   padding-left: 8%;
@@ -56,4 +57,22 @@
   width: 100%;
   overflow-y: auto;
   cursor: pointer;
+}
+
+.suDoneBtnCtnr {
+  background-color: var(--green);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  align-items: center;
+  justify-content: center;
+}
+
+.addic {
+  font-size: 1.0rem;
+  color: var(--white);
 }

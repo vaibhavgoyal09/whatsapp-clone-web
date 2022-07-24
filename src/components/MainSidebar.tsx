@@ -18,6 +18,7 @@ interface Props {
   onShowStatusScreen: () => void;
   onCreateNewGroupClicked: () => void;
   onLogOutClicked: () => void;
+  selectedChat: Chat | null; 
 }
 
 const MainSidebar: React.FC<Props> = ({
@@ -31,9 +32,9 @@ const MainSidebar: React.FC<Props> = ({
   onShowStatusScreen,
   onCreateNewGroupClicked,
   onLogOutClicked,
+  selectedChat
 }) => {
   const [isSearchingForUser, setIsSearchingForUser] = useState<boolean>(false);
-  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
 
   function handleSearchQueryChange(value: string) {
     if (value.length === 0) {
@@ -42,11 +43,6 @@ const MainSidebar: React.FC<Props> = ({
       setIsSearchingForUser(true);
     }
     onSearchQueryChange(value);
-  }
-
-  function handleChatClicked(chat: Chat) {
-    setSelectedChat(chat);
-    onChatClicked(chat);
   }
 
   function handleContactClicked(contact: User) {
@@ -74,7 +70,7 @@ const MainSidebar: React.FC<Props> = ({
           <div className="contacts">
             {contactsList.map((contact, index) => (
               <ContactItem
-                key={index}
+                key={contact.id}
                 contact={contact}
                 onClick={() => handleContactClicked(contactsList[index])}
               />
@@ -86,10 +82,10 @@ const MainSidebar: React.FC<Props> = ({
           <div className="chats">
             {chatsList.map((chat, index) => (
               <ChatItem
-                key={index}
+                key={chat.id}
                 chat={chat}
                 isSelected={selectedChat ? selectedChat.id === chat.id : false}
-                onChatClick={() => handleChatClicked(chatsList[index])}
+                onChatClick={() => onChatClicked(chatsList[index])}
               />
             ))}
           </div>

@@ -3,6 +3,7 @@
   width: 100%;
   flex-direction: row;
   background-color: var(--background);
+  cursor: pointer;
 }
 
 .avt {

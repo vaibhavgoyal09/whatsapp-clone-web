@@ -1,12 +1,20 @@
-import Message from './Message';
+import Message from "./Message";
+import User from "./User";
+
+enum ChatType {
+  oneToOne = 0,
+  group = 1,
+}
 
 interface Chat {
-  id: number;
-  remoteUserId: number;
-  remoteUserProfileImageUrl?: string;
-  remoteUserName: string;
+  id: string;
+  type: number;
+  name: string;
+  profileImageUrl: string | null;
+  groupId: string | null;
+  users: User[];
   lastMessage?: Message | null;
-  unseenMessageCount: number;
 }
 
 export default Chat;
+export { ChatType };

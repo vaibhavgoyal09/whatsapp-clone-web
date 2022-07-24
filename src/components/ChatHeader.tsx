@@ -2,7 +2,7 @@ import "../css/chatHeaderStyle.css";
 
 
 interface Props {
-  profileImageUrl?: string,
+  profileImageUrl?: string | null,
   onProfileClick: () => void,
   userName: string
 }
