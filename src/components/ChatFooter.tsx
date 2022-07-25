@@ -1,12 +1,23 @@
-import { createRef, useRef } from "react";
+import React, { createRef, useEffect, useState } from "react";
 import "../css/chatFooterStyle.css";
 
 interface Props {
-  onSendMessage: (text?: string) => void;
+  onSendMessage: () => void;
+  onMessageFieldValueChange: (value: string) => void;
 }
 
-const ChatFooter: React.FC<Props> = ({ onSendMessage }) => {
-  const messageFieldRef = createRef<HTMLInputElement>();
+const ChatFooter: React.FC<Props> = ({ onSendMessage, onMessageFieldValueChange }) => {
+
+  const [messageText, setMessageText] = useState<string>("");
+  const messageInputFieldRef = createRef<HTMLInputElement>();
+
+  useEffect(() => {
+    onMessageFieldValueChange(messageText);
+  }, [messageText]);
+
+  const handleMessageFieldValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setMessageText(event.target.value);
+  }
 
   return (
     <div className="fcontnt">
@@ -17,15 +28,17 @@ const ChatFooter: React.FC<Props> = ({ onSendMessage }) => {
         <i className="fa-solid fa-paperclip" />
       </span>
       <input
-        ref={messageFieldRef}
+        ref={messageInputFieldRef}
         type="text"
         placeholder="Type a message"
         className="input"
+        onChange={handleMessageFieldValueChange}
       />
       <span
         className="icon"
         onClick={() => {
-          onSendMessage(messageFieldRef?.current?.value);
+          onSendMessage();
+          messageInputFieldRef.current!.value! = "";
         }}
       >
         <i className="fa-solid fa-paper-plane" />

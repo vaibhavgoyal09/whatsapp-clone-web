@@ -57,7 +57,7 @@ const MainScreen = () => {
                 id: element.last_message.id,
                 senderId: element.last_message.sender_id,
                 type: element.last_message.type,
-                text: element.last_message.message,
+                text: element.last_message.text,
                 mediaUrl: element.last_message.media_url,
                 chatId: element.last_message.chat_id,
                 timestamp: element.last_message.created_at,
@@ -143,6 +143,7 @@ const MainScreen = () => {
       axios
         .getRequest(`${WhatsApi.GET_MESSAGES_FOR_CHAT_URL}/${chat.id}`, null)
         .then((result: any) => {
+          console.log(result);
           let messages: Message[] = [];
           for (let i in result) {
             let m = result[i];
@@ -150,7 +151,7 @@ const MainScreen = () => {
               id: m.id,
               senderId: m.sender_id,
               type: m.type,
-              text: m.message,
+              text: m.text,
               mediaUrl: m.media_url,
               chatId: m.chat_id,
               timestamp: m.created_at,
@@ -213,7 +214,7 @@ const MainScreen = () => {
     for (let i in chatsList) {
       let c = chatsList[i];
       let remoteUser = c.users.filter((user: User) => {
-        return user.id != axios.currentUserModel?.id;
+        return user.id !== axios.currentUserModel?.id;
       })[0];
       chatId = remoteUser.id === contact.id ? c.id : null;
       if (!chatId) {
@@ -305,7 +306,7 @@ const MainScreen = () => {
     console.log(`Send Message Request: ${request}`);
     webSockets?.sendChatMessage(request);
   };
-  const handleCreateNewGroup = (name: string, imageFile: File | null) => {};
+  const handleCreateNewGroup = (name: string, imageFile: File | null) => { };
   const handleSelectUsersForGroup = () => {
     setContactNameSearchQuery("");
     setShowSelectUsersForGroup(true);

@@ -52,7 +52,7 @@ function WhatsAppWebSocketContextProvider({
         id: jsonObject.id,
         senderId: jsonObject.sender_id,
         type: jsonObject.type,
-        text: jsonObject.message,
+        text: jsonObject.text,
         mediaUrl: jsonObject.media_url,
         chatId: jsonObject.chat_id,
         timestamp: jsonObject.created_at,

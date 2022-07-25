@@ -33,13 +33,19 @@ const ChattingScreen: React.FC<Props> = ({
     return null;
   }
 
-  const sendMessage = (text?: string) => {
-    if (text === "") {
+  console.log(messages);
+  console.log(`Current User ID: ${currentUserModel.id}`)
+
+  const sendMessage = () => {
+    if (messageText === "") {
       return;
     }
     let remoteUser = chat.users.filter((user: User) => {
-      return user.id !== currentUserModel.id;
+      return user.id != currentUserModel?.id;
     })[0];
+
+    console.log(remoteUser.id);
+
     let request: SendMessageRequest = {
       type: 0,
       own_user_id: currentUserModel.id,
@@ -74,7 +80,8 @@ const ChattingScreen: React.FC<Props> = ({
       </div>
       <div className="footerContainer">
         <ChatFooter
-          onSendMessage={(text?: string) => sendMessage(text)}
+          onSendMessage={() => sendMessage()}
+          onMessageFieldValueChange={(value: string) => setMessageText(value)}
         />
       </div>
     </div>
