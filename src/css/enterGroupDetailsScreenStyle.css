@@ -1,0 +1,147 @@
+.egContainer {
+  width: 100%;
+  height: 100%;
+  background-color: var(--darkerGrey);
+  position: relative;
+}
+
+.egHeader {
+  padding-top: 15%;
+  padding-left: 8%;
+  padding-bottom: 5%;
+  background-color: var(--background);
+  color: var(--white);
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+}
+
+.egbackBtn {
+  font-size: 1.125rem;
+  cursor: pointer;
+}
+
+.egTitle {
+  position: relative;
+  margin-left: 40px;
+}
+
+.egTitle h2 {
+  font-size: 1rem;
+}
+
+.egBottomCtnt {
+  display: flex;
+  flex-direction: column;
+}
+
+.egimageWrapper {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  border: 0px;
+  align-self: center;
+  margin-top: 40px;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.egstdImg {
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  position: absolute;
+  border-radius: 50%;
+}
+
+.egcameraOverlay {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  border-radius: 50%;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  opacity: 0;
+}
+
+.egcameraOverlay:hover {
+  opacity: 100;
+}
+
+.egcamera {
+  width: 35px;
+  color: var(--secondaryText);
+}
+
+.egnameContainer {
+  margin-top: 30px;
+}
+
+.egnameCtnt {
+  width: 100%;
+}
+
+.egnInputCtnr {
+  margin-top: 8px;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: row;
+  padding: 8px 8px 8px 0px;
+}
+
+.egname {
+  background-color: transparent;
+  border: 0px;
+  color: var(--white);
+  font-size: 16px;
+  outline: none;
+}
+
+.egname input {
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  color: var(--white);
+  font-size: 16px;
+  outline: none;
+}
+
+.egDoneBtnCtnr {
+  background-color: var(--green);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.addic {
+  font-size: 1.15rem;
+  color: var(--white);
+}
+
+.egLine {
+  width: 82%;
+  height: 2px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.inactv {
+  background-color: var(--inputFieldBorder);
+}
+
+.actv {
+  background-color: var(--green);
+}

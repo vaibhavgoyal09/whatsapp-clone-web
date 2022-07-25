@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ChattingScreen from "../components/ChattingScreen";
+import EnterGroupDetailsScreen from "../components/EnterGroupDetailsScreen";
 import MainSidebar from "../components/MainSidebar";
 import RemoteUserProfilePreview from "../components/RemoteUserProfilePreview";
 import SelectUsersForGroup from "../components/SelectUsersForGroup";
@@ -36,6 +37,7 @@ const MainScreen = () => {
   >(null);
   const [showStatusScreen, setShowStatusScreen] = useState<boolean>(false);
   const [messagesListForChat, setMessagesListForChat] = useState<Message[]>([]);
+  const [usersToAddInGroup, setUsersToAddInGroup] = useState<string[]>([]);
   const navigate = useNavigate();
   const auth = useAuth()!;
   const webSockets = useWhatsappWebSocket()!;
@@ -59,7 +61,7 @@ const MainScreen = () => {
                 mediaUrl: element.last_message.media_url,
                 chatId: element.last_message.chat_id,
                 timestamp: element.last_message.created_at,
-              }
+              };
             }
             let chat: Chat = {
               id: element.id,
@@ -68,7 +70,7 @@ const MainScreen = () => {
               profileImageUrl: element.profile_image_url,
               groupId: element.group_id,
               users: element.users,
-              lastMessage: message
+              lastMessage: message,
             };
             chats.push(chat);
           });
@@ -204,7 +206,6 @@ const MainScreen = () => {
   };
   const onSearchQueryChange = (value: string) => {
     setSearchQuery(value);
-    console.log("search query changed");
   };
   const onContactClicked = (contact: User) => {
     var chatId = null;
@@ -237,7 +238,7 @@ const MainScreen = () => {
             profileImageUrl: result.profile_image_url,
             groupId: result.group_id,
             users: result.users,
-            lastMessage: null
+            lastMessage: null,
           };
           setChat(chat);
           let chats = [...chatsList];
@@ -304,7 +305,7 @@ const MainScreen = () => {
     console.log(`Send Message Request: ${request}`);
     webSockets?.sendChatMessage(request);
   };
-  const handleCreateNewGroup = () => { };
+  const handleCreateNewGroup = (name: string, imageFile: File | null) => {};
   const handleSelectUsersForGroup = () => {
     setContactNameSearchQuery("");
     setShowSelectUsersForGroup(true);
@@ -359,12 +360,29 @@ const MainScreen = () => {
   } else if (showSelectUsersForGroup) {
     sidebarComponent = (
       <SelectUsersForGroup
-        onUsersSelected={(userIds: number[]) => { }}
+        onUsersSelected={(userIds: string[]) => {
+          setShowSelectUsersForGroup(false);
+          setUsersToAddInGroup(userIds);
+          setShowCreateGroupSidebar(true);
+        }}
+        previouslySelectedUsers={usersToAddInGroup}
         onClose={() => setShowSelectUsersForGroup(false)}
+        onSearchQueryChange={(value: string) => searchContactsByName(value)}
         contacts={contactsList}
       />
     );
   } else if (showCreateGroupSidebar) {
+    sidebarComponent = (
+      <EnterGroupDetailsScreen
+        onDone={(name: string, imageFile: File | null) => {
+          handleCreateNewGroup(name, imageFile);
+        }}
+        onClose={() => {
+          setShowSelectUsersForGroup(true);
+          setShowCreateGroupSidebar(false);
+        }}
+      />
+    );
   }
 
   return (
