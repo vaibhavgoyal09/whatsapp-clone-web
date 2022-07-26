@@ -1,6 +1,7 @@
 import React, { createRef } from "react";
 import "../css/chatItemStyle.css";
 import Chat from "../models/Chat";
+import { MessageType } from "../models/Message";
 
 interface Props {
   chat: Chat;
@@ -19,7 +20,7 @@ const ChatItem: React.FC<Props> = ({ chat, onChatClick, isSelected }) => {
   let messageText: string = "Tap to start chatting";
 
   var timestamp = "";
-  if (message !== null && message !== undefined) {
+  if (message) {
     let date = new Date(message.timestamp);
     let hours = date.getHours();
     let minutes = date.getMinutes().toString();
@@ -27,11 +28,11 @@ const ChatItem: React.FC<Props> = ({ chat, onChatClick, isSelected }) => {
       minutes.length === 1 ? `0${minutes}` : minutes
     } ${hours > 12 ? "PM" : "AM"}`;
 
-    if (message.type === 1) {
+    if (message.type === MessageType.image) {
       messageText = "Image";
-    } else if (message.type === 2) {
+    } else if (message.type === MessageType.video) {
       messageText = "Video";
-    } else if (message.type === 0) {
+    } else if (message.type === MessageType.text) {
       messageText = message.text ? message.text : "Tap to start chatting";
     }
   }

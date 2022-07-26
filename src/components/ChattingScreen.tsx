@@ -9,6 +9,7 @@ import User from '../models/User';
 import Chat from "../models/Chat";
 import Message from "../models/Message";
 import SendMessageRequest from "../models/SendMessageRequest";
+import Utils from "../utils/Utils";
 
 
 interface Props {
@@ -33,19 +34,11 @@ const ChattingScreen: React.FC<Props> = ({
     return null;
   }
 
-  console.log(messages);
-  console.log(`Current User ID: ${currentUserModel.id}`)
-
   const sendMessage = () => {
     if (messageText === "") {
       return;
     }
-    let remoteUser = chat.users.filter((user: User) => {
-      return user.id != currentUserModel?.id;
-    })[0];
-
-    console.log(remoteUser.id);
-
+    let remoteUser = Utils.getRemoteUserFromChat(chat, currentUserModel.id);
     let request: SendMessageRequest = {
       type: 0,
       own_user_id: currentUserModel.id,

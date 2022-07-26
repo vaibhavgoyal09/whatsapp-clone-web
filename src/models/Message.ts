@@ -8,4 +8,11 @@ interface Message {
   timestamp: number;
 }
 
+enum MessageType {
+  text = 0,
+  image = 1,
+  video = 2
+}
+
 export default Message;
+export { MessageType };

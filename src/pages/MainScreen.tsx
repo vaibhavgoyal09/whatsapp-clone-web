@@ -17,6 +17,7 @@ import Message from "../models/Message";
 import SendMessageRequest from "../models/SendMessageRequest";
 import User from "../models/User";
 import { WhatsApi } from "../utils/Constants";
+import Utils from "../utils/Utils";
 
 const MainScreen = () => {
   const [chat, setChat] = useState<Chat | null>(null);
@@ -48,31 +49,10 @@ const MainScreen = () => {
       axios
         .getRequest(WhatsApi.GET_ALL_CHATS_URL, null)
         .then((result: any) => {
+          console.log(result);
           let chats: Chat[] = [];
           result.forEach((element: any) => {
-            console.log(`${element} Type is ${typeof element}`);
-            let message: Message | null = null;
-            if (element.last_message !== null) {
-              message = {
-                id: element.last_message.id,
-                senderId: element.last_message.sender_id,
-                type: element.last_message.type,
-                text: element.last_message.text,
-                mediaUrl: element.last_message.media_url,
-                chatId: element.last_message.chat_id,
-                timestamp: element.last_message.created_at,
-              };
-            }
-            let chat: Chat = {
-              id: element.id,
-              type: element.type,
-              name: element.name,
-              profileImageUrl: element.profile_image_url,
-              groupId: element.group_id,
-              users: element.users,
-              lastMessage: message,
-            };
-            chats.push(chat);
+            chats.push(Utils.chatFromJson(element));
           });
           setChatsList(chats);
         })
@@ -89,18 +69,9 @@ const MainScreen = () => {
           phone_number: searchQuery,
         })
         .then((result: any) => {
-          console.log(result);
           let contacts: User[] = [];
           result.forEach((element: any) => {
-            let c = {
-              id: element.id,
-              name: element.name,
-              about: element.about,
-              firebaseUid: element.firebase_uid,
-              phoneNumber: element.phone_number,
-              profileImageUrl: element.profile_image_url,
-            };
-            contacts.push(c);
+            contacts.push(Utils.userFromJson(element));
           });
           setContactsList(contacts);
         })
@@ -117,18 +88,9 @@ const MainScreen = () => {
           name: contactNameSearchQuery,
         })
         .then((result: any) => {
-          console.log(result);
           let contacts: User[] = [];
           result.forEach((element: any) => {
-            let c = {
-              id: element.id,
-              name: element.name,
-              about: element.about,
-              firebaseUid: element.firebase_uid,
-              phoneNumber: element.phone_number,
-              profileImageUrl: element.profile_image_url,
-            };
-            contacts.push(c);
+            contacts.push(Utils.userFromJson(element));
           });
           setContactsList(contacts);
         })
@@ -143,20 +105,9 @@ const MainScreen = () => {
       axios
         .getRequest(`${WhatsApi.GET_MESSAGES_FOR_CHAT_URL}/${chat.id}`, null)
         .then((result: any) => {
-          console.log(result);
           let messages: Message[] = [];
-          for (let i in result) {
-            let m = result[i];
-            let message = {
-              id: m.id,
-              senderId: m.sender_id,
-              type: m.type,
-              text: m.text,
-              mediaUrl: m.media_url,
-              chatId: m.chat_id,
-              timestamp: m.created_at,
-            };
-            messages.push(message);
+          for (let message of result) {
+            messages.push(Utils.messageFromJson(message));
           }
           setMessagesListForChat(messages.reverse());
         })
@@ -165,26 +116,17 @@ const MainScreen = () => {
   }, [chat]);
 
   useEffect(() => {
-    if (chat && chat.type == ChatType.oneToOne) {
+    if (chat && chat.type === ChatType.oneToOne) {
       let remoteUser = chat.users.filter((user: User) => {
-        return user.id != axios.currentUserModel?.id;
+        return user.id !== axios.currentUserModel?.id;
       })[0];
-      console.log(remoteUser.id);
       axios
         ?.getRequest(
           `${WhatsApi.GET_REMOTE_USER_DETAILS_URL}/${remoteUser.id}`,
           null
         )
         .then((result: any) => {
-          let user: User = {
-            id: result.id,
-            name: result.name,
-            about: result.about,
-            firebaseUid: result.firebase_uid,
-            phoneNumber: result.phone_number,
-            profileImageUrl: result.profile_image_url,
-          };
-          setRemoteUser(user);
+          setRemoteUser(Utils.userFromJson(result));
         });
     }
   }, [chat]);
@@ -196,7 +138,6 @@ const MainScreen = () => {
     ) {
       let mList: Message[] = [...messagesListForChat.reverse()];
       mList.push(webSockets.lastChatMessage);
-      console.log(mList);
       setMessagesListForChat(mList.reverse());
     }
   }, [webSockets.lastChatMessage]);
@@ -209,22 +150,13 @@ const MainScreen = () => {
     setSearchQuery(value);
   };
   const onContactClicked = (contact: User) => {
-    var chatId = null;
-
-    for (let i in chatsList) {
-      let c = chatsList[i];
-      let remoteUser = c.users.filter((user: User) => {
-        return user.id !== axios.currentUserModel?.id;
-      })[0];
-      chatId = remoteUser.id === contact.id ? c.id : null;
-      if (!chatId) {
-        continue;
-      } else {
-        setChat(c);
-        break;
-      }
-    }
-    if (!chatId) {
+    let chat = chatsList.filter((chat: Chat) => {
+      let remoteUser = Utils.getRemoteUserFromChat(chat, axios.currentUserModel!.id);
+      return remoteUser.id === contact.id
+    })[0];
+    setChat(chat);
+    
+    if (!chat) {
       axios
         .postRequest(
           null,
@@ -232,15 +164,7 @@ const MainScreen = () => {
           WhatsApi.CREATE_NEW_CHAT_URL
         )
         .then((result: any) => {
-          let chat: Chat = {
-            id: result.id,
-            type: result.type,
-            name: result.name,
-            profileImageUrl: result.profile_image_url,
-            groupId: result.group_id,
-            users: result.users,
-            lastMessage: null,
-          };
+          let chat: Chat = Utils.chatFromJson(result);
           setChat(chat);
           let chats = [...chatsList];
           chats.push(chat);
@@ -303,10 +227,9 @@ const MainScreen = () => {
       .catch((e: any) => console.log(e.message));
   };
   const handleSendChatMessage = (request: SendMessageRequest) => {
-    console.log(`Send Message Request: ${request}`);
     webSockets?.sendChatMessage(request);
   };
-  const handleCreateNewGroup = (name: string, imageFile: File | null) => { };
+  const handleCreateNewGroup = (name: string, imageFile: File | null) => {};
   const handleSelectUsersForGroup = () => {
     setContactNameSearchQuery("");
     setShowSelectUsersForGroup(true);
