@@ -15,6 +15,7 @@ import "../css/mainScreenStyle.css";
 import Chat, { ChatType } from "../models/Chat";
 import Message from "../models/Message";
 import SendMessageRequest from "../models/SendMessageRequest";
+import Group from "../models/Group";
 import User from "../models/User";
 import { WhatsApi } from "../utils/Constants";
 import Utils from "../utils/Utils";
@@ -29,6 +30,7 @@ const MainScreen = () => {
     useState<boolean>(false);
   const [showRemoteUserProfileScreen, setShowRemoteUserProfileScreen] =
     useState<boolean>(false);
+  const [showGroupDetailsScreen, setShowGroupDetailsScreen] = useState<boolean>(false);
   const [showSelectUsersForGroup, setShowSelectUsersForGroup] =
     useState<boolean>(false);
   const [showCreateGroupSidebar, setShowCreateGroupSidebar] =
@@ -36,6 +38,7 @@ const MainScreen = () => {
   const [contactNameSearchQuery, setContactNameSearchQuery] = useState<
     string | null
   >(null);
+  const [groupDetails, setGroupDetails] = useState<Group | null>(null);
   const [showStatusScreen, setShowStatusScreen] = useState<boolean>(false);
   const [messagesListForChat, setMessagesListForChat] = useState<Message[]>([]);
   const [usersToAddInGroup, setUsersToAddInGroup] = useState<string[]>([]);
@@ -116,18 +119,25 @@ const MainScreen = () => {
   }, [chat]);
 
   useEffect(() => {
-    if (chat && chat.type === ChatType.oneToOne) {
-      let remoteUser = chat.users.filter((user: User) => {
-        return user.id !== axios.currentUserModel?.id;
-      })[0];
-      axios
-        ?.getRequest(
-          `${WhatsApi.GET_REMOTE_USER_DETAILS_URL}/${remoteUser.id}`,
-          null
-        )
-        .then((result: any) => {
-          setRemoteUser(Utils.userFromJson(result));
-        });
+    if (chat) {
+      if (chat.type === ChatType.oneToOne) {
+        let remoteUserId = Utils.getRemoteUserIdFromChat(chat, axios.currentUserModel!.id);
+        axios
+          ?.getRequest(
+            `${WhatsApi.GET_REMOTE_USER_DETAILS_URL}/${remoteUserId}`,
+            null
+          )
+          .then((result: any) => {
+            setRemoteUser(Utils.userFromJson(result));
+          }).catch(e => console.log(e.message));
+      } else if (chat.type === ChatType.group) {
+        if (!chat.groupId) {
+          return;
+        }
+        axios.getRequest(`${WhatsApi.GET_GROUP_DETAILS_URL}/${chat.groupId}`, null).then((result) => {
+          setGroupDetails(Utils.groupFromJson(result));
+        }).catch(e => console.log(e.message));
+      }
     }
   }, [chat]);
 
@@ -136,6 +146,11 @@ const MainScreen = () => {
       webSockets.lastChatMessage &&
       chat?.id === webSockets.lastChatMessage.chatId
     ) {
+      chatsList.forEach((chat: Chat) => {
+        if (chat.id === webSockets.lastChatMessage!.chatId) {
+          chat.lastMessage = webSockets.lastChatMessage;
+        }
+      })
       let mList: Message[] = [...messagesListForChat.reverse()];
       mList.push(webSockets.lastChatMessage);
       setMessagesListForChat(mList.reverse());
@@ -151,11 +166,11 @@ const MainScreen = () => {
   };
   const onContactClicked = (contact: User) => {
     let chat = chatsList.filter((chat: Chat) => {
-      let remoteUser = Utils.getRemoteUserFromChat(chat, axios.currentUserModel!.id);
-      return remoteUser.id === contact.id
+      let remoteUserId = Utils.getRemoteUserIdFromChat(chat, axios.currentUserModel!.id);
+      return remoteUserId === contact.id
     })[0];
     setChat(chat);
-    
+
     if (!chat) {
       axios
         .postRequest(
@@ -229,7 +244,28 @@ const MainScreen = () => {
   const handleSendChatMessage = (request: SendMessageRequest) => {
     webSockets?.sendChatMessage(request);
   };
-  const handleCreateNewGroup = (name: string, imageFile: File | null) => {};
+  const handleCreateNewGroup = async (name: string, imageFile: File | null) => {
+    try {
+      let profileImageUrl: string | null = null;
+      if (imageFile) {
+        profileImageUrl = await axios.uploadFile(imageFile);
+      }
+      let createGroupResponse = await axios.postRequest({
+        name: name,
+        profile_image_url: profileImageUrl,
+        user_ids: usersToAddInGroup
+      }, null, WhatsApi.CREATE_NEW_GROUP_URL);
+      setShowCreateGroupSidebar(false);
+      setUsersToAddInGroup([]);
+      let chat = Utils.chatFromJson(createGroupResponse.data);
+      let chats = [...chatsList];
+      chats.push(chat);
+      setChatsList(chats);
+    }
+    catch (e: any) {
+      console.log(e.message);
+    }
+  };
   const handleSelectUsersForGroup = () => {
     setContactNameSearchQuery("");
     setShowSelectUsersForGroup(true);
@@ -290,7 +326,10 @@ const MainScreen = () => {
           setShowCreateGroupSidebar(true);
         }}
         previouslySelectedUsers={usersToAddInGroup}
-        onClose={() => setShowSelectUsersForGroup(false)}
+        onClose={() => {
+          setShowSelectUsersForGroup(false);
+          setUsersToAddInGroup([]);
+        }}
         onSearchQueryChange={(value: string) => searchContactsByName(value)}
         contacts={contactsList}
       />

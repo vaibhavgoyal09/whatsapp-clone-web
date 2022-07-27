@@ -1,5 +1,4 @@
 import Message from "./Message";
-import User from "./User";
 
 enum ChatType {
   oneToOne = 0,
@@ -12,7 +11,7 @@ interface Chat {
   name: string;
   profileImageUrl: string | null;
   groupId: string | null;
-  users: User[];
+  userIds: string[];
   lastMessage?: Message | null;
 }
 

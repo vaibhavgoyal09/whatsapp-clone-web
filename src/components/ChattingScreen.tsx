@@ -38,11 +38,11 @@ const ChattingScreen: React.FC<Props> = ({
     if (messageText === "") {
       return;
     }
-    let remoteUser = Utils.getRemoteUserFromChat(chat, currentUserModel.id);
+    let remoteUserId = Utils.getRemoteUserIdFromChat(chat, currentUserModel.id);
     let request: SendMessageRequest = {
       type: 0,
       own_user_id: currentUserModel.id,
-      to_user_id: remoteUser.id,
+      to_user_id: remoteUserId,
       chat_id: chat.id,
       media_url: null,
       text: messageText,

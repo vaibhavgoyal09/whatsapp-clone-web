@@ -6,9 +6,9 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const location = useLocation();
 
   if (auth.isUserLoggedIn) {
-    return location.pathname === "/auth" ? <Navigate to="/" /> : children;
+    return location.pathname === "/auth" ? <Navigate to="/" replace /> : children;
   } else {
-    return location.pathname === "/auth" ? children : <Navigate to="/auth" />;
+    return location.pathname === "/auth" ? children : <Navigate to="/auth" replace />;
   }
 };
 
