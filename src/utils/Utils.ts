@@ -25,6 +25,7 @@ class Utils {
   }
 
   static chatFromJson(json: any): Chat {
+    console.log(json);
     let message = json.last_message ? this.messageFromJson(json.last_message) : null;
     let chat: Chat = {
       id: json.id,
@@ -52,11 +53,16 @@ class Utils {
   }
 
   static groupFromJson(json: any): Group {
+    let users: User[] = []; 
+    for (let user of json.users) {
+      users.push(this.userFromJson(user));
+    }
+
     return {
       id: json.id,
       name: json.name,
       profileImageUrl: json.profile_image_url,
-      users: json.users,
+      users: users,
       adminId: json.admin_id
     }
   }

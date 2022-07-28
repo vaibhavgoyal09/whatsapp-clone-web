@@ -18,7 +18,7 @@ interface Props {
   onShowStatusScreen: () => void;
   onCreateNewGroupClicked: () => void;
   onLogOutClicked: () => void;
-  selectedChat: Chat | null; 
+  selectedChat: Chat | null;
 }
 
 const MainSidebar: React.FC<Props> = ({
@@ -79,16 +79,14 @@ const MainSidebar: React.FC<Props> = ({
         </div>
       ) : (
         <div className="chatsContainer">
-          <div className="chats">
-            {chatsList.map((chat, index) => (
-              <ChatItem
-                key={chat.id}
-                chat={chat}
-                isSelected={selectedChat ? selectedChat.id === chat.id : false}
-                onChatClick={() => onChatClicked(chatsList[index])}
-              />
-            ))}
-          </div>
+          {chatsList.map((chat, index) => (
+            <ChatItem
+              key={chat.id}
+              chat={chat}
+              isSelected={selectedChat ? selectedChat.id === chat.id : false}
+              onChatClick={() => onChatClicked(chatsList[index])}
+            />
+          ))}
         </div>
       )}
     </div>

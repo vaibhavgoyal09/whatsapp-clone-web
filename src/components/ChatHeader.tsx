@@ -1,22 +1,27 @@
 import "../css/chatHeaderStyle.css";
 
-
 interface Props {
-  profileImageUrl?: string | null,
-  onProfileClick: () => void,
-  userName: string
+  profileImageUrl?: string | null;
+  onProfileClick: () => void;
+  userName: string;
 }
 
-
-const ChatHeader: React.FC<Props> = ({ profileImageUrl, onProfileClick, userName }) => {
+const ChatHeader: React.FC<Props> = ({
+  profileImageUrl,
+  onProfileClick,
+  userName,
+}) => {
   return (
-    <div className="chtnr" onClick={() => onProfileClick()}>
+    <div className="chtnr">
       <img
         className="avt"
+        onClick={() => onProfileClick()}
         src={profileImageUrl ? profileImageUrl : "avatar.png"}
         alt="your profile"
       />
-      <div className="chname">{userName}</div>
+      <div className="chname" onClick={() => onProfileClick()}>
+        {userName}
+      </div>
       <div className="choptionsContainer">
         <span className="chic">
           <i className="fa-solid fa-ellipsis-vertical" />

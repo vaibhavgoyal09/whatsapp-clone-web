@@ -4,7 +4,6 @@
   flex-direction: row;
   background-color: var(--background);
   justify-content: center;
-  cursor: pointer;
 }
 
 .avt {
@@ -14,6 +13,7 @@
   margin-top: 12px;
   margin-left: 12px;
   margin-bottom: 12px;
+  cursor: pointer;
 }
 
 .chname {
@@ -24,6 +24,7 @@
   text-align: center;
   position: relative;
   margin-left: 20px;
+  cursor: pointer;
 }
 
 .choptionsContainer {

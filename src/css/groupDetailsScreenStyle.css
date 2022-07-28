@@ -1,0 +1,215 @@
+.gdContainer {
+  width: 100%;
+  height: 100%;
+  background-color: var(--darkerGrey);
+  border-left: 1px solid var(--inputFieldBorder);
+  overflow-y: scroll;
+}
+
+.gdHeaderCtnr {
+  background-color: var(--background);
+  color: var(--white);
+  display: flex;
+  height: 64px;
+  flex-direction: row;
+  align-items: center;
+}
+
+.gdCloseBtn {
+  font-size: 1.25rem;
+  cursor: pointer;
+  margin-left: 24px;
+}
+
+.gdTitle {
+  margin-left: 30px;
+  font-size: 1rem;
+}
+
+.gdBtmCtnr {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.gdimgCtnr {
+  width: 200px;
+  height: 200px;
+  align-self: center;
+}
+
+.gdGroupProfilePic {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.gdGroupDetailsCtnr {
+  margin-top: 8px;
+  align-self: center;
+}
+
+.gdGroupName {
+  font-size: 1.5rem;
+  color: var(--white);
+  text-align: center;
+}
+
+.gdParticipantsCount {
+  margin-top: 8px;
+  font-size: 1rem;
+  color: var(--secondaryText);
+}
+
+.gdPartcipantsCtnr {
+  width: 100%;
+  margin-top: 16px;
+  box-sizing: border-box;
+}
+
+.gdPartcipantsCtnr span {
+  color: var(--secondaryText);
+  margin-left: 16px;
+  font-size: 0.9rem;
+}
+
+.gdPartActionsCtnr {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.gdPartAction {
+  display: flex;
+  padding: 12px 24px;
+  box-sizing: border-box;
+  flex-direction: row;
+  cursor: pointer;
+}
+
+.gdPartAction:hover {
+  background-color: var(--background);
+}
+
+.actIcCtnr {
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  background-color: var(--green);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.actIc {
+  font-size: 0.9rem;
+  text-align: center;
+  color: var(--white);
+}
+
+.actName {
+  margin-left: 16px;
+  font-size: 1.05rem;
+  color: var(--white);
+  display: inline-block;
+  align-self: center;
+  position: relative;
+  bottom: 3px;
+}
+
+.gdUsersContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 24px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  box-sizing: border-box;
+}
+
+.gdUserItemContainer {
+  display: flex;
+  flex-direction: row;
+  padding: 8px 0px;
+  width: 100%;
+}
+
+.gdUserProfilePic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.dgUserDetailsContainer {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-left: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.gdUserRole {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.gdUserName {
+  color: var(--white);
+  font-size: 1rem;
+  text-align: left;
+  margin-right: auto;
+  text-align: left;
+}
+
+.gdrole {
+  background-color: var(--background);
+  border-radius: 4px;
+  margin-left: auto;
+  font-size: 0.7rem;
+  padding: 6px;
+  display: inline;
+  color: var(--white);
+}
+
+.gdUserAbout {
+  color: var(--secondaryText);
+  font-size: 0.9rem;
+  margin-top: 4px;
+  text-align: left;
+}
+
+.gdOptionsContainer {
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.gdOpCtnr {
+  color: #f15c6d;
+  padding: 16px;
+}
+
+.gdOpCtnr:hover {
+  background-color: var(--background);
+}
+
+.gdOpCtnt {
+  padding-left: 16px;
+  padding-right: 16px;
+  display: flex;
+  flex-direction: row;
+}
+
+.gdWarnIcon {
+  font-size: 1.25rem;
+}
+
+.gdOpAction {
+  padding-left: 30px;
+}

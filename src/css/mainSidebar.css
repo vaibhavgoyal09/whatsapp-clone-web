@@ -1,21 +1,14 @@
 #ctnt {
   width: 100%;
   height: 100%;
-  background-color: var(--darkerGrey);
   position: relative;
-  display: block;
   border-right: 1px solid var(--inputFieldBorder);
 }
 
 .chatsContainer {
   width: 100%;
-  overflow-y: auto;
   cursor: pointer;
-}
-
-.chats {
-  width: 100%;
-  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 .contactsContainer {

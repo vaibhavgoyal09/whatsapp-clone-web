@@ -19,6 +19,7 @@ import Group from "../models/Group";
 import User from "../models/User";
 import { WhatsApi } from "../utils/Constants";
 import Utils from "../utils/Utils";
+import GroupDetailsScreen from "../components/GroupDetailsScreen";
 
 const MainScreen = () => {
   const [chat, setChat] = useState<Chat | null>(null);
@@ -28,9 +29,8 @@ const MainScreen = () => {
   const [searchQuery, setSearchQuery] = useState<string | null>(null);
   const [showSelfProfileScreen, setShowSelfProfileScreen] =
     useState<boolean>(false);
-  const [showRemoteUserProfileScreen, setShowRemoteUserProfileScreen] =
+  const [showChatDetailsScreen, setshowChatDetailsScreen] =
     useState<boolean>(false);
-  const [showGroupDetailsScreen, setShowGroupDetailsScreen] = useState<boolean>(false);
   const [showSelectUsersForGroup, setShowSelectUsersForGroup] =
     useState<boolean>(false);
   const [showCreateGroupSidebar, setShowCreateGroupSidebar] =
@@ -46,6 +46,10 @@ const MainScreen = () => {
   const auth = useAuth()!;
   const webSockets = useWhatsappWebSocket()!;
   const axios = useAxios()!;
+
+  useEffect(() => {
+    setshowChatDetailsScreen(false);
+  }, [chat]);
 
   useEffect(() => {
     if (axios.accessToken) {
@@ -121,7 +125,10 @@ const MainScreen = () => {
   useEffect(() => {
     if (chat) {
       if (chat.type === ChatType.oneToOne) {
-        let remoteUserId = Utils.getRemoteUserIdFromChat(chat, axios.currentUserModel!.id);
+        let remoteUserId = Utils.getRemoteUserIdFromChat(
+          chat,
+          axios.currentUserModel!.id
+        );
         axios
           ?.getRequest(
             `${WhatsApi.GET_REMOTE_USER_DETAILS_URL}/${remoteUserId}`,
@@ -129,14 +136,18 @@ const MainScreen = () => {
           )
           .then((result: any) => {
             setRemoteUser(Utils.userFromJson(result));
-          }).catch(e => console.log(e.message));
+          })
+          .catch((e) => console.log(e.message));
       } else if (chat.type === ChatType.group) {
         if (!chat.groupId) {
           return;
         }
-        axios.getRequest(`${WhatsApi.GET_GROUP_DETAILS_URL}/${chat.groupId}`, null).then((result) => {
-          setGroupDetails(Utils.groupFromJson(result));
-        }).catch(e => console.log(e.message));
+        axios
+          .getRequest(`${WhatsApi.GET_GROUP_DETAILS_URL}/${chat.groupId}`, null)
+          .then((result) => {
+            setGroupDetails(Utils.groupFromJson(result));
+          })
+          .catch((e) => console.log(e.message));
       }
     }
   }, [chat]);
@@ -150,7 +161,7 @@ const MainScreen = () => {
         if (chat.id === webSockets.lastChatMessage!.chatId) {
           chat.lastMessage = webSockets.lastChatMessage;
         }
-      })
+      });
       let mList: Message[] = [...messagesListForChat.reverse()];
       mList.push(webSockets.lastChatMessage);
       setMessagesListForChat(mList.reverse());
@@ -158,7 +169,7 @@ const MainScreen = () => {
   }, [webSockets.lastChatMessage]);
 
   const onChatClick = (chat: Chat) => {
-    setShowRemoteUserProfileScreen(false);
+    setshowChatDetailsScreen(false);
     setChat(chat);
   };
   const onSearchQueryChange = (value: string) => {
@@ -166,8 +177,11 @@ const MainScreen = () => {
   };
   const onContactClicked = (contact: User) => {
     let chat = chatsList.filter((chat: Chat) => {
-      let remoteUserId = Utils.getRemoteUserIdFromChat(chat, axios.currentUserModel!.id);
-      return remoteUserId === contact.id
+      let remoteUserId = Utils.getRemoteUserIdFromChat(
+        chat,
+        axios.currentUserModel!.id
+      );
+      return remoteUserId === contact.id;
     })[0];
     setChat(chat);
 
@@ -188,8 +202,8 @@ const MainScreen = () => {
         .catch((e: any) => console.log(e));
     }
   };
-  const onRemoteUserProfileClick = () => {
-    setShowRemoteUserProfileScreen(true);
+  const handleShowChatInfoScreen = () => {
+    setshowChatDetailsScreen(true);
   };
   const onUserSelfProfileClick = () => {
     setShowSelfProfileScreen(true);
@@ -250,19 +264,23 @@ const MainScreen = () => {
       if (imageFile) {
         profileImageUrl = await axios.uploadFile(imageFile);
       }
-      let createGroupResponse = await axios.postRequest({
-        name: name,
-        profile_image_url: profileImageUrl,
-        user_ids: usersToAddInGroup
-      }, null, WhatsApi.CREATE_NEW_GROUP_URL);
+      let createGroupResponse = await axios.postRequest(
+        {
+          name: name,
+          profile_image_url: profileImageUrl,
+          user_ids: usersToAddInGroup,
+        },
+        null,
+        WhatsApi.CREATE_NEW_GROUP_URL
+      );
       setShowCreateGroupSidebar(false);
       setUsersToAddInGroup([]);
-      let chat = Utils.chatFromJson(createGroupResponse.data);
+      let chat = Utils.chatFromJson(createGroupResponse);
       let chats = [...chatsList];
       chats.push(chat);
+      setChat(chat);
       setChatsList(chats);
-    }
-    catch (e: any) {
+    } catch (e: any) {
       console.log(e.message);
     }
   };
@@ -355,7 +373,7 @@ const MainScreen = () => {
       {chat ? (
         <div
           className={
-            showRemoteUserProfileScreen
+            showChatDetailsScreen
               ? "chattingContainer small"
               : "chattingContainer max"
           }
@@ -364,7 +382,7 @@ const MainScreen = () => {
             currentUserModel={axios.currentUserModel}
             chat={chat}
             onProfileClick={() => {
-              onRemoteUserProfileClick();
+              handleShowChatInfoScreen();
             }}
             messages={messagesListForChat}
             onSendMessage={(request: SendMessageRequest) =>
@@ -377,12 +395,19 @@ const MainScreen = () => {
           <WhatsappIntroScreen />
         </div>
       )}
-      {showRemoteUserProfileScreen ? (
-        <div className="remoteUserProfileContainer">
-          <RemoteUserProfilePreview
-            user={remoteUser!}
-            onClose={() => setShowRemoteUserProfileScreen(false)}
-          />
+      {showChatDetailsScreen ? (
+        <div className="chatInfoScreenContainer">
+          {chat?.type === ChatType.oneToOne ? (
+            <RemoteUserProfilePreview
+              user={remoteUser!}
+              onClose={() => setshowChatDetailsScreen(false)}
+            />
+          ) : (
+            <GroupDetailsScreen
+              group={groupDetails}
+              onClose={() => setshowChatDetailsScreen(false)}
+            />
+          )}
         </div>
       ) : null}
     </div>
