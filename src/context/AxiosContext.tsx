@@ -142,7 +142,7 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
           params: params,
         }
       );
-      return response.data;
+      return response.data ? response.data : null;
     });
   }
 
@@ -154,7 +154,7 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
       let response = await instanceRef.current.get(requestPath, {
         params: params,
       });
-      return response.data;
+      return response.data ? response.data : null;
     });
   }
 
@@ -167,7 +167,7 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
       let response = await instanceRef.current.put(requestPath, requestBody, {
         params: params,
       });
-      return response.data;
+      return response.data ? response.data : null;
     });
   }
 

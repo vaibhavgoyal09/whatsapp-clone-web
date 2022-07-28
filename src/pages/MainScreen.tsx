@@ -56,7 +56,6 @@ const MainScreen = () => {
       axios
         .getRequest(WhatsApi.GET_ALL_CHATS_URL, null)
         .then((result: any) => {
-          console.log(result);
           let chats: Chat[] = [];
           result.forEach((element: any) => {
             chats.push(Utils.chatFromJson(element));

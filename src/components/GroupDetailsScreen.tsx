@@ -17,14 +17,12 @@ const GroupDetailsScreen: React.FC<Props> = ({ group, onClose }) => {
   const users = group.users.sort((a, b) => {
     if (a.id === group.adminId) {
       return -1;
-    } else if (b.id == group.adminId) {
+    } else if (b.id === group.adminId) {
       return 1;
     } else {
       return 0;
     }
   });
-
-  console.log(users);
 
   return (
     <div className="gdContainer">

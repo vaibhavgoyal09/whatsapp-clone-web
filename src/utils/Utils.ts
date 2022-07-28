@@ -25,7 +25,6 @@ class Utils {
   }
 
   static chatFromJson(json: any): Chat {
-    console.log(json);
     let message = json.last_message ? this.messageFromJson(json.last_message) : null;
     let chat: Chat = {
       id: json.id,

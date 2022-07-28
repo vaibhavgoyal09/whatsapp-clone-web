@@ -110,7 +110,7 @@ const UserSelfProfilePreview: React.FC<Props> = ({
                     <i
                       className="fa-solid fa-pen sS"
                       onClick={() => {
-                        setIsUserNameFieldFocused(true);
+                        setIsUserNameFieldEditable(true);
                         setIsUserNameFieldFocused(true);
                       }}
                     />
