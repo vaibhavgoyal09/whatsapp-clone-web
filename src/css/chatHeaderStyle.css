@@ -17,14 +17,26 @@
 }
 
 .chname {
-  font-size: 0.9rem;
-  color: var(--white);
-  margin-top: auto;
-  margin-bottom: auto;
-  text-align: center;
-  position: relative;
   margin-left: 20px;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-self: center;
+  justify-content: center;
+}
+
+.cname {
+  font-size: 0.9rem;
+  color: var(--white);
+  text-align: left;
+}
+
+.cLastSeen {
+  font-size: 0.9rem;
+  color: var(--white);
+  margin-top: 4px;
+  text-align: left;
 }
 
 .choptionsContainer {

@@ -40,13 +40,20 @@
   color: var(--white);
 }
 
-.umsg {
+.usectext {
   font-size: 12px;
   margin-top: 4px;
   overflow: hidden;
-  color: var(--secondaryText);
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.umsg {
+  color: var(--secondaryText);
+}
+
+.utypingInd {
+  color: var(--green);
 }
 
 .mcTstmp {

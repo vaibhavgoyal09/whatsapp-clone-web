@@ -1,16 +1,31 @@
 import "../css/chatHeaderStyle.css";
+import { ChatType } from "../models/Chat";
+import Utils from "../utils/Utils";
 
 interface Props {
   profileImageUrl?: string | null;
   onProfileClick: () => void;
-  userName: string;
+  name: string;
+  type: number;
+  isUserOnline: boolean | null;
+  lastOnlineAt: number | null;
 }
 
 const ChatHeader: React.FC<Props> = ({
   profileImageUrl,
   onProfileClick,
-  userName,
+  name,
+  type,
+  isUserOnline,
+  lastOnlineAt
 }) => {
+
+  let lastSeenText: string | null = null; 
+
+  if (type === ChatType.oneToOne) {
+    lastSeenText = isUserOnline ? "Online": Utils.timeSince(new Date(lastOnlineAt!));
+  }
+
   return (
     <div className="chtnr">
       <img
@@ -20,7 +35,8 @@ const ChatHeader: React.FC<Props> = ({
         alt="your profile"
       />
       <div className="chname" onClick={() => onProfileClick()}>
-        {userName}
+        <p className="cname">{name}</p>
+        { type === ChatType.oneToOne ? <p className="cLastSeen">{lastSeenText}</p> : null }
       </div>
       <div className="choptionsContainer">
         <span className="chic">

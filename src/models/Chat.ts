@@ -13,6 +13,7 @@ interface Chat {
   groupId: string | null;
   userIds: string[];
   lastMessage?: Message | null;
+  typingUsersIds: string[];
 }
 
 export default Chat;

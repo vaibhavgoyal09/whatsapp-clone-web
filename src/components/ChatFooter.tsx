@@ -1,23 +1,41 @@
 import React, { createRef, useEffect, useState } from "react";
 import "../css/chatFooterStyle.css";
+import debounce from "lodash/debounce";
 
 interface Props {
   onSendMessage: () => void;
   onMessageFieldValueChange: (value: string) => void;
+  onTypingStatusChange: (isTyping: boolean) => void;
 }
 
-const ChatFooter: React.FC<Props> = ({ onSendMessage, onMessageFieldValueChange }) => {
-
+const ChatFooter: React.FC<Props> = ({
+  onSendMessage,
+  onMessageFieldValueChange,
+  onTypingStatusChange,
+}) => {
   const [messageText, setMessageText] = useState<string>("");
   const messageInputFieldRef = createRef<HTMLInputElement>();
+  const [isTyping, setIsTyping] = useState<boolean>(false);
 
   useEffect(() => {
     onMessageFieldValueChange(messageText);
   }, [messageText]);
 
-  const handleMessageFieldValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    onTypingStatusChange(isTyping);
+  }, [isTyping]);
+
+  const handleMessageFieldValueChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIsTyping(true);
     setMessageText(event.target.value);
-  }
+    handleIsTypingChange();
+  };
+
+  const handleIsTypingChange = debounce(() => {
+    setIsTyping(false);
+  }, 2000);
 
   return (
     <div className="fcontnt">

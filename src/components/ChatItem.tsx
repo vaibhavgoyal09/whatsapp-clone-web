@@ -1,4 +1,4 @@
-import React, { createRef } from "react";
+import React, { createRef, useState } from "react";
 import "../css/chatItemStyle.css";
 import Chat from "../models/Chat";
 import { MessageType } from "../models/Message";
@@ -11,7 +11,7 @@ interface Props {
 
 const ChatItem: React.FC<Props> = ({ chat, onChatClick, isSelected }) => {
   const contentRef = createRef<HTMLDivElement>();
-
+  
   if (!chat) {
     return null;
   }
@@ -22,6 +22,7 @@ const ChatItem: React.FC<Props> = ({ chat, onChatClick, isSelected }) => {
   var timestamp = "";
   if (message) {
     let date = new Date(message.timestamp);
+    console.log(date);
     let hours = date.getHours();
     let minutes = date.getMinutes().toString();
     timestamp = `${hours - 12}:${
@@ -44,18 +45,14 @@ const ChatItem: React.FC<Props> = ({ chat, onChatClick, isSelected }) => {
       onClick={() => onChatClick()}
     >
       <img
-        src={
-          chat.profileImageUrl
-            ? chat.profileImageUrl
-            : "avatar.png"
-        }
+        src={chat.profileImageUrl ? chat.profileImageUrl : "avatar.png"}
         alt="user profile"
         className="avatar"
       />
       <div className="infoContainer">
         <div className="unamec">
           <p className="uname unselectable">{chat.name}</p>
-          <p className="umsg unselectable">{messageText}</p>
+          <p className="usectext umsg unselectable">{messageText}</p>
         </div>
         <div className="mcTstmp">
           {/* {chat.unseenMessageCount > 0 ? (

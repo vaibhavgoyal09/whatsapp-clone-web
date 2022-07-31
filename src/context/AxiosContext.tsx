@@ -10,6 +10,7 @@ import {
 import User from "../models/User";
 import { WhatsApi } from "../utils/Constants";
 import { useAuth } from "./AuthContext";
+import Utils from "../utils/Utils";
 
 interface AxiosContextInterface {
   currentUserModel: User | null;
@@ -30,7 +31,10 @@ interface AxiosContextInterface {
     requestPath: string
   ) => Promise<T>;
   uploadFile: (file: File) => Promise<string>;
-  getRequest: <T = any>(requestPath: string, params: object | null) => Promise<T>;
+  getRequest: <T = any>(
+    requestPath: string,
+    params: object | null
+  ) => Promise<T>;
 }
 
 export const AxiosContext = createContext<AxiosContextInterface | null>(null);
@@ -71,14 +75,7 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
               `${WhatsApi.GET_CURRENT_USER_INFO_URL}`
             )
           ).data;
-          let user = {
-            id: data.id,
-            name: data.name,
-            about: data.about,
-            firebaseUid: data.firebase_uid,
-            phoneNumber: data.phone_number,
-            profileImageUrl: data.profile_image_url,
-          };
+          let user = Utils.userFromJson(data);
           setCurrentUserModel(user);
         } catch (axiosError) {
           console.log(axiosError);
@@ -105,16 +102,11 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     about?: string,
     profileImageUrl?: string
   ) {
-    setCurrentUserModel({
-      id: currentUserModel!.id,
-      name: name ? name : currentUserModel!.name,
-      about: about ? about : currentUserModel!.about,
-      firebaseUid: currentUserModel!.firebaseUid,
-      phoneNumber: currentUserModel!.phoneNumber,
-      profileImageUrl: profileImageUrl
-        ? profileImageUrl
-        : currentUserModel!.profileImageUrl,
-    });
+    currentUserModel!.name = name ? name : currentUserModel!.name;
+    currentUserModel!.about = about ? about : currentUserModel!.about;
+    currentUserModel!.profileImageUrl = profileImageUrl
+      ? profileImageUrl
+      : currentUserModel!.profileImageUrl;
   }
 
   async function uploadFile(file: File) {

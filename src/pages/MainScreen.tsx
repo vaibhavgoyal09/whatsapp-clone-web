@@ -152,6 +152,20 @@ const MainScreen = () => {
   }, [chat]);
 
   useEffect(() => {
+    let status = webSockets.typingStatusChange;
+    if (status) {
+      let c = chatsList.filter((chat) => {
+        return chat.id === status!.chat_id;
+      })[0];
+      if (c.typingUsersIds.includes(status.user_id)) {
+        c.typingUsersIds.splice(c.typingUsersIds.indexOf(status.user_id));
+      } else {
+        c.typingUsersIds.push(status.user_id);
+      }
+    }
+  }, [webSockets.typingStatusChange]);
+
+  useEffect(() => {
     if (
       webSockets.lastChatMessage &&
       chat?.id === webSockets.lastChatMessage.chatId
@@ -207,7 +221,9 @@ const MainScreen = () => {
   const onUserSelfProfileClick = () => {
     setShowSelfProfileScreen(true);
   };
-
+  const handleSelfTypingStatusChange = (isTyping: boolean) => {
+    webSockets.sendSelfTypingStatusChange(isTyping, chat!.id);
+  };
   const updateUserDetails = async (
     name: string | null = null,
     about: string | null = null,
@@ -383,9 +399,13 @@ const MainScreen = () => {
             onProfileClick={() => {
               handleShowChatInfoScreen();
             }}
+            remoteUser={chat.type === ChatType.oneToOne ? remoteUser : null}
             messages={messagesListForChat}
             onSendMessage={(request: SendMessageRequest) =>
               handleSendChatMessage(request)
+            }
+            onTypingStatusChange={(isTyping: boolean) =>
+              handleSelfTypingStatusChange(isTyping)
             }
           />
         </div>

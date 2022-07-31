@@ -5,21 +5,21 @@ import "../css/chattingScreenStyle.css";
 import { useState } from "react";
 import ReceivedMessageItem from "./ReceivedMessageItem";
 import SentMessageItem from "./SentMessageItem";
-import User from '../models/User';
-import Chat from "../models/Chat";
+import User, { OnlineStatus } from "../models/User";
+import Chat, { ChatType } from "../models/Chat";
 import Message from "../models/Message";
 import SendMessageRequest from "../models/SendMessageRequest";
 import Utils from "../utils/Utils";
 
-
 interface Props {
-  currentUserModel: User,
-  chat: Chat,
-  messages: Message[],
-  onProfileClick: () => void,
+  currentUserModel: User;
+  chat: Chat;
+  messages: Message[];
+  remoteUser: User | null;
+  onProfileClick: () => void;
   onSendMessage: (request: SendMessageRequest) => void;
+  onTypingStatusChange: (isTyping: boolean) => void;
 }
-
 
 const ChattingScreen: React.FC<Props> = ({
   currentUserModel,
@@ -27,6 +27,8 @@ const ChattingScreen: React.FC<Props> = ({
   messages,
   onProfileClick,
   onSendMessage,
+  onTypingStatusChange,
+  remoteUser
 }) => {
   const [messageText, setMessageText] = useState("");
 
@@ -34,11 +36,28 @@ const ChattingScreen: React.FC<Props> = ({
     return null;
   }
 
+  let isUserOnline: boolean | null = null;
+  let lastOnlineAt: number | null = null; 
+
+  if (chat.type === ChatType.oneToOne) {
+    if (!remoteUser) {
+      return null;
+    } else {
+      isUserOnline = remoteUser.onlineStatus === OnlineStatus.online;
+      lastOnlineAt = remoteUser.lastOnlineAt;
+    } 
+  }
+
   const sendMessage = () => {
     if (messageText === "") {
       return;
     }
-    let remoteUserId = Utils.getRemoteUserIdFromChat(chat, currentUserModel.id);
+    let remoteUserId;
+    if (remoteUser) {
+      remoteUserId = remoteUser.id;
+    } else {
+      remoteUserId= Utils.getRemoteUserIdFromChat(chat, currentUserModel.id);
+    }
     let request: SendMessageRequest = {
       type: 0,
       own_user_id: currentUserModel.id,
@@ -57,12 +76,15 @@ const ChattingScreen: React.FC<Props> = ({
         <ChatHeader
           profileImageUrl={chat.profileImageUrl}
           onProfileClick={() => onProfileClick()}
-          userName={chat.name}
+          name={chat.name}
+          type={chat.type}
+          isUserOnline={isUserOnline}
+          lastOnlineAt={lastOnlineAt}
         />
       </div>
       <div className="messagesContainer">
         <div className="listContainer">
-          {messages.map((message: Message,) =>
+          {messages.map((message: Message) =>
             message.senderId === currentUserModel.id ? (
               <SentMessageItem message={message} key={message.id} />
             ) : (
@@ -75,6 +97,9 @@ const ChattingScreen: React.FC<Props> = ({
         <ChatFooter
           onSendMessage={() => sendMessage()}
           onMessageFieldValueChange={(value: string) => setMessageText(value)}
+          onTypingStatusChange={(isTyping: boolean) =>
+            onTypingStatusChange(isTyping)
+          }
         />
       </div>
     </div>
