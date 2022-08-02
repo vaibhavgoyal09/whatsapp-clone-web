@@ -34,7 +34,7 @@
 
 .cLastSeen {
   font-size: 0.9rem;
-  color: var(--white);
+  color: var(--secondaryText);
   margin-top: 4px;
   text-align: left;
 }
