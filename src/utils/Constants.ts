@@ -13,8 +13,8 @@ export class WhatsApi {
   static GET_MESSAGES_FOR_CHAT_URL = "/message";
   static CREATE_NEW_GROUP_URL = "/group/new"
   static GET_GROUP_DETAILS_URL = "/group/details"
-  static ADD_GROUP_PARTICIPANTS = "/group/participant/add"
-  static REMOVW_GROUP_PARTICIPANTS = "/group/participant/remove"
+  static ADD_GROUP_PARTICIPANTS_URL = "/group/participant/add"
+  static REMOVW_GROUP_PARTICIPANTS_URL = "/group/participant/remove"
 
   static CHAT_WEBSOCKET_BASE_URL = "ws://127.0.0.1:8000/ws/chat";
 }

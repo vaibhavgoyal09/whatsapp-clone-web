@@ -21,6 +21,7 @@ import { WhatsApi } from "../utils/Constants";
 import Utils from "../utils/Utils";
 import GroupDetailsScreen from "../components/GroupDetailsScreen";
 import SelectUsersToAddInGroupDialog from "../components/SelectUsersToAddInGroupDialog";
+import AddRemoveParticipantsRequest from "../models/AddRemoveParticipantsRequest";
 
 const MainScreen = () => {
   const [chat, setChat] = useState<Chat | null>(null);
@@ -144,12 +145,7 @@ const MainScreen = () => {
         if (!chat.groupId) {
           return;
         }
-        axios
-          .getRequest(`${WhatsApi.GET_GROUP_DETAILS_URL}/${chat.groupId}`, null)
-          .then((result) => {
-            setGroupDetails(Utils.groupFromJson(result));
-          })
-          .catch((e) => console.log(e.message));
+        getGroupDetails();
       }
     }
   }, [chat]);
@@ -183,6 +179,15 @@ const MainScreen = () => {
       setMessagesListForChat(mList.reverse());
     }
   }, [webSockets.lastChatMessage]);
+
+  const getGroupDetails = () => {
+    axios
+      .getRequest(`${WhatsApi.GET_GROUP_DETAILS_URL}/${chat!.groupId!}`, null)
+      .then((result) => {
+        setGroupDetails(Utils.groupFromJson(result));
+      })
+      .catch((e) => console.log(e.message));
+  };
 
   const onChatClick = (chat: Chat) => {
     setshowChatDetailsScreen(false);
@@ -306,6 +311,18 @@ const MainScreen = () => {
     setContactNameSearchQuery("");
     setShowSelectUsersForGroup(true);
   };
+  const handleAddParticipantsClicked = (participants: string[]) => {
+    let request: AddRemoveParticipantsRequest = {
+      group_id: groupDetails!.id,
+      user_ids: participants,
+    };
+    axios
+      .postRequest(request, null, WhatsApi.ADD_GROUP_PARTICIPANTS_URL)
+      .then((_) => {
+        getGroupDetails();
+      })
+      .catch((e: any) => console.log(e));
+  };
   const handleLogOut = () => {
     auth
       .logOut()
@@ -393,7 +410,10 @@ const MainScreen = () => {
     <div className="pg">
       {showStatusScreen ? <StatusScreen /> : null}
       <SelectUsersToAddInGroupDialog
-        onDoneClicked={() => {}}
+        onDoneClicked={(participants) => {
+          setShowSelectUsersForGroupDialog(false);
+          handleAddParticipantsClicked(participants);
+        }}
         usersList={contactsList}
         showDialog={showSelectUsersForGroupDialog}
         onClose={() => setShowSelectUsersForGroupDialog(false)}
