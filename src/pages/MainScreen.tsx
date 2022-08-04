@@ -20,6 +20,7 @@ import User from "../models/User";
 import { WhatsApi } from "../utils/Constants";
 import Utils from "../utils/Utils";
 import GroupDetailsScreen from "../components/GroupDetailsScreen";
+import SelectUsersToAddInGroupDialog from "../components/SelectUsersToAddInGroupDialog";
 
 const MainScreen = () => {
   const [chat, setChat] = useState<Chat | null>(null);
@@ -38,6 +39,8 @@ const MainScreen = () => {
   const [contactNameSearchQuery, setContactNameSearchQuery] = useState<
     string | null
   >(null);
+  const [showSelectUsersForGroupDialog, setShowSelectUsersForGroupDialog] =
+    useState<boolean>(false);
   const [groupDetails, setGroupDetails] = useState<Group | null>(null);
   const [showStatusScreen, setShowStatusScreen] = useState<boolean>(false);
   const [messagesListForChat, setMessagesListForChat] = useState<Message[]>([]);
@@ -312,6 +315,11 @@ const MainScreen = () => {
       .catch((e) => console.log(e));
   };
 
+  const handleShowSelectUsersDialog = () => {
+    setContactNameSearchQuery(" ");
+    setShowSelectUsersForGroupDialog(true);
+  };
+
   if (!axios.currentUserModel) {
     return null;
   }
@@ -384,6 +392,12 @@ const MainScreen = () => {
   return (
     <div className="pg">
       {showStatusScreen ? <StatusScreen /> : null}
+      <SelectUsersToAddInGroupDialog
+        onDoneClicked={() => {}}
+        usersList={contactsList}
+        showDialog={showSelectUsersForGroupDialog}
+        onClose={() => setShowSelectUsersForGroupDialog(false)}
+      />
       <div className="sidebarContainer">{sidebarComponent}</div>
       {chat ? (
         <div
@@ -424,6 +438,7 @@ const MainScreen = () => {
           ) : (
             <GroupDetailsScreen
               group={groupDetails}
+              onAddParticipantsClicked={handleShowSelectUsersDialog}
               onClose={() => setshowChatDetailsScreen(false)}
             />
           )}

@@ -5,10 +5,15 @@ import { ReactComponent as AddUserSVG } from "../assets/add_user.svg";
 
 interface Props {
   group: Group | null;
+  onAddParticipantsClicked: () => void;
   onClose: () => void;
 }
 
-const GroupDetailsScreen: React.FC<Props> = ({ group, onClose }) => {
+const GroupDetailsScreen: React.FC<Props> = ({
+  group,
+  onAddParticipantsClicked,
+  onClose,
+}) => {
   if (!group) {
     return null;
   }
@@ -55,7 +60,13 @@ const GroupDetailsScreen: React.FC<Props> = ({ group, onClose }) => {
         <div className="gdPartcipantsCtnr">
           <span>Participants</span>
           <div className="gdPartActionsCtnr">
-            <div className="gdPartAction unselectable">
+            <div
+              className="gdPartAction unselectable"
+              onClick={() => {
+                console.log("CLicked Part");
+                onAddParticipantsClicked();
+              }}
+            >
               <div className="actIcCtnr">
                 <AddUserSVG className="actIc" />
               </div>
@@ -93,7 +104,7 @@ const GroupDetailsScreen: React.FC<Props> = ({ group, onClose }) => {
             ))}
           </div>
         </div>
-                <div className="gdOptionsContainer unselectable">
+        <div className="gdOptionsContainer unselectable">
           <div className="gdOpCtnr">
             <div className="gdOpCtnt">
               <span className="gdWarnIcon">
@@ -105,7 +116,7 @@ const GroupDetailsScreen: React.FC<Props> = ({ group, onClose }) => {
           <div className="gdOpCtnr">
             <div className="gdOpCtnt">
               <span className="gdWarnIcon">
-              <i className="fa-solid fa-thumbs-down"/>
+                <i className="fa-solid fa-thumbs-down" />
               </span>
               <span className="gdOpAction">Report Group</span>
             </div>

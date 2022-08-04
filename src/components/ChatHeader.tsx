@@ -1,9 +1,7 @@
 import "../css/chatHeaderStyle.css";
 import { ChatType } from "../models/Chat";
-import Utils from "../utils/Utils";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { JsxElement } from "typescript";
 
 interface Props {
   profileImageUrl?: string | null;
