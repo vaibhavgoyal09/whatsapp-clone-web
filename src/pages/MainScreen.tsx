@@ -414,7 +414,9 @@ const MainScreen = () => {
           setShowSelectUsersForGroupDialog(false);
           handleAddParticipantsClicked(participants);
         }}
-        usersList={contactsList}
+        usersList={contactsList.filter((c) => {
+          return !chat?.userIds?.includes(c.id);
+        })}
         showDialog={showSelectUsersForGroupDialog}
         onClose={() => setShowSelectUsersForGroupDialog(false)}
       />

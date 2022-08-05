@@ -25,6 +25,13 @@ interface AxiosContextInterface {
     params: object | null,
     requestPath: string
   ) => Promise<T>;
+  uploadFileAndPostRequest: <T = any>(
+    file: File,
+    requestBody: any,
+    params: object | null,
+    requestPath: string,
+    paramName: string
+  ) => Promise<T>;
   putRequest: <T = any>(
     requestBody: any,
     params: object | null,
@@ -35,6 +42,7 @@ interface AxiosContextInterface {
     requestPath: string,
     params: object | null
   ) => Promise<T>;
+  safeApiRequest: <T = any>(request: () => Promise<T>) => Promise<T>;
 }
 
 export const AxiosContext = createContext<AxiosContextInterface | null>(null);
@@ -69,7 +77,7 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     async function retrieveCurrentUser() {
       if (accessToken) {
-        try {
+        safeApiRequest(async () => {
           let data = (
             await instanceRef.current.get(
               `${WhatsApi.GET_CURRENT_USER_INFO_URL}`
@@ -77,9 +85,7 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
           ).data;
           let user = Utils.userFromJson(data);
           setCurrentUserModel(user);
-        } catch (axiosError) {
-          console.log(axiosError);
-        }
+        });
       }
     }
     retrieveCurrentUser();
@@ -90,7 +96,9 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
       return await request();
     } catch (axiosError: any) {
       let message = "Check Your Internet Connection";
-      if (axiosError.response.data) {
+      console.log(axiosError);
+
+      if (axiosError.response && axiosError.response.data) {
         message = axiosError.response.data["detail"];
       }
       throw Error(message);
@@ -134,7 +142,11 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
           params: params,
         }
       );
-      return response.data ? response.data : null;
+      if (response) {
+        return response.data ? response.data : null;
+      } else {
+        return null;
+      }
     });
   }
 
@@ -151,15 +163,48 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
   }
 
   async function putRequest<T = any>(
-    requestPath: string,
+    requestBody: any,
     params: object | null,
-    requestBody: any
+    requestPath: string,
   ): Promise<T> {
     return await safeApiRequest<T>(async () => {
       let response = await instanceRef.current.put(requestPath, requestBody, {
         params: params,
       });
-      return response.data ? response.data : null;
+      if (response !== undefined && response !== null) {
+        return response.status ? response.request : null;
+      } else {
+        return null;
+      }
+    });
+  }
+
+  async function uploadFileAndPostRequest<T = any>(
+    file: File,
+    params: object | null,
+    requestBody: any,
+    requestPath: string,
+    paramName: string
+  ) {
+    return await safeApiRequest<T>(async () => {
+      let formData = new FormData();
+      formData.append("file", file);
+      let fileUploadResponse = await instanceRef.current.post(
+        `${WhatsApi.UPLOAD_FILE_URL}`,
+        formData
+      );
+      let fileUrl = fileUploadResponse.data["url"];
+
+      requestBody[paramName] = fileUrl;
+
+      let postRequestResponse = await instanceRef.current.post(
+        `${requestPath}`,
+        requestBody,
+        {
+          params: params,
+        }
+      );
+      return postRequestResponse.data;
     });
   }
 
@@ -169,6 +214,8 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     postRequest,
     uploadFile,
     getRequest,
+    safeApiRequest,
+    uploadFileAndPostRequest,
     updateCurrentUserModelState,
     putRequest,
   };

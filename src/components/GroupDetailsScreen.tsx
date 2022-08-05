@@ -63,7 +63,6 @@ const GroupDetailsScreen: React.FC<Props> = ({
             <div
               className="gdPartAction unselectable"
               onClick={() => {
-                console.log("CLicked Part");
                 onAddParticipantsClicked();
               }}
             >
@@ -100,6 +99,9 @@ const GroupDetailsScreen: React.FC<Props> = ({
                   </div>
                   <p className="gdUserAbout">{element.about}</p>
                 </div>
+                {element.id !== group.adminId ? (
+                  <span className="gdKickOutUserIcon"><i className="gdWarnIcon fa-solid fa-right-from-bracket" /></span>
+                ) : null}
               </div>
             ))}
           </div>

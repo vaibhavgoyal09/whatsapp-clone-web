@@ -6,12 +6,14 @@ interface Props {
   onSendMessage: () => void;
   onMessageFieldValueChange: (value: string) => void;
   onTypingStatusChange: (isTyping: boolean) => void;
+  onAttachmentClicked: () => void;
 }
 
 const ChatFooter: React.FC<Props> = ({
   onSendMessage,
   onMessageFieldValueChange,
   onTypingStatusChange,
+  onAttachmentClicked,
 }) => {
   const [messageText, setMessageText] = useState<string>("");
   const messageInputFieldRef = createRef<HTMLInputElement>();
@@ -42,7 +44,7 @@ const ChatFooter: React.FC<Props> = ({
       <span className="icon">
         <i className="fa-regular fa-face-smile" />
       </span>
-      <span className="icon">
+      <span className="icon" onClick={() => onAttachmentClicked()}>
         <i className="fa-solid fa-paperclip" />
       </span>
       <input

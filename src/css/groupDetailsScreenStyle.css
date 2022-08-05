@@ -4,6 +4,7 @@
   background-color: var(--darkerGrey);
   border-left: 1px solid var(--inputFieldBorder);
   overflow-y: scroll;
+  position: relative;
 }
 
 .gdHeaderCtnr {
@@ -30,6 +31,7 @@
   margin-top: 20px;
   width: 100%;
   display: flex;
+  position: relative;
   flex-direction: column;
 }
 
@@ -63,13 +65,13 @@
 }
 
 .gdPartcipantsCtnr {
+  color: var(--secondaryText);
   width: 100%;
   margin-top: 16px;
   box-sizing: border-box;
 }
 
 .gdPartcipantsCtnr span {
-  color: var(--secondaryText);
   margin-left: 16px;
   font-size: 0.9rem;
 }
@@ -126,6 +128,7 @@
   justify-content: flex-start;
   align-items: flex-start;
   box-sizing: border-box;
+  position: relative;
 }
 
 .gdUserItemContainer {
@@ -133,6 +136,7 @@
   flex-direction: row;
   padding: 8px 0px;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .gdUserProfilePic {
@@ -151,6 +155,7 @@
   justify-content: flex-start;
   box-sizing: border-box;
   width: 100%;
+  position: relative;
 }
 
 .gdUserRole {
@@ -182,7 +187,18 @@
   color: var(--secondaryText);
   font-size: 0.9rem;
   margin-top: 4px;
-  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+
+.gdKickOutUserIcon {
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+  padding-right: 8px;
+  cursor: pointer;
 }
 
 .gdOptionsContainer {
@@ -207,7 +223,10 @@
 }
 
 .gdWarnIcon {
+  color: #f15c6d !important;
   font-size: 1.25rem;
+  justify-self: center;
+  align-self: center;
 }
 
 .gdOpAction {

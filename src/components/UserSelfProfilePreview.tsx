@@ -1,4 +1,4 @@
-import React, { createRef, useRef, useState } from "react";
+import React, { createRef, useCallback, useState } from "react";
 import "../css/userSelfProfilePreviewStyle.css";
 import { ReactComponent as CameraImage } from "../assets/camera.svg";
 import User from "../models/User";
@@ -22,18 +22,30 @@ const UserSelfProfilePreview: React.FC<Props> = ({
   updateUserProfileImage,
 }) => {
   const fileInputRef = createRef<HTMLInputElement>();
-  const nameFieldRef = createRef<HTMLInputElement>();
-  const aboutFieldRef = createRef<HTMLInputElement>();
   const [isUserNameFieldFocused, setIsUserNameFieldFocused] =
-    useState<boolean>(false);
-  const [isUserNameFieldEditable, setIsUserNameFieldEditable] =
     useState<boolean>(false);
   const [isUserAboutFieldFocused, setIsUserAboutFieldFocused] =
     useState<boolean>(false);
-  const [isUserAboutFieldEditable, setIsUserAboutEditable] =
-    useState<boolean>(false);
   const [imageSrc, setImageSrc] = useState<string | undefined | null>(
     currentUserModel.profileImageUrl
+  );
+  const [name, setName] = useState<string>(currentUserModel.name);
+  const [about, setAbout] = useState<string>(
+    currentUserModel.about ? currentUserModel.about : ""
+  );
+
+  const handleUserNameFieldValueChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setName(event.target.value);
+    },
+    []
+  );
+
+  const handleUserAboutFieldValueChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setAbout(event.target.value);
+    },
+    []
   );
 
   if (!currentUserModel) {
@@ -87,30 +99,31 @@ const UserSelfProfilePreview: React.FC<Props> = ({
           <div className="nameCtnt">
             <span className="nt tgreen">Your Name</span>
             <div className="nInputCtnr">
-              <div
-                className="usname"
-                ref={nameFieldRef}
-                contentEditable={isUserNameFieldEditable}
-                onClick={() => setIsUserNameFieldFocused(true)}
-              >
-                {currentUserModel.name}
+              <div className="usSearchField">
+                <input
+                  type="text"
+                  name="name"
+                  autoComplete="off"
+                  onClick={() => setIsUserNameFieldFocused(true)}
+                  onChange={handleUserNameFieldValueChange}
+                  value={name}
+                />
               </div>
+
               <div className="icCtnr">
                 <span className="lIc">
-                  {isUserNameFieldEditable ? (
+                  {isUserNameFieldFocused ? (
                     <i
                       className="fa-solid fa-check sM"
                       onClick={() => {
-                        setIsUserNameFieldEditable(false);
                         setIsUserNameFieldFocused(false);
-                        updateUserName(nameFieldRef!.current!.innerText);
+                        updateUserName(name);
                       }}
                     />
                   ) : (
                     <i
                       className="fa-solid fa-pen sS"
                       onClick={() => {
-                        setIsUserNameFieldEditable(true);
                         setIsUserNameFieldFocused(true);
                       }}
                     />
@@ -130,30 +143,30 @@ const UserSelfProfilePreview: React.FC<Props> = ({
         <div className="aboutCtnt">
           <span className="nt tgreen">About</span>
           <div className="aInputCtnr">
-            <div
-              className="usabout"
-              ref={aboutFieldRef}
-              contentEditable={isUserAboutFieldEditable}
-              onClick={() => setIsUserAboutFieldFocused(true)}
-            >
-              {currentUserModel.about}
+            <div className="usSearchField">
+              <input
+                type="text"
+                name="name"
+                autoComplete="off" onClick={() => setIsUserAboutFieldFocused(true)}
+                onChange={handleUserAboutFieldValueChange}
+                value={about}
+                placeholder={currentUserModel.about ? "" : "Enter about"}
+              />
             </div>
             <div className="icCtnr">
               <span className="lIc">
-                {isUserAboutFieldEditable ? (
+                {isUserAboutFieldFocused ? (
                   <i
                     className="fa-solid fa-check sM"
                     onClick={() => {
-                      setIsUserAboutEditable(false);
                       setIsUserAboutFieldFocused(false);
-                      updateUserAbout(aboutFieldRef!.current!.innerText);
+                      updateUserAbout(about);
                     }}
                   />
                 ) : (
                   <i
                     className="fa-solid fa-pen sS"
                     onClick={() => {
-                      setIsUserAboutEditable(true);
                       setIsUserAboutFieldFocused(true);
                     }}
                   />

@@ -11,7 +11,7 @@ interface Props {
 
 const ChatItem: React.FC<Props> = ({ chat, onChatClick, isSelected }) => {
   const contentRef = createRef<HTMLDivElement>();
-  
+
   if (!chat) {
     return null;
   }
@@ -22,12 +22,10 @@ const ChatItem: React.FC<Props> = ({ chat, onChatClick, isSelected }) => {
   var timestamp = "";
   if (message) {
     let date = new Date(message.timestamp);
-    console.log(date);
     let hours = date.getHours();
     let minutes = date.getMinutes().toString();
-    timestamp = `${hours - 12}:${
-      minutes.length === 1 ? `0${minutes}` : minutes
-    } ${hours > 12 ? "PM" : "AM"}`;
+    timestamp = `${hours - 12}:${minutes.length === 1 ? `0${minutes}` : minutes
+      } ${hours > 12 ? "PM" : "AM"}`;
 
     if (message.type === MessageType.image) {
       messageText = "Image";
