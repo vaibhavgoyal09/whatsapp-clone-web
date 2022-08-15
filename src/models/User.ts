@@ -1,6 +1,7 @@
 enum OnlineStatus {
   online = 0,
-  offline = 1
+  offline = 1,
+  typing = 2,
 }
 
 interface User {

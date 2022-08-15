@@ -112,6 +112,7 @@ const ChattingScreen: React.FC<Props> = ({
           type={chat.type}
           isUserOnline={isUserOnline}
           lastOnlineAt={lastOnlineAt}
+          isTyping={remoteUser ? remoteUser.onlineStatus === OnlineStatus.typing : false}
         />
       </div>
       <div className="messagesContainer">

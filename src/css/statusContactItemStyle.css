@@ -1,0 +1,53 @@
+.scn {
+  display: flex;
+  margin: 0px 0px;
+  flex-direction: row;
+  position: relative;
+  width: 100%;
+  height: 68px;
+  overflow-y: auto;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.scnWithBg {
+  background-color: var(--darkerGrey);
+}
+
+.scinfoContainer {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  border-bottom: 1px solid var(--inputFieldBorder);
+  align-items: center;
+  margin-left: 12px;
+}
+
+.scavatar {
+  width: 49px;
+  height: 49px;
+  border-radius: 50%;
+  margin-left: 8px;
+  object-fit: fill;
+}
+
+.scunamec {
+  width: 200px;
+}
+
+.scuname {
+  font-size: 14px;
+  color: var(--white);
+}
+
+.scuabout {
+  font-size: 12px;
+  margin-top: 4px;
+  overflow: hidden;
+  color: var(--secondaryText);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+

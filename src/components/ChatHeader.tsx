@@ -10,6 +10,7 @@ interface Props {
   type: number;
   isUserOnline: boolean | null;
   lastOnlineAt: number | null;
+  isTyping: boolean;
 }
 
 const ChatHeader: React.FC<Props> = ({
@@ -19,8 +20,8 @@ const ChatHeader: React.FC<Props> = ({
   type,
   isUserOnline,
   lastOnlineAt,
+  isTyping,
 }) => {
-
   const [showLastSeen, setShowLastSeen] = useState<boolean>(true);
 
   useEffect(() => {
@@ -28,7 +29,7 @@ const ChatHeader: React.FC<Props> = ({
     setTimeout(() => {
       setShowLastSeen(false);
     }, 2000);
-  }, [isUserOnline]);
+  }, [name]);
 
   let lastSeenText: string | null = null;
 
@@ -54,7 +55,7 @@ const ChatHeader: React.FC<Props> = ({
       />
       <div className="chname" onClick={() => onProfileClick()}>
         <p className="cname">{name}</p>
-        {lastSeenElement}
+        {isTyping ? <p className="cTyping">typing...</p> : lastSeenElement}
       </div>
       <div className="choptionsContainer">
         <span className="chic">

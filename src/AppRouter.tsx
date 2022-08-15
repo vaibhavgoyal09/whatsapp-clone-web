@@ -6,6 +6,7 @@ import WhatsAppWebSocketContextProvider from "./context/WhatsAppWebSocketContext
 import MainScreen from "./pages/MainScreen";
 import SetupProfileScreen from "./pages/SetupProfileScreen";
 import SignInScreen from "./pages/SignInScreen";
+import StatusScreen from "./pages/StatusScreen";
 
 export const AppRouter: React.FC = () => {
   return (
@@ -29,6 +30,14 @@ export const AppRouter: React.FC = () => {
             }
           />
           <Route path="/setup-profile" element={<SetupProfileScreen />} />
+          <Route
+            path="/status"
+            element={
+              <ProtectedRoute>
+                <StatusScreen />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </WhatsAppWebSocketContextProvider>
     </AxiosInstanceProvider>

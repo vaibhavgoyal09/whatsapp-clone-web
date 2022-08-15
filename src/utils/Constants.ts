@@ -7,6 +7,7 @@ export class WhatsApi {
   static UPDATE_USER_DETAILS_URL = "/user/update"
   static GET_REMOTE_USER_DETAILS_URL = "/user/details"
   static SEARCH_CONTACTS_BY_NAME_URL = "/user/search/name"
+  static GET_ALL_USERS_WITH_ACTIVE_STATUS_URL = "/user/with_active_status"
   static UPLOAD_FILE_URL = "file/new";
   static GET_ALL_CHATS_URL = "chat/all";
   static CREATE_NEW_CHAT_URL = "/chat/new";
@@ -15,6 +16,7 @@ export class WhatsApi {
   static GET_GROUP_DETAILS_URL = "/group/details"
   static ADD_GROUP_PARTICIPANTS_URL = "/group/participant/add"
   static REMOVW_GROUP_PARTICIPANTS_URL = "/group/participant/remove"
+  static GET_STATUSES_OF_USER_URL = "/status/all"
 
   static CHAT_WEBSOCKET_BASE_URL = "ws://127.0.0.1:8000/ws/chat";
 }

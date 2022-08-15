@@ -5,7 +5,6 @@ import EnterGroupDetailsScreen from "../components/EnterGroupDetailsScreen";
 import MainSidebar from "../components/MainSidebar";
 import RemoteUserProfilePreview from "../components/RemoteUserProfilePreview";
 import SelectUsersForGroup from "../components/SelectUsersForGroup";
-import StatusScreen from "../components/StatusScreen";
 import UserSelfProfilePreview from "../components/UserSelfProfilePreview";
 import WhatsappIntroScreen from "../components/WhatsappIntroScreen";
 import { useAuth } from "../context/AuthContext";
@@ -43,7 +42,6 @@ const MainScreen = () => {
   const [showSelectUsersForGroupDialog, setShowSelectUsersForGroupDialog] =
     useState<boolean>(false);
   const [groupDetails, setGroupDetails] = useState<Group | null>(null);
-  const [showStatusScreen, setShowStatusScreen] = useState<boolean>(false);
   const [messagesListForChat, setMessagesListForChat] = useState<Message[]>([]);
   const [usersToAddInGroup, setUsersToAddInGroup] = useState<string[]>([]);
   const navigate = useNavigate();
@@ -353,7 +351,7 @@ const MainScreen = () => {
       onChatClicked={(chat) => onChatClick(chat)}
       onSearchQueryChange={(value) => onSearchQueryChange(value)}
       contactsList={contactsList}
-      onShowStatusScreen={() => setShowStatusScreen(true)}
+      onShowStatusScreen={() => navigate("/status")}
       onContactClicked={(contact) => onContactClicked(contact)}
       onCreateNewGroupClicked={() => handleSelectUsersForGroup()}
       onLogOutClicked={() => handleLogOut()}
@@ -408,7 +406,6 @@ const MainScreen = () => {
 
   return (
     <div className="pg">
-      {showStatusScreen ? <StatusScreen /> : null}
       <SelectUsersToAddInGroupDialog
         onDoneClicked={(participants) => {
           setShowSelectUsersForGroupDialog(false);

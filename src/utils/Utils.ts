@@ -2,6 +2,7 @@ import Chat from "../models/Chat";
 import Message from "../models/Message";
 import User from "../models/User";
 import Group from "../models/Group";
+import Status from "../models/Status";
 
 class Utils {
   static getRemoteUserIdFromChat(chat: Chat, currentUserId: string): string {
@@ -67,6 +68,16 @@ class Utils {
       users: users,
       adminId: json.admin_id,
     };
+  }
+
+  static statusFromJson(json: any): Status {
+    return {
+      id: json.id,
+      type: json.type,
+      mediaUrl: json.media_url,
+      userId: json.user_id,
+      createdAt: json.created_at
+    }
   }
 }
 

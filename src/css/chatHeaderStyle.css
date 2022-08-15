@@ -32,6 +32,13 @@
   text-align: left;
 }
 
+.cTyping {
+   font-size: 0.9rem;
+  color: var(--green);
+  margin-top: 4px;
+  text-align: left;
+}
+
 .cLastSeen {
   font-size: 0.9rem;
   color: var(--secondaryText);
