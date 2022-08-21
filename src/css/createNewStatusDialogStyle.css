@@ -1,0 +1,96 @@
+.cnsDialogContainer {
+  background-color: rgba(40, 40, 40, 0.81);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  z-index: 3;
+}
+
+.cnsDialogContent {
+  width: 500px;
+  max-height: 70vh;
+  /*overflow-y: auto;*/
+  background-color: var(--darkerGrey);
+  position: relative;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cnsHeader {
+  width: 100%;
+  padding: 20px;
+  color: var(--white);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 1px solid var(--inputFieldBorder);
+  box-sizing: border-box;
+}
+
+#cnsBackBtn {
+  font-size: 1.2rem;
+  position: relative;
+  top: 1px;
+  cursor: pointer;
+}
+
+#cnsText {
+  margin: auto;
+  text-align: center;
+  font-weight: 500;
+  font-size: 18px;
+}
+
+#cnsShareText {
+  color: var(--green);
+  position: relative;
+  top: 1px;
+  cursor: pointer;
+}
+
+.cnsMediaDropper {
+  overflow-y: auto;
+  height: 400px;
+  border-radius: 0px 0px 18px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cnsMediaDropperContentWrpr {
+  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#imageVideoIcon {
+  fill: white;
+  width: 100px;
+} 
+
+#cnsDropContextText {
+  color: white;
+  margin-top: 8px;
+  font-size: 1.2rem;
+}
+
+.cnsSelectFromComputerBtn {
+  margin-top: 30px;
+  font-size: 0.9rem !important;
+}
+
+.cnsMediaPreview {
+  overflow-y: auto;
+  height: 400px;
+  border-radius: 0px 0px 18px 18px;
+}
+
+.cnsMediaPreview img {
+  width: 100%;
+  height: 99%;
+}

@@ -9,12 +9,16 @@ import { WhatsApi } from "../utils/Constants";
 import Utils from "../utils/Utils";
 import { useNavigate } from "react-router-dom";
 import AddStatusRequest from "../models/AddStatusRequest";
+import StatusDisplayScreen from "../components/StatusDisplayScreen";
+import CreateNewStatusDialog from "../components/CreateNewStatusDialog";
 
 const StatusScreen = () => {
   const axios = useAxios()!;
   const [contacts, setContacts] = useState<User[]>([]);
   const [selectedContact, setSelectedContact] = useState<User | null>(null);
   const [statusesOfUser, setStatusesOfUser] = useState<Status[]>([]);
+  const [showCreateNewStatusDialog, setShowCreateNewStatusDialog] =
+    useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,7 +45,10 @@ const StatusScreen = () => {
           null
         )
         .then((result) => {
-          console.log(result);
+          let statuses: Status[] = [];
+          result.forEach((item: any) => {
+            statuses.push(Utils.statusFromJson(item));
+          });
         })
         .catch((e) => console.log(e));
     }
@@ -51,50 +58,70 @@ const StatusScreen = () => {
     navigate("/");
   };
 
-  const handleAddStatusButtonClicked = () => {};
+  const handleAddStatusButtonClicked = () => {
+    setShowCreateNewStatusDialog(true);
+  };
 
   return (
-    <div className="statusScreenContent">
-      <span id="statusCloseBtn" onClick={() => handleCloseButtonClicked}>
-        <i className="fa-solid fa-xmark"></i>
-      </span>
-      <div className="statusSidebar">
-        <div className="statusSidebarHeader">
-          <img
-            className="sselfProfilePreview"
-            src={
-              axios.currentUserModel?.profileImageUrl
-                ? axios.currentUserModel.profileImageUrl
-                : "avatar.png"
-            }
-          />
-          <div>
-            <p id="myStatusText">My Status</p>
-          </div>
-          <span id="addStatusIcon" onClick={() => handleAddStatusButtonClicked}>
-            <i className="fa-solid fa-plus"></i>
+    <div className="statusScreen">
+      <CreateNewStatusDialog
+        isOpen={showCreateNewStatusDialog}
+        onClose={() => setShowCreateNewStatusDialog(false)}
+      />
+      <div className="statusScreenContent">
+        {showCreateNewStatusDialog ? null : (
+          <span id="statusCloseBtn" onClick={() => handleCloseButtonClicked()}>
+            <i className="fa-solid fa-xmark"></i>
           </span>
-        </div>
-        <div className="sUsersContainer">
-          {contacts.map((user) => (
-            <StatusContactItem
-              key={user.id}
-              contact={user}
-              isSelected={selectedContact?.id === user.id}
-              onClick={() => {
-                setSelectedContact(user);
-              }}
+        )}
+        <div className="statusSidebar">
+          <div className="statusSidebarHeader">
+            <img
+              className="sselfProfilePreview"
+              src={
+                axios.currentUserModel?.profileImageUrl
+                  ? axios.currentUserModel.profileImageUrl
+                  : "avatar.png"
+              }
             />
-          ))}
+            <div>
+              <p id="myStatusText">My Status</p>
+            </div>
+            <span
+              id="addStatusIcon"
+              onClick={() => handleAddStatusButtonClicked()}
+            >
+              <i className="fa-solid fa-plus"></i>
+            </span>
+          </div>
+          <p id="textRecent">Recents</p>
+          <div className="sUsersContainer">
+            {contacts.map((user) => (
+              <StatusContactItem
+                key={user.id}
+                contact={user}
+                isSelected={selectedContact?.id === user.id}
+                onClick={() => {
+                  setSelectedContact(user);
+                }}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="statusIntroContainer">
-        <div>
-          <StatusLogo className="sintroImg" />
-          <h3 className="sintroTitle unselectable">
-            Click on a contact to view their status updates
-          </h3>
-        </div>
+        {selectedContact ? (
+          <div className="statusDisplayScreen">
+            <StatusDisplayScreen statuses={statusesOfUser} />
+          </div>
+        ) : (
+          <div className="statusIntroContainer">
+            <div>
+              <StatusLogo className="sintroImg" />
+              <h3 className="sintroTitle unselectable">
+                Click on a contact to view their status updates
+              </h3>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
