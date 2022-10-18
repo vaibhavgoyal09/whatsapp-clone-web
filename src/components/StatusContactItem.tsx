@@ -5,13 +5,11 @@ import User from "../models/User";
 interface Props {
   contact: User;
   onClick: () => void;
-  isSelected?: boolean;
 }
 
 const StatusContactItem: React.FC<Props> = ({
   contact,
   onClick,
-  isSelected = false,
 }) => {
   if (!contact) {
     return null;
@@ -19,7 +17,7 @@ const StatusContactItem: React.FC<Props> = ({
 
   return (
     <div
-      className={isSelected ? "scn scnWithBg" : "scn"}
+      className="scn"
       onClick={() => onClick()}
     >
       <img

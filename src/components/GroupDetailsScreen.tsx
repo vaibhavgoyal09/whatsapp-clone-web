@@ -2,14 +2,17 @@ import Group from "../models/Group";
 import "../css/groupDetailsScreenStyle.css";
 import { ReactComponent as LinkSVG } from "../assets/link.svg";
 import { ReactComponent as AddUserSVG } from "../assets/add_user.svg";
+import User from "../models/User";
 
 interface Props {
+  currentUser: User,
   group: Group | null;
   onAddParticipantsClicked: () => void;
   onClose: () => void;
 }
 
 const GroupDetailsScreen: React.FC<Props> = ({
+  currentUser,
   group,
   onAddParticipantsClicked,
   onClose,
@@ -99,7 +102,7 @@ const GroupDetailsScreen: React.FC<Props> = ({
                   </div>
                   <p className="gdUserAbout">{element.about}</p>
                 </div>
-                {element.id !== group.adminId ? (
+                {element.id !== group.adminId && group.adminId === currentUser.id ? (
                   <span className="gdKickOutUserIcon"><i className="gdWarnIcon fa-solid fa-right-from-bracket" /></span>
                 ) : null}
               </div>

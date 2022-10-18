@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
 import "../css/otpDialogStyle.css";
 
@@ -18,13 +18,23 @@ const EnterOTPDialog: React.FC<Props> = ({
   const [otp, setOtp] = useState("");
   const auth = useAuth();
 
+  const handleSubmitOtp = useCallback((e?: React.FormEvent) => {
+    e?.preventDefault();
+    submitOtp();
+  }, []);
+
+  const handleEnterKeyPressed = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      submitOtp();
+    }
+  }, []);
+
   if (!open) {
     return null;
   }
 
-  function handleSubmitOtp(e?: React.FormEvent) {
-    e?.preventDefault();
-    auth
+  const submitOtp = () => {
+auth
       ?.verifyOtpAndSignInUser(otp)
       .then((_: any) => {
         onOtpVerified();
@@ -36,7 +46,7 @@ const EnterOTPDialog: React.FC<Props> = ({
         );
         onClose();
       });
-  }
+  };
 
   function handleOtpFieldChange(event: React.ChangeEvent<HTMLInputElement>) {
     setOtp(event.target.value);

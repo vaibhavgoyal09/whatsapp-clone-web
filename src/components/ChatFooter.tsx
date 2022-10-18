@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useState } from "react";
+import React, { createRef, useCallback, useEffect, useState } from "react";
 import "../css/chatFooterStyle.css";
 import debounce from "lodash/debounce";
 
@@ -27,6 +27,12 @@ const ChatFooter: React.FC<Props> = ({
     onTypingStatusChange(isTyping);
   }, [isTyping]);
 
+  const handleEnterKeyPressed = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      onSendMessage();
+    }
+  }, []);
+
   const handleMessageFieldValueChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -52,6 +58,7 @@ const ChatFooter: React.FC<Props> = ({
         type="text"
         placeholder="Type a message"
         className="input"
+        onKeyDown={handleEnterKeyPressed}
         onChange={handleMessageFieldValueChange}
       />
       <span

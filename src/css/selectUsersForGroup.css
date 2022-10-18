@@ -7,9 +7,8 @@
 }
 
 .suHeader {
-  padding-top: 15%;
-  padding-left: 8%;
-  padding-bottom: 5%;
+  padding: 20px;
+  height: 64px;
   background-color: var(--background);
   color: var(--white);
   display: flex;
@@ -25,6 +24,7 @@
 .suTitle {
   position: relative;
   margin-left: 40px;
+  top: 2px;
 }
 
 .suTitle h2 {

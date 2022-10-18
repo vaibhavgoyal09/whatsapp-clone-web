@@ -3,7 +3,8 @@
   height: 100%;
   background-color: var(--darkerGrey);
   border-left: 1px solid var(--inputFieldBorder);
-  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
   position: relative;
 }
 
@@ -11,7 +12,7 @@
   background-color: var(--background);
   color: var(--white);
   display: flex;
-  height: 64px;
+  padding: 20px;
   flex-direction: row;
   align-items: center;
 }
@@ -19,7 +20,6 @@
 .gdCloseBtn {
   font-size: 1.25rem;
   cursor: pointer;
-  margin-left: 24px;
 }
 
 .gdTitle {
@@ -28,14 +28,20 @@
 }
 
 .gdBtmCtnr {
-  margin-top: 20px;
   width: 100%;
   display: flex;
   position: relative;
   flex-direction: column;
+  overflow-y: auto;
 }
 
+.gdBtmCtnr::-webkit-scrollbar { width: 0 !important }
+
+/* For Firefox */
+.gdBtmCtnr { overflow: -moz-scrollbars-none; }
+
 .gdimgCtnr {
+  margin-top: 20px;
   width: 200px;
   height: 200px;
   align-self: center;

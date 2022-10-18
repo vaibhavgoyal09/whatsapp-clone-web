@@ -21,6 +21,11 @@ import Utils from "../utils/Utils";
 import GroupDetailsScreen from "../components/GroupDetailsScreen";
 import SelectUsersToAddInGroupDialog from "../components/SelectUsersToAddInGroupDialog";
 import AddRemoveParticipantsRequest from "../models/AddRemoveParticipantsRequest";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  componentLeftToRight,
+  componentRightToLeft,
+} from "../utils/Transitions";
 
 const MainScreen = () => {
   const [chat, setChat] = useState<Chat | null>(null);
@@ -52,6 +57,10 @@ const MainScreen = () => {
   useEffect(() => {
     setshowChatDetailsScreen(false);
   }, [chat]);
+
+  useEffect(() => {
+
+  }, []);
 
   useEffect(() => {
     if (axios.accessToken) {
@@ -361,20 +370,31 @@ const MainScreen = () => {
 
   if (showSelfProfileScreen) {
     sidebarComponent = (
-      <UserSelfProfilePreview
-        currentUserModel={axios.currentUserModel}
-        onClose={() => setShowSelfProfileScreen(false)}
-        updateUserName={(name) => {
-          updateUserName(name);
-        }}
-        updateUserAbout={(about) => updateUserAbout(about)}
-        updateUserProfileImage={(imageFile, shouldRemoveProfileImage) =>
-          updateUserProfileImage(imageFile, shouldRemoveProfileImage)
-        }
-      />
+      <motion.div
+        style={{ height: "100%" }}
+        key={"self_profile_screen"}
+        {...componentLeftToRight}
+      >
+        <UserSelfProfilePreview
+          currentUserModel={axios.currentUserModel}
+          onClose={() => setShowSelfProfileScreen(false)}
+          updateUserName={(name) => {
+            updateUserName(name);
+          }}
+          updateUserAbout={(about) => updateUserAbout(about)}
+          updateUserProfileImage={(imageFile, shouldRemoveProfileImage) =>
+            updateUserProfileImage(imageFile, shouldRemoveProfileImage)
+          }
+        />
+      </motion.div>
     );
   } else if (showSelectUsersForGroup) {
     sidebarComponent = (
+      <motion.div
+        style={{ height: "100%" }}
+        key={"self_profile_screen"}
+        {...componentLeftToRight}
+      >
       <SelectUsersForGroup
         onUsersSelected={(userIds: string[]) => {
           setShowSelectUsersForGroup(false);
@@ -389,18 +409,25 @@ const MainScreen = () => {
         onSearchQueryChange={(value: string) => searchContactsByName(value)}
         contacts={contactsList}
       />
+      </motion.div>
     );
   } else if (showCreateGroupSidebar) {
     sidebarComponent = (
+      <motion.div
+        style={{ height: "100%" }}
+        key={"self_profile_screen"}
+        {...componentLeftToRight}
+      >
       <EnterGroupDetailsScreen
         onDone={(name: string, imageFile: File | null) => {
           handleCreateNewGroup(name, imageFile);
         }}
         onClose={() => {
-          setShowSelectUsersForGroup(true);
           setShowCreateGroupSidebar(false);
+          setShowSelectUsersForGroup(true);
         }}
       />
+      </motion.div>
     );
   }
 
@@ -417,7 +444,9 @@ const MainScreen = () => {
         showDialog={showSelectUsersForGroupDialog}
         onClose={() => setShowSelectUsersForGroupDialog(false)}
       />
-      <div className="sidebarContainer">{sidebarComponent}</div>
+      <div className="sidebarContainer">
+        {<AnimatePresence>{sidebarComponent}</AnimatePresence>}
+      </div>
       {chat ? (
         <div
           className={
@@ -447,22 +476,31 @@ const MainScreen = () => {
           <WhatsappIntroScreen />
         </div>
       )}
-      {showChatDetailsScreen ? (
-        <div className="chatInfoScreenContainer">
-          {chat?.type === ChatType.oneToOne ? (
-            <RemoteUserProfilePreview
-              user={remoteUser!}
-              onClose={() => setshowChatDetailsScreen(false)}
-            />
-          ) : (
-            <GroupDetailsScreen
-              group={groupDetails}
-              onAddParticipantsClicked={handleShowSelectUsersDialog}
-              onClose={() => setshowChatDetailsScreen(false)}
-            />
-          )}
-        </div>
-      ) : null}
+      <AnimatePresence>
+        {showChatDetailsScreen && (
+          <div className="chatInfoScreenContainer">
+            <motion.div
+              style={{ height: "100%" }}
+              key={"self_profile_screen"}
+              {...componentRightToLeft}
+            >
+              {chat?.type === ChatType.oneToOne ? (
+                <RemoteUserProfilePreview
+                  user={remoteUser!}
+                  onClose={() => setshowChatDetailsScreen(false)}
+                />
+              ) : (
+                <GroupDetailsScreen
+                  currentUser={axios.currentUserModel!!}
+                  group={groupDetails}
+                  onAddParticipantsClicked={handleShowSelectUsersDialog}
+                  onClose={() => setshowChatDetailsScreen(false)}
+                />
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -28,6 +28,11 @@
   overflow-y: auto;
 }
 
+.listContainer::-webkit-scrollbar { width: 0 !important }
+
+/* For Firefox */
+.listContainer { overflow: -moz-scrollbars-none; }
+
 .footerContainer {
   flex: 0 1 50px;
 }

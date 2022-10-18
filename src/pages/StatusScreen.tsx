@@ -9,14 +9,15 @@ import { WhatsApi } from "../utils/Constants";
 import Utils from "../utils/Utils";
 import { useNavigate } from "react-router-dom";
 import AddStatusRequest from "../models/AddStatusRequest";
-import StatusDisplayScreen from "../components/StatusDisplayScreen";
 import CreateNewStatusDialog from "../components/CreateNewStatusDialog";
+import ViewStatusesScreen from "../components/ViewStatusesScreen";
 
 const StatusScreen = () => {
   const axios = useAxios()!;
   const [contacts, setContacts] = useState<User[]>([]);
   const [selectedContact, setSelectedContact] = useState<User | null>(null);
   const [statusesOfUser, setStatusesOfUser] = useState<Status[]>([]);
+  const [showStatusesScreen, setShowStatusesScreen] = useState(false);
   const [showCreateNewStatusDialog, setShowCreateNewStatusDialog] =
     useState<boolean>(false);
   const navigate = useNavigate();
@@ -64,6 +65,18 @@ const StatusScreen = () => {
 
   return (
     <div className="statusScreen">
+      {showStatusesScreen ? (
+        <ViewStatusesScreen
+          onNextCliked={() => { }}
+          onPreviousClicked={() => { }}
+          currentContactUser={selectedContact!}
+          statuses={statusesOfUser}
+          onClose={() => {
+            setShowStatusesScreen(false);
+            setSelectedContact(null);
+          }}
+        />
+      ) : null}
       <CreateNewStatusDialog
         isOpen={showCreateNewStatusDialog}
         onClose={() => setShowCreateNewStatusDialog(false)}
@@ -100,7 +113,6 @@ const StatusScreen = () => {
               <StatusContactItem
                 key={user.id}
                 contact={user}
-                isSelected={selectedContact?.id === user.id}
                 onClick={() => {
                   setSelectedContact(user);
                 }}
@@ -108,20 +120,14 @@ const StatusScreen = () => {
             ))}
           </div>
         </div>
-        {selectedContact ? (
-          <div className="statusDisplayScreen">
-            <StatusDisplayScreen statuses={statusesOfUser} />
+        <div className="statusIntroContainer">
+          <div>
+            <StatusLogo className="sintroImg" />
+            <h3 className="sintroTitle unselectable">
+              Click on a contact to view their status updates
+            </h3>
           </div>
-        ) : (
-          <div className="statusIntroContainer">
-            <div>
-              <StatusLogo className="sintroImg" />
-              <h3 className="sintroTitle unselectable">
-                Click on a contact to view their status updates
-              </h3>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );

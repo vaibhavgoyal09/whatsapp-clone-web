@@ -3,12 +3,12 @@
   width: 100%;
   background-color: var(--darkerGrey);
   overflow: auto;
+  border-right: 1px solid var(--inputFieldBorder);
 }
 
 .usheader {
-  padding-top: 15%;
-  padding-left: 8%;
-  padding-bottom: 5%;
+  padding: 21px;
+  height: 64px;
   background-color: var(--background);
   color: var(--white);
   display: flex;
@@ -23,6 +23,7 @@
 
 .usTitle {
   position: relative;
+  top: 2px;
   margin-left: 40px;
 }
 

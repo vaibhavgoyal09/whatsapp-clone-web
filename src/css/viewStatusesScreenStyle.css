@@ -1,0 +1,61 @@
+.statusesScreenDialogOverlay {
+  background-color: rgba(40, 40, 40, 1);
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.sscIcon {
+  width: 20px;
+  height: 20px;
+  color: white;
+  cursor: pointer;
+}
+
+#sscCloseIcon {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+}
+
+.sscIconLarge {
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+}
+
+#sscLeftIcon {
+  position: absolute;
+  top: 50%;
+  left: 60px;
+}
+
+#sscRightIcon {
+  position: absolute;
+  top: 50%;
+  right: 60px;
+}
+
+.sscStatusContentWrapper {
+  height: 100%;
+  width: 40%;
+  position: relative;
+}
+
+.sscMediaDisplay {
+  width: 80%;
+  height: 100%;
+  position: absolute;
+}
+
+.progressContainer {
+  display: flex;
+  flex-direction: row;
+  width: 80vw;
+  padding: 10px 0;
+  cursor: pointer;
+}
