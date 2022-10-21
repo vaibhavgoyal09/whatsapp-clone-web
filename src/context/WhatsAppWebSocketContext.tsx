@@ -5,7 +5,6 @@ import {
   useContext,
   useState,
 } from "react";
-import React from "react";
 import { useEffect } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { WhatsApi } from "../utils/Constants";

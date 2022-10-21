@@ -58,9 +58,7 @@ const MainScreen = () => {
     setshowChatDetailsScreen(false);
   }, [chat]);
 
-  useEffect(() => {
-
-  }, []);
+  useEffect(() => {}, []);
 
   useEffect(() => {
     if (axios.accessToken) {
@@ -160,14 +158,16 @@ const MainScreen = () => {
   useEffect(() => {
     let status = webSockets.typingStatusChange;
     if (status) {
-      let c = chatsList.filter((chat) => {
-        return chat.id === status!.chat_id;
-      })[0];
-      if (c.typingUsersIds.includes(status.user_id)) {
-        c.typingUsersIds.splice(c.typingUsersIds.indexOf(status.user_id));
-      } else {
-        c.typingUsersIds.push(status.user_id);
-      }
+      chatsList.map((c) => {
+        if (c.id === status!.chat_id) {
+          if (c.typingUsersIds.includes(status!.user_id)) {
+            c.typingUsersIds.splice(c.typingUsersIds.indexOf(status!.user_id));
+          } else {
+            c.typingUsersIds.push(status!.user_id);
+          }
+        }
+        return c;
+      });
     }
   }, [webSockets.typingStatusChange]);
 
@@ -395,20 +395,20 @@ const MainScreen = () => {
         key={"self_profile_screen"}
         {...componentLeftToRight}
       >
-      <SelectUsersForGroup
-        onUsersSelected={(userIds: string[]) => {
-          setShowSelectUsersForGroup(false);
-          setUsersToAddInGroup(userIds);
-          setShowCreateGroupSidebar(true);
-        }}
-        previouslySelectedUsers={usersToAddInGroup}
-        onClose={() => {
-          setShowSelectUsersForGroup(false);
-          setUsersToAddInGroup([]);
-        }}
-        onSearchQueryChange={(value: string) => searchContactsByName(value)}
-        contacts={contactsList}
-      />
+        <SelectUsersForGroup
+          onUsersSelected={(userIds: string[]) => {
+            setShowSelectUsersForGroup(false);
+            setUsersToAddInGroup(userIds);
+            setShowCreateGroupSidebar(true);
+          }}
+          previouslySelectedUsers={usersToAddInGroup}
+          onClose={() => {
+            setShowSelectUsersForGroup(false);
+            setUsersToAddInGroup([]);
+          }}
+          onSearchQueryChange={(value: string) => searchContactsByName(value)}
+          contacts={contactsList}
+        />
       </motion.div>
     );
   } else if (showCreateGroupSidebar) {
@@ -418,15 +418,15 @@ const MainScreen = () => {
         key={"self_profile_screen"}
         {...componentLeftToRight}
       >
-      <EnterGroupDetailsScreen
-        onDone={(name: string, imageFile: File | null) => {
-          handleCreateNewGroup(name, imageFile);
-        }}
-        onClose={() => {
-          setShowCreateGroupSidebar(false);
-          setShowSelectUsersForGroup(true);
-        }}
-      />
+        <EnterGroupDetailsScreen
+          onDone={(name: string, imageFile: File | null) => {
+            handleCreateNewGroup(name, imageFile);
+          }}
+          onClose={() => {
+            setShowCreateGroupSidebar(false);
+            setShowSelectUsersForGroup(true);
+          }}
+        />
       </motion.div>
     );
   }

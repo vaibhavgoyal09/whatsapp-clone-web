@@ -1,6 +1,7 @@
-import React, { createRef, useState } from "react";
+import moment from "moment";
+import React, { createRef, useState, useEffect } from "react";
 import "../css/chatItemStyle.css";
-import Chat from "../models/Chat";
+import Chat, { ChatType } from "../models/Chat";
 import { MessageType } from "../models/Message";
 
 interface Props {
@@ -11,6 +12,22 @@ interface Props {
 
 const ChatItem: React.FC<Props> = ({ chat, onChatClick, isSelected }) => {
   const contentRef = createRef<HTMLDivElement>();
+  const [typingStatus, setTypingStatus] = useState<string | null>(null);
+
+  useEffect(() => {
+    console.log("Use effect called")
+    if (chat.type === ChatType.oneToOne) {
+      console.log(chat);
+      console.log(chat.typingUsersIds.length);
+      if (chat.typingUsersIds.length === 1) {
+        console.log("typing...")
+        setTypingStatus("typing...");
+      } else {
+        console.log("not typing...")
+        setTypingStatus(null);
+      }
+    }
+  }, [chat]);
 
   if (!chat) {
     return null;
@@ -21,11 +38,8 @@ const ChatItem: React.FC<Props> = ({ chat, onChatClick, isSelected }) => {
 
   var timestamp = "";
   if (message) {
-    let date = new Date(message.timestamp);
-    let hours = date.getHours();
-    let minutes = date.getMinutes().toString();
-    timestamp = `${hours - 12}:${minutes.length === 1 ? `0${minutes}` : minutes
-      } ${hours > 12 ? "PM" : "AM"}`;
+    let date = moment.unix(message.timestamp / 1000).format("DD MMM - LT");
+    timestamp = date;
 
     if (message.type === MessageType.image) {
       messageText = "Image";
@@ -50,14 +64,13 @@ const ChatItem: React.FC<Props> = ({ chat, onChatClick, isSelected }) => {
       <div className="infoContainer">
         <div className="unamec">
           <p className="uname unselectable">{chat.name}</p>
-          <p className="usectext umsg unselectable">{messageText}</p>
+          {typingStatus ? (
+            <p className="usecText utys unselectable">{typingStatus}</p>
+          ) : (
+            <p className="usectext umsg unselectable">{messageText}</p>
+          )}
         </div>
         <div className="mcTstmp">
-          {/* {chat.unseenMessageCount > 0 ? (
-            <div className="mctnr">
-              <p className="mc">{chat.unseenMessageCount}</p>
-            </div>
-          ) : null} */}
           <p className="tstmp">{timestamp}</p>
         </div>
       </div>

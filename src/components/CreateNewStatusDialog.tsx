@@ -9,7 +9,7 @@ interface Props {
 
 const CreateNewStatusDialog: React.FC<Props> = ({ isOpen, onClose }) => {
   const [media, setMedia] = useState<File | null>(null);
-  const [showDoneScreen, setShowDoneScreen] = useState(false);
+  const [showDoneScreen, setShowDoneScreen] = useState(true);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const dropAreaRef = createRef<HTMLDivElement>();
 
@@ -23,7 +23,6 @@ const CreateNewStatusDialog: React.FC<Props> = ({ isOpen, onClose }) => {
     };
   }, []);
 
-
   useEffect(() => {
     if (media) {
       setShowDoneScreen(true);
@@ -34,12 +33,14 @@ const CreateNewStatusDialog: React.FC<Props> = ({ isOpen, onClose }) => {
     }
   }, [media]);
 
-  const handleDragOver = useCallback((e: any) => {
+const sampleImage = require('../assets/sample_image.jpg');
+
+  const handleDragOver = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
-  }, []);
+  };
 
-  const handleDrop = useCallback((e: any) => {
+  const handleDrop = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -50,7 +51,7 @@ const CreateNewStatusDialog: React.FC<Props> = ({ isOpen, onClose }) => {
       setMedia(files[0]);
     }
     e.dataTransfer.clearData();
-  }, []);
+  };
 
   const handleBackButtonClicked = useCallback(() => {
     setMedia(null);
@@ -76,7 +77,7 @@ const CreateNewStatusDialog: React.FC<Props> = ({ isOpen, onClose }) => {
         </div>
         {showDoneScreen ? (
           <div className="cnsMediaPreview">
-            {imageUrl ? <img src={imageUrl!} alt="" /> : null}
+            {imageUrl ? <img src={imageUrl} alt="" /> : <img src={sampleImage}/>}
           </div>
         ) : (
           <div className="cnsMediaDropper" ref={dropAreaRef}>

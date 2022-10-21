@@ -5,7 +5,7 @@ import { ReactComponent as AddUserSVG } from "../assets/add_user.svg";
 import User from "../models/User";
 
 interface Props {
-  currentUser: User,
+  currentUser: User;
   group: Group | null;
   onAddParticipantsClicked: () => void;
   onClose: () => void;
@@ -62,25 +62,27 @@ const GroupDetailsScreen: React.FC<Props> = ({
         </div>
         <div className="gdPartcipantsCtnr">
           <span>Participants</span>
-          <div className="gdPartActionsCtnr">
-            <div
-              className="gdPartAction unselectable"
-              onClick={() => {
-                onAddParticipantsClicked();
-              }}
-            >
-              <div className="actIcCtnr">
-                <AddUserSVG className="actIc" />
+          {group.adminId === currentUser.id ? (
+            <div className="gdPartActionsCtnr">
+              <div
+                className="gdPartAction unselectable"
+                onClick={() => {
+                  onAddParticipantsClicked();
+                }}
+              >
+                <div className="actIcCtnr">
+                  <AddUserSVG className="actIc" />
+                </div>
+                <div className="actName">Add participant</div>
               </div>
-              <div className="actName">Add participant</div>
-            </div>
-            <div className="gdPartAction unselectable">
-              <div className="actIcCtnr">
-                <LinkSVG className="actIc" />
+              <div className="gdPartAction unselectable">
+                <div className="actIcCtnr">
+                  <LinkSVG className="actIc" />
+                </div>
+                <div className="actName">Invite to group via link</div>
               </div>
-              <div className="actName">Invite to group via link</div>
             </div>
-          </div>
+          ) : null}
           <div className="gdUsersContainer">
             {users.map((element) => (
               <div key={element.id} className="gdUserItemContainer">
@@ -102,8 +104,11 @@ const GroupDetailsScreen: React.FC<Props> = ({
                   </div>
                   <p className="gdUserAbout">{element.about}</p>
                 </div>
-                {element.id !== group.adminId && group.adminId === currentUser.id ? (
-                  <span className="gdKickOutUserIcon"><i className="gdWarnIcon fa-solid fa-right-from-bracket" /></span>
+                {element.id !== group.adminId &&
+                group.adminId === currentUser.id ? (
+                  <span className="gdKickOutUserIcon">
+                    <i className="gdWarnIcon fa-solid fa-right-from-bracket" />
+                  </span>
                 ) : null}
               </div>
             ))}

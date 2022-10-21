@@ -1,16 +1,11 @@
-
+import moment from 'moment';
 import '../css/receivedMessageItemStyle.css';
 import Message from '../models/Message';
 
 
 const ReceivedMessageItem = ({ message }: {message: Message}) => {
 
-  let date = new Date(message.timestamp);
-  let hours = date.getHours();
-  let minutes = date.getMinutes().toString();
-  let time = `${hours - 12}:${minutes.length === 1 ? `0${minutes}` : minutes} ${
-    hours > 12 ? "PM" : "AM"
-  }`;
+  let time: string = moment.unix(message.timestamp / 1000).format("DD MMM - LT");
 
   return (
     <div className="mrTopContainer">

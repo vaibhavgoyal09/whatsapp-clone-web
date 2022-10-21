@@ -27,8 +27,10 @@ const ChatHeader: React.FC<Props> = ({
   useEffect(() => {
     setShowLastSeen(true);
     setTimeout(() => {
-      setShowLastSeen(false);
-    }, 2000);
+      if (!isUserOnline) {
+        setShowLastSeen(false);
+      }
+    }, 5000);
   }, [name]);
 
   let lastSeenText: string | null = null;

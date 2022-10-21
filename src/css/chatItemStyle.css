@@ -48,6 +48,10 @@
   white-space: nowrap;
 }
 
+.utys {
+  color: var(--green);
+}
+
 .umsg {
   color: var(--secondaryText);
 }

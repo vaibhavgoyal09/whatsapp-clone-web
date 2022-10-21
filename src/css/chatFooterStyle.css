@@ -12,6 +12,10 @@
   cursor: pointer;
 }
 
+.nt-allow {
+  cursor: not-allowed;
+}
+
 .input {
   box-shadow: none;
   border: none;

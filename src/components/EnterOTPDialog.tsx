@@ -20,22 +20,10 @@ const EnterOTPDialog: React.FC<Props> = ({
 
   const handleSubmitOtp = useCallback((e?: React.FormEvent) => {
     e?.preventDefault();
-    submitOtp();
-  }, []);
 
-  const handleEnterKeyPressed = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      submitOtp();
-    }
-  }, []);
+    console.log(`OTP: ${otp}`);
 
-  if (!open) {
-    return null;
-  }
-
-  const submitOtp = () => {
-auth
-      ?.verifyOtpAndSignInUser(otp)
+    auth?.verifyOtpAndSignInUser(otp)
       .then((_: any) => {
         onOtpVerified();
       })
@@ -46,15 +34,15 @@ auth
         );
         onClose();
       });
-  };
+  }, [otp]);
+
+  if (!open) {
+    return null;
+  }
 
   function handleOtpFieldChange(event: React.ChangeEvent<HTMLInputElement>) {
+    console.log(`Otp change ${event.target.value}`);
     setOtp(event.target.value);
-    if (otp.length === 6) {
-      setTimeout(() => {
-        handleSubmitOtp();
-      }, 2000);
-    }
   }
 
   return (
