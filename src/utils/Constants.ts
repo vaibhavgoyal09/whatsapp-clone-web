@@ -1,5 +1,5 @@
 export class WhatsApi {
-  static BASE_URL = "http://127.0.0.1:8000/api/v1";
+  static BASE_URL = "http://localhost:8000/api/v1";
   static REGISTER_USER_URL = "user/register";
   static SEARCH_USERS_BY_PHONE_NUMBER_URL = "/user/search/phone";
   static GET_CURRENT_USER_INFO_URL = "/user/current";
@@ -18,5 +18,5 @@ export class WhatsApi {
   static REMOVW_GROUP_PARTICIPANTS_URL = "/group/participant/remove"
   static GET_STATUSES_OF_USER_URL = "/status/all"
 
-  static CHAT_WEBSOCKET_BASE_URL = "ws://127.0.0.1:8000/ws/chat";
+  static CHAT_WEBSOCKET_BASE_URL = "ws://localhost:8000/ws/chat";
 }

@@ -2,8 +2,8 @@ interface Message {
   id: string;
   senderId: string;
   type: number;
-  text?: string;
-  mediaUrl?: string;
+  text: string;
+  mediaUrl: string | null;
   chatId: string;
   timestamp: number;
 }

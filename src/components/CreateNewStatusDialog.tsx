@@ -10,30 +10,48 @@ interface Props {
 const CreateNewStatusDialog: React.FC<Props> = ({ isOpen, onClose }) => {
   const [media, setMedia] = useState<File | null>(null);
   const [showDoneScreen, setShowDoneScreen] = useState(true);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [mediaUrl, setMediaUrl] = useState<string | null>(null);
   const dropAreaRef = createRef<HTMLDivElement>();
 
   useEffect(() => {
     dropAreaRef.current?.addEventListener("dragover", handleDragOver);
     dropAreaRef.current?.addEventListener("drop", handleDrop);
+    dropAreaRef.current?.addEventListener("dragenter", handleDragIn);
+    dropAreaRef.current?.addEventListener("dragleave", handleDragOut);
 
     return () => {
       dropAreaRef.current?.removeEventListener("dragover", handleDragOver);
       dropAreaRef.current?.removeEventListener("drop", handleDrop);
+      dropAreaRef.current?.removeEventListener("dragenter", handleDragIn);
+      dropAreaRef.current?.removeEventListener("dragend", handleDragOut);
     };
-  }, []);
+  });
 
   useEffect(() => {
     if (media) {
       setShowDoneScreen(true);
       let tempUrl = URL.createObjectURL(media);
-      setImageUrl(tempUrl);
+      setMediaUrl(tempUrl);
     } else {
       setShowDoneScreen(false);
     }
   }, [media]);
 
 const sampleImage = require('../assets/sample_image.jpg');
+
+  const handleDragIn = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (e.dataTransfer && e.dataTransfer.files.length >= 1) {
+      console.log("yeah, there are some files");
+    }
+  }
+
+  const handleDragOut = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }
 
   const handleDragOver = (e: any) => {
     e.preventDefault();
@@ -62,7 +80,10 @@ const sampleImage = require('../assets/sample_image.jpg');
   }
 
   return (
-    <div className="cnsDialogContainer" onClick={() => onClose()}>
+    <div className="cnsDialogContainer" onClick={() => {
+      setMedia(null);
+      onClose()
+    }}>
       <div className="cnsDialogContent" onClick={(e) => e.stopPropagation()}>
         <div className="cnsHeader">
           {showDoneScreen ? (
@@ -77,7 +98,7 @@ const sampleImage = require('../assets/sample_image.jpg');
         </div>
         {showDoneScreen ? (
           <div className="cnsMediaPreview">
-            {imageUrl ? <img src={imageUrl} alt="" /> : <img src={sampleImage}/>}
+            {mediaUrl ? <img src={mediaUrl} alt="" /> : <img src={sampleImage}/>}
           </div>
         ) : (
           <div className="cnsMediaDropper" ref={dropAreaRef}>

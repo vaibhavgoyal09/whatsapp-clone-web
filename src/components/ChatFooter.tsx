@@ -29,7 +29,6 @@ const ChatFooter: React.FC<Props> = ({
 
   const handleEnterKeyPressed = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
-      console.log("enter pressed");
       onSendMessage();
       messageInputFieldRef.current!.value! = "";
     }
@@ -45,7 +44,7 @@ const ChatFooter: React.FC<Props> = ({
 
   const handleIsTypingChange = debounce(() => {
     setIsTyping(false);
-  }, 2000);
+  }, 4000);
 
   return (
     <div className="fcontnt">

@@ -20,9 +20,6 @@ const EnterOTPDialog: React.FC<Props> = ({
 
   const handleSubmitOtp = useCallback((e?: React.FormEvent) => {
     e?.preventDefault();
-
-    console.log(`OTP: ${otp}`);
-
     auth?.verifyOtpAndSignInUser(otp)
       .then((_: any) => {
         onOtpVerified();
@@ -41,7 +38,6 @@ const EnterOTPDialog: React.FC<Props> = ({
   }
 
   function handleOtpFieldChange(event: React.ChangeEvent<HTMLInputElement>) {
-    console.log(`Otp change ${event.target.value}`);
     setOtp(event.target.value);
   }
 

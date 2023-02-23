@@ -10,16 +10,15 @@ interface Props {
   isSelected: boolean;
 }
 
-const ChatItem: React.FC<Props> = ({ chat, onChatClick, isSelected }) => {
+const ChatItem: React.FC<Props> = ({chat, onChatClick, isSelected }) => {
   const contentRef = createRef<HTMLDivElement>();
   const [typingStatus, setTypingStatus] = useState<string | null>(null);
+  const [messageText, setMessageText] = useState("Tap to start Chatting");
+  const [timestamp, setTimestamp] = useState("");
 
   useEffect(() => {
-    console.log("Use effect called")
     if (chat.type === ChatType.oneToOne) {
-      console.log(chat);
-      console.log(chat.typingUsersIds.length);
-      if (chat.typingUsersIds.length === 1) {
+      if (chat.typingUsersIds.length >= 1) {
         console.log("typing...")
         setTypingStatus("typing...");
       } else {
@@ -27,27 +26,25 @@ const ChatItem: React.FC<Props> = ({ chat, onChatClick, isSelected }) => {
         setTypingStatus(null);
       }
     }
-  }, [chat]);
+  }, []);
+
+  useEffect(() => {
+    const message = chat?.lastMessage;
+    if (message) {
+      let date = moment.unix(message.timestamp / 1000).format("DD MMM - LT");
+      setTimestamp(date);
+      if (message.type === MessageType.image) {
+        setMessageText("Image");
+      } else if (message.type === MessageType.video) {
+        setMessageText("Video");
+      } else if (message.type === MessageType.text) {
+        setMessageText(message.text ? message.text : "Tap to start chatting");
+      }
+    }
+  });
 
   if (!chat) {
     return null;
-  }
-
-  const message = chat.lastMessage;
-  let messageText: string = "Tap to start chatting";
-
-  var timestamp = "";
-  if (message) {
-    let date = moment.unix(message.timestamp / 1000).format("DD MMM - LT");
-    timestamp = date;
-
-    if (message.type === MessageType.image) {
-      messageText = "Image";
-    } else if (message.type === MessageType.video) {
-      messageText = "Video";
-    } else if (message.type === MessageType.text) {
-      messageText = message.text ? message.text : "Tap to start chatting";
-    }
   }
 
   return (

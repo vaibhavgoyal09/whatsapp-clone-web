@@ -158,6 +158,7 @@ const MainScreen = () => {
   useEffect(() => {
     let status = webSockets.typingStatusChange;
     if (status) {
+      console.log("Typing Status Change Received");
       chatsList.map((c) => {
         if (c.id === status!.chat_id) {
           if (c.typingUsersIds.includes(status!.user_id)) {
@@ -205,11 +206,14 @@ const MainScreen = () => {
   };
   const onContactClicked = (contact: User) => {
     let chat = chatsList.filter((chat: Chat) => {
-      let remoteUserId = Utils.getRemoteUserIdFromChat(
-        chat,
-        axios.currentUserModel!.id
-      );
-      return remoteUserId === contact.id;
+      if (chat.type === ChatType.oneToOne) {
+        let remoteUserId = Utils.getRemoteUserIdFromChat(
+          chat,
+          axios.currentUserModel!.id
+        );
+        return remoteUserId === contact.id;
+      }
+      return false;
     })[0];
     setChat(chat);
 
