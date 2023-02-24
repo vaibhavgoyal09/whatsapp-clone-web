@@ -3,19 +3,28 @@ import "../css/createNewStatusDialogStyle.css";
 import { ReactComponent as ImageVideoIcon } from "../assets/image_video.svg";
 import MutedIcon from "../assets/muted.svg";
 import UnmuteIcon from "../assets/unmute.svg";
+import { useAxios } from "../context/AxiosContext";
+import CreateStatusRequest from "../models/CreateStatusRequest";
+import { StatusType } from "../models/Status";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  onCreateNewStatusClicked: (request: CreateStatusRequest) => void;
 }
 
-const CreateNewStatusDialog: React.FC<Props> = ({ isOpen, onClose }) => {
+const CreateNewStatusDialog: React.FC<Props> = ({
+  isOpen,
+  onClose,
+  onCreateNewStatusClicked,
+}) => {
   const [media, setMedia] = useState<File | null>(null);
   const [showDoneScreen, setShowDoneScreen] = useState(true);
   const [mediaUrl, setMediaUrl] = useState<string | null>(null);
   const [mediaType, setMediaType] = useState<string>("");
   const [isVideoMuted, setIsVideoMuted] = useState<boolean>(true);
   const dropAreaRef = createRef<HTMLDivElement>();
+  const axios = useAxios()!!;
 
   useEffect(() => {
     dropAreaRef.current?.addEventListener("dragover", handleDragOver);
@@ -86,6 +95,34 @@ const CreateNewStatusDialog: React.FC<Props> = ({ isOpen, onClose }) => {
     setMedia(null);
   }, []);
 
+  const handleShareBtnClicked = async () => {
+    if (!media) {
+      return;
+    }
+
+    let tempMediaUrl: string | null = null;
+
+    try {
+      await axios.safeApiRequest(async () => {
+        tempMediaUrl = await axios.uploadFile(media);
+      });
+    } catch (e: any) {
+      alert(e.message);
+      return;
+    }
+
+    if (!tempMediaUrl) {
+      return;
+    }
+
+    let request: CreateStatusRequest = {
+      type: mediaType === "image" ? StatusType.image : StatusType.video,
+      media_url: tempMediaUrl,
+    };
+
+    onCreateNewStatusClicked(request);
+  };
+
   if (!isOpen) {
     return null;
   }
@@ -108,7 +145,11 @@ const CreateNewStatusDialog: React.FC<Props> = ({ isOpen, onClose }) => {
           <p id="cnsText" className="unselectable">
             Create new status
           </p>
-          {showDoneScreen ? <p id="cnsShareText">share</p> : null}
+          {showDoneScreen ? (
+            <p id="cnsShareText" onClick={() => handleShareBtnClicked()}>
+              share
+            </p>
+          ) : null}
         </div>
         {showDoneScreen && mediaUrl ? (
           <div className="cnsMediaPreview">

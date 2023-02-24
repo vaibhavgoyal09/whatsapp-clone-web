@@ -8,9 +8,9 @@ import StatusContactItem from "../components/StatusContactItem";
 import { WhatsApi } from "../utils/Constants";
 import Utils from "../utils/Utils";
 import { useNavigate } from "react-router-dom";
-import AddStatusRequest from "../models/AddStatusRequest";
 import CreateNewStatusDialog from "../components/CreateNewStatusDialog";
 import ViewStatusesScreen from "../components/ViewStatusesScreen";
+import CreateStatusRequest from "../models/CreateStatusRequest";
 
 const StatusScreen = () => {
   const axios = useAxios()!;
@@ -63,12 +63,22 @@ const StatusScreen = () => {
     setShowCreateNewStatusDialog(true);
   };
 
+  const handleCreateNewStatusClicked = (request: CreateStatusRequest) => {
+    axios
+      .postRequest(request, null, WhatsApi.CREATE_NEW_STATUS_URL)
+      .then((result) => {
+        alert("Created Successfully");
+        setShowCreateNewStatusDialog(false);
+      })
+      .catch((e) => console.log(e));
+  };
+
   return (
     <div className="statusScreen">
       {showStatusesScreen ? (
         <ViewStatusesScreen
-          onNextCliked={() => { }}
-          onPreviousClicked={() => { }}
+          onNextCliked={() => {}}
+          onPreviousClicked={() => {}}
           currentContactUser={selectedContact!}
           statuses={statusesOfUser}
           onClose={() => {
@@ -80,6 +90,9 @@ const StatusScreen = () => {
       <CreateNewStatusDialog
         isOpen={showCreateNewStatusDialog}
         onClose={() => setShowCreateNewStatusDialog(false)}
+        onCreateNewStatusClicked={(request: CreateStatusRequest) =>
+          handleCreateNewStatusClicked(request)
+        }
       />
       <div className="statusScreenContent">
         {showCreateNewStatusDialog ? null : (

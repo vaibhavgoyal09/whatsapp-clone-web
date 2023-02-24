@@ -16,6 +16,7 @@ export class WhatsApi {
   static GET_GROUP_DETAILS_URL = "/group/details"
   static ADD_GROUP_PARTICIPANTS_URL = "/group/participant/add"
   static REMOVW_GROUP_PARTICIPANTS_URL = "/group/participant/remove"
+  static CREATE_NEW_STATUS_URL = "/status/new"
   static GET_STATUSES_OF_USER_URL = "/status/all"
 
   static CHAT_WEBSOCKET_BASE_URL = "ws://localhost:8000/ws/chat";

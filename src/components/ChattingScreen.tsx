@@ -75,8 +75,6 @@ const ChattingScreen: React.FC<Props> = ({
     let attachmentUrl: string | null = null;
 
     if (attachment) {
-      console.log("uploading file");
-      
       try {
         await axios.safeApiRequest(async () => {
           attachmentUrl = await axios.uploadFile(attachment);
@@ -85,9 +83,6 @@ const ChattingScreen: React.FC<Props> = ({
         alert(e.message);
       }
     }
-
-    console.log("done uploading");
-    
 
     let remoteUserId;
     if (remoteUser) {
