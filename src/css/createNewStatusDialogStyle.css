@@ -10,7 +10,7 @@
 }
 
 .cnsDialogContent {
-  width: 500px;
+  width: 430px;
   max-height: 500px;
   /*overflow-y: auto;*/
   background-color: var(--darkerGrey);
@@ -71,7 +71,7 @@
 #imageVideoIcon {
   fill: white;
   width: 100px;
-} 
+}
 
 #cnsDropContextText {
   color: white;
@@ -90,12 +90,61 @@
   border-radius: 0px 0px 18px 18px;
 }
 
-.cnsMediaPreview img {
+.cnsMediaPreview #img {
   width: 100%;
   height: 99%;
 }
 
-.cnsMediaPreview video {
+.cnsVideoContainer {
   width: 100%;
-  height: 99%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-inline: auto;
+}
+
+.cnsVideoControlsContainer {
+  width: 25px;
+  height: 25px;
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 100;
+  opacity: 0;
+  background-color: black;
+  border-radius: 50%;
+  transition: opacity 150ms ease-in-out;
+}
+
+.cnsVideoContainer:hover .cnsVideoControlsContainer,
+.cnsVideoContainer:focus-within .cnsVideoControlsContainer {
+  opacity: 0.8;
+}
+
+.cnsVideoControlsContainer .cnsControls {
+  display: flex;
+  padding: 0.25rem;
+  align-items: center;
+}
+
+#cnsPlayPauseBtn {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  height: 16px;
+  width: 16px;
+  opacity: 0.85;
+  transition: opacity 150ms ease-in-out;
+}
+
+video {
+  width: 100% !important;
+  height: auto !important;
+  object-fit: fill;
 }

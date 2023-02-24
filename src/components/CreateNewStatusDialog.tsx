@@ -1,6 +1,8 @@
-import { useState, createRef, useEffect, useCallback } from "react";
+import React, { useState, createRef, useEffect, useCallback } from "react";
 import "../css/createNewStatusDialogStyle.css";
 import { ReactComponent as ImageVideoIcon } from "../assets/image_video.svg";
+import MutedIcon from "../assets/muted.svg";
+import UnmuteIcon from "../assets/unmute.svg";
 
 interface Props {
   isOpen: boolean;
@@ -11,6 +13,8 @@ const CreateNewStatusDialog: React.FC<Props> = ({ isOpen, onClose }) => {
   const [media, setMedia] = useState<File | null>(null);
   const [showDoneScreen, setShowDoneScreen] = useState(true);
   const [mediaUrl, setMediaUrl] = useState<string | null>(null);
+  const [mediaType, setMediaType] = useState<string>("");
+  const [isVideoMuted, setIsVideoMuted] = useState<boolean>(true);
   const dropAreaRef = createRef<HTMLDivElement>();
 
   useEffect(() => {
@@ -32,26 +36,30 @@ const CreateNewStatusDialog: React.FC<Props> = ({ isOpen, onClose }) => {
       setShowDoneScreen(true);
       let tempUrl = URL.createObjectURL(media);
       setMediaUrl(tempUrl);
+
+      if (
+        media.type === "image/jpeg" ||
+        media.type === "image/png" ||
+        media.type === "image/jpg"
+      ) {
+        setMediaType("image");
+      } else if (media.type === "video/mp4" || media.type === "video/mkv") {
+        setMediaType("video");
+      }
     } else {
       setShowDoneScreen(false);
     }
   }, [media]);
 
-const sampleImage = require('../assets/sample_image.jpg');
-
   const handleDragIn = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
-
-    if (e.dataTransfer && e.dataTransfer.files.length >= 1) {
-      console.log("yeah, there are some files");
-    }
-  }
+  };
 
   const handleDragOut = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
-  }
+  };
 
   const handleDragOver = (e: any) => {
     e.preventDefault();
@@ -65,10 +73,13 @@ const sampleImage = require('../assets/sample_image.jpg');
     let files = e.dataTransfer.files;
 
     if (files && files.length > 0) {
-      console.log(`file droped ${files}`);
       setMedia(files[0]);
     }
     e.dataTransfer.clearData();
+  };
+
+  const handlePlayPauseBtnClicked = () => {
+    setIsVideoMuted(!isVideoMuted);
   };
 
   const handleBackButtonClicked = useCallback(() => {
@@ -80,10 +91,13 @@ const sampleImage = require('../assets/sample_image.jpg');
   }
 
   return (
-    <div className="cnsDialogContainer" onClick={() => {
-      setMedia(null);
-      onClose()
-    }}>
+    <div
+      className="cnsDialogContainer"
+      onClick={() => {
+        setMedia(null);
+        onClose();
+      }}
+    >
       <div className="cnsDialogContent" onClick={(e) => e.stopPropagation()}>
         <div className="cnsHeader">
           {showDoneScreen ? (
@@ -96,9 +110,27 @@ const sampleImage = require('../assets/sample_image.jpg');
           </p>
           {showDoneScreen ? <p id="cnsShareText">share</p> : null}
         </div>
-        {showDoneScreen ? (
+        {showDoneScreen && mediaUrl ? (
           <div className="cnsMediaPreview">
-            {mediaUrl ? <img src={mediaUrl} alt="" /> : <img src={sampleImage}/>}
+            {mediaType === "image" ? (
+              <img id="cnsMediaImage" src={mediaUrl} />
+            ) : (
+              <div className="cnsVideoContainer">
+                <div
+                  className="cnsVideoControlsContainer"
+                  onClick={() => handlePlayPauseBtnClicked()}
+                >
+                  <div className="cnsControls">
+                    <img
+                      id="cnsPlayPauseBtn"
+                      src={isVideoMuted ? MutedIcon : UnmuteIcon}
+                      alt="play pause icon"
+                    />
+                  </div>
+                </div>
+                <video src={mediaUrl} autoPlay loop muted={isVideoMuted} />
+              </div>
+            )}
           </div>
         ) : (
           <div className="cnsMediaDropper" ref={dropAreaRef}>
