@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import "../css/mainSidebar.css";
-import SidebarHeader from "./SidebarHeader";
-import SidebarSearchBar from "./SidebarSearchBar";
-import ContactItem from "./ContactItem";
-import ChatItem from "./ChatItem";
 import Chat from "../models/Chat";
 import User from "../models/User";
+import ChatItem from "./ChatItem";
+import ContactItem from "./ContactItem";
+import SidebarHeader from "./SidebarHeader";
+import SidebarSearchBar from "./SidebarSearchBar";
 
 interface Props {
   chatsList: Chat[];

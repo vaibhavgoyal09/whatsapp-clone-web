@@ -42,20 +42,73 @@
 
 .sscStatusContentWrapper {
   height: 100%;
-  width: 40%;
+  width: 35%;
   position: relative;
+  box-sizing: border-box;
 }
 
 .sscMediaDisplay {
-  width: 80%;
+  width: 100%;
   height: 100%;
   position: absolute;
 }
 
-.progressContainer {
+.sscHeader {
+  position: absolute;
+  width: 100%;
+  top: 0px;
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+.sscHeader::before {
+  content: "";
+  position: absolute;
+  background: linear-gradient(to bottom, rgba(38, 38, 38, 0.8), transparent);
+  width: 100%;
+  aspect-ratio: 6 / 1;
+  z-index: -1;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.sscProgressWrapper {
   display: flex;
   flex-direction: row;
   width: 80vw;
   padding: 10px 0;
   cursor: pointer;
+}
+
+.sscUserDetailsWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 8px;
+}
+
+#sscUserImg {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+}
+
+#sscUserName {
+  font-size: 0.9rem;
+  font-weight: normal;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#sscLastUpdated {
+  font-size: 0.8rem;
+  font-weight: normal;
+  color: rgb(238, 238, 238);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#sscMediaImage {
+  width: 100%;
+  height: 100%;
 }

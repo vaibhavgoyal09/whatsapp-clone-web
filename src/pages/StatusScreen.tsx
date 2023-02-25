@@ -1,16 +1,16 @@
-import User from "../models/User";
-import Status from "../models/Status";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ReactComponent as StatusLogo } from "../assets/status.svg";
+import CreateNewStatusDialog from "../components/CreateNewStatusDialog";
+import StatusContactItem from "../components/StatusContactItem";
+import ViewStatusesScreen from "../components/ViewStatusesScreen";
 import { useAxios } from "../context/AxiosContext";
 import "../css/statusScreenStyle.css";
-import { ReactComponent as StatusLogo } from "../assets/status.svg";
-import { useEffect, useState } from "react";
-import StatusContactItem from "../components/StatusContactItem";
+import CreateStatusRequest from "../models/CreateStatusRequest";
+import Status from "../models/Status";
+import User from "../models/User";
 import { WhatsApi } from "../utils/Constants";
 import Utils from "../utils/Utils";
-import { useNavigate } from "react-router-dom";
-import CreateNewStatusDialog from "../components/CreateNewStatusDialog";
-import ViewStatusesScreen from "../components/ViewStatusesScreen";
-import CreateStatusRequest from "../models/CreateStatusRequest";
 
 const StatusScreen = () => {
   const axios = useAxios()!;
@@ -39,7 +39,9 @@ const StatusScreen = () => {
   }, []);
 
   useEffect(() => {
+    setShowStatusesScreen(false);
     if (selectedContact) {
+      setStatusesOfUser([]);
       axios
         .getRequest(
           `${WhatsApi.GET_STATUSES_OF_USER_URL}/${selectedContact.id}`,
@@ -50,6 +52,8 @@ const StatusScreen = () => {
           result.forEach((item: any) => {
             statuses.push(Utils.statusFromJson(item));
           });
+          setStatusesOfUser(statuses);
+          setShowStatusesScreen(true);
         })
         .catch((e) => console.log(e));
     }
@@ -67,18 +71,42 @@ const StatusScreen = () => {
     axios
       .postRequest(request, null, WhatsApi.CREATE_NEW_STATUS_URL)
       .then((result) => {
-        alert("Created Successfully");
         setShowCreateNewStatusDialog(false);
+        alert("Created Successfully");
       })
       .catch((e) => console.log(e));
+  };
+
+  const handleOnNextClicked = () => {
+    let index = contacts.indexOf(selectedContact!);
+    if (index === contacts.length - 1) {
+      setShowStatusesScreen(false);
+      setSelectedContact(null);
+    } else {
+      setSelectedContact(contacts[index + 1]);
+    }
+  };
+
+  const handleOnPreviousClicked = () => {
+    let index = contacts.indexOf(selectedContact!);
+    if (index <= 0) {
+      setShowStatusesScreen(false);
+      setSelectedContact(null);
+    } else {
+      setSelectedContact(contacts[index - 1]);
+    }
   };
 
   return (
     <div className="statusScreen">
       {showStatusesScreen ? (
         <ViewStatusesScreen
-          onNextCliked={() => {}}
-          onPreviousClicked={() => {}}
+          onNextCliked={() => {
+            handleOnNextClicked();
+          }}
+          onPreviousClicked={() => {
+            handleOnPreviousClicked();
+          }}
           currentContactUser={selectedContact!}
           statuses={statusesOfUser}
           onClose={() => {
