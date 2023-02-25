@@ -26,6 +26,7 @@ import {
   componentLeftToRight,
   componentRightToLeft,
 } from "../utils/Transitions";
+import RemoveParticipantsRequest from "../models/RemoveParticipantsRequest";
 
 const MainScreen = () => {
   const [chat, setChat] = useState<Chat | null>(null);
@@ -352,6 +353,21 @@ const MainScreen = () => {
     return null;
   }
 
+  const handleKickUserFromGroupClicked = (groupId: string, user: User) => {
+    let requestBody: RemoveParticipantsRequest = {
+      group_id: groupId,
+      user_ids: [user.id],
+    };
+    axios
+      .postRequest(requestBody, null, WhatsApi.REMOVE_GROUP_PARTICIPANTS_URL)
+      .then((_) => {
+        if (groupDetails?.id === groupId) {
+          getGroupDetails();
+        }
+      })
+      .catch((e) => console.log(e));
+  };
+
   const searchContactsByName = (name: string) => {
     setContactNameSearchQuery(name);
   };
@@ -499,6 +515,9 @@ const MainScreen = () => {
                   group={groupDetails}
                   onAddParticipantsClicked={handleShowSelectUsersDialog}
                   onClose={() => setshowChatDetailsScreen(false)}
+                  onKickUserClicked={(groupId: string, user: User) =>
+                    handleKickUserFromGroupClicked(groupId, user)
+                  }
                 />
               )}
             </motion.div>

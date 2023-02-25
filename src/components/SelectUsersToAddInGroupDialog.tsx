@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../css/selectUsersForGroupDialogStyle.css";
 import User from "../models/User";
 import ContactItem from "./ContactItem";
@@ -18,6 +18,10 @@ const SelectUsersToAddInGroupDialog: React.FC<Props> = ({
 }) => {
 
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+
+  useEffect(() => {
+    console.log(selectedUsers);
+  }, []);
 
   if (!showDialog) {
     return null;

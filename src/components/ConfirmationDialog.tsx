@@ -1,5 +1,5 @@
 const ConfirmationDialog: React.FC = () => {
-  return <div></div>
-}
+  return <div className="popupDialog"></div>;
+};
 
 export default ConfirmationDialog;

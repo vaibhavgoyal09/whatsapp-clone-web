@@ -8,6 +8,7 @@ interface Props {
   currentUser: User;
   group: Group | null;
   onAddParticipantsClicked: () => void;
+  onKickUserClicked: (groupId: string, user: User) => void;
   onClose: () => void;
 }
 
@@ -16,6 +17,7 @@ const GroupDetailsScreen: React.FC<Props> = ({
   group,
   onAddParticipantsClicked,
   onClose,
+  onKickUserClicked,
 }) => {
   if (!group) {
     return null;
@@ -106,7 +108,12 @@ const GroupDetailsScreen: React.FC<Props> = ({
                 </div>
                 {element.id !== group.adminId &&
                 group.adminId === currentUser.id ? (
-                  <span className="gdKickOutUserIcon">
+                  <span
+                    className="gdKickOutUserIcon"
+                    onClick={() => {
+                      onKickUserClicked(group.id, element);
+                    }}
+                  >
                     <i className="gdWarnIcon fa-solid fa-right-from-bracket" />
                   </span>
                 ) : null}
