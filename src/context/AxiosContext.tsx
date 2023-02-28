@@ -11,6 +11,8 @@ import User from "../models/User";
 import { WhatsApi } from "../utils/Constants";
 import { useAuth } from "./AuthContext";
 import Utils from "../utils/Utils";
+import { storage } from "../utils/FirebaseConfig";
+import FirebaseService from "../service/FirebaseService";
 
 interface AxiosContextInterface {
   currentUserModel: User | null;
@@ -91,6 +93,8 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     retrieveCurrentUser();
   }, [accessToken, auth.isUserLoggedIn]);
 
+  const firebaseService = new FirebaseService();
+
   async function safeApiRequest<T>(request: () => Promise<T>) {
     try {
       return await request();
@@ -119,13 +123,9 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
 
   async function uploadFile(file: File) {
     return await safeApiRequest<string>(async () => {
-      let formData = new FormData();
-      formData.append("file", file);
-      let fileUploadResponse = await instanceRef.current.post(
-        `${WhatsApi.UPLOAD_FILE_URL}`,
-        formData
-      );
-      return fileUploadResponse.data["url"];
+      let fileRef = firebaseService.getStorageRef(file.name)
+      await firebaseService.uploadFile(fileRef, file);
+      return firebaseService.getMediaURL(fileRef);
     });
   }
 
