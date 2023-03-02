@@ -8,31 +8,21 @@ import {
   useState,
 } from "react";
 import User from "../models/User";
-import { WhatsApi } from "../utils/Constants";
-import { useAuth } from "./AuthContext";
-import Utils from "../utils/Utils";
-import { storage } from "../utils/FirebaseConfig";
 import FirebaseService from "../service/FirebaseService";
+import { WhatsApi } from "../utils/Constants";
+import ProgressStatus from "../utils/ProgressStatus";
+import Utils from "../utils/Utils";
+import { useAuth } from "./AuthContext";
 
 interface AxiosContextInterface {
   currentUserModel: User | null;
   accessToken: string | null;
-  updateCurrentUserModelState: (
-    name?: string,
-    about?: string,
-    profileImageUrl?: string
-  ) => void;
+  progressStatus: ProgressStatus;
+  updateCurrentUserModelState: () => void;
   postRequest: <T = any>(
     requestBody: any,
     params: object | null,
     requestPath: string
-  ) => Promise<T>;
-  uploadFileAndPostRequest: <T = any>(
-    file: File,
-    requestBody: any,
-    params: object | null,
-    requestPath: string,
-    paramName: string
   ) => Promise<T>;
   putRequest: <T = any>(
     requestBody: any,
@@ -53,6 +43,10 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
   const auth = useAuth()!;
   const [currentUserModel, setCurrentUserModel] = useState<User | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null); // Just a fake token
+  const [progressStatus, setProgressStatus] = useState<ProgressStatus>({
+    isLoading: false,
+    progressPercent: 0,
+  });
 
   let config = {
     baseURL: WhatsApi.BASE_URL,
@@ -101,7 +95,6 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     } catch (axiosError: any) {
       let message = "Check Your Internet Connection";
       console.log(axiosError);
-
       if (axiosError.response && axiosError.response.data) {
         message = axiosError.response.data["detail"];
       }
@@ -109,21 +102,23 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
-  function updateCurrentUserModelState(
-    name?: string,
-    about?: string,
-    profileImageUrl?: string
-  ) {
-    currentUserModel!.name = name ? name : currentUserModel!.name;
-    currentUserModel!.about = about ? about : currentUserModel!.about;
-    currentUserModel!.profileImageUrl = profileImageUrl
-      ? profileImageUrl
-      : currentUserModel!.profileImageUrl;
+  function updateCurrentUserModelState() {
+    if (accessToken) {
+      safeApiRequest(async () => {
+        let data = (
+          await instanceRef.current.get(
+            `${WhatsApi.GET_CURRENT_USER_INFO_URL}`
+          )
+        ).data;
+        let user = Utils.userFromJson(data);
+        setCurrentUserModel(user);
+      });
+    }
   }
 
   async function uploadFile(file: File) {
     return await safeApiRequest<string>(async () => {
-      let fileRef = firebaseService.getStorageRef(file.name)
+      let fileRef = firebaseService.getStorageRef(file.name);
       await firebaseService.uploadFile(fileRef, file);
       return firebaseService.getMediaURL(fileRef);
     });
@@ -135,13 +130,29 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     requestPath: string
   ): Promise<T> {
     return await safeApiRequest<T>(async () => {
+      let status: ProgressStatus = {
+        isLoading: true,
+        progressPercent: 0,
+      };
+      setProgressStatus(status);
       let response = await instanceRef.current.post(
         `${requestPath}`,
         requestBody,
         {
           params: params,
+          onDownloadProgress: (progressEvent) => {
+            let percentCompleted = Math.floor(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            let status: ProgressStatus = {
+              isLoading: true,
+              progressPercent: percentCompleted,
+            };
+            setProgressStatus(status);
+          },
         }
       );
+      setProgressStatus({ isLoading: false, progressPercent: 0 });
       if (response) {
         return response.data ? response.data : null;
       } else {
@@ -157,7 +168,19 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     return await safeApiRequest<T>(async () => {
       let response = await instanceRef.current.get(requestPath, {
         params: params,
+        onDownloadProgress: (progressEvent) => {
+          console.log(progressEvent);
+          let percentCompleted = Math.floor(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          let status: ProgressStatus = {
+            isLoading: true,
+            progressPercent: percentCompleted,
+          };
+          setProgressStatus(status);
+        },
       });
+      setProgressStatus({ isLoading: false, progressPercent: 0 });
       return response.data ? response.data : null;
     });
   }
@@ -165,11 +188,21 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
   async function putRequest<T = any>(
     requestBody: any,
     params: object | null,
-    requestPath: string,
+    requestPath: string
   ): Promise<T> {
     return await safeApiRequest<T>(async () => {
       let response = await instanceRef.current.put(requestPath, requestBody, {
         params: params,
+        onDownloadProgress: (progressEvent) => {
+          let percentCompleted = Math.floor(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          let status: ProgressStatus = {
+            isLoading: true,
+            progressPercent: percentCompleted,
+          };
+          setProgressStatus(status);
+        },
       });
       if (response !== undefined && response !== null) {
         return response.status ? response.request : null;
@@ -179,43 +212,14 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     });
   }
 
-  async function uploadFileAndPostRequest<T = any>(
-    file: File,
-    params: object | null,
-    requestBody: any,
-    requestPath: string,
-    paramName: string
-  ) {
-    return await safeApiRequest<T>(async () => {
-      let formData = new FormData();
-      formData.append("file", file);
-      let fileUploadResponse = await instanceRef.current.post(
-        `${WhatsApi.UPLOAD_FILE_URL}`,
-        formData
-      );
-      let fileUrl = fileUploadResponse.data["url"];
-
-      requestBody[paramName] = fileUrl;
-
-      let postRequestResponse = await instanceRef.current.post(
-        `${requestPath}`,
-        requestBody,
-        {
-          params: params,
-        }
-      );
-      return postRequestResponse.data;
-    });
-  }
-
   const value: AxiosContextInterface = {
     currentUserModel,
     accessToken,
+    progressStatus,
     postRequest,
     uploadFile,
     getRequest,
     safeApiRequest,
-    uploadFileAndPostRequest,
     updateCurrentUserModelState,
     putRequest,
   };

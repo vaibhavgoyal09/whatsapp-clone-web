@@ -27,6 +27,7 @@ import {
   componentRightToLeft,
 } from "../utils/Transitions";
 import RemoveParticipantsRequest from "../models/RemoveParticipantsRequest";
+import LoadingBar from "react-top-loading-bar";
 
 const MainScreen = () => {
   const [chat, setChat] = useState<Chat | null>(null);
@@ -54,6 +55,7 @@ const MainScreen = () => {
   const auth = useAuth()!;
   const webSockets = useWhatsappWebSocket()!;
   const axios = useAxios()!;
+  const progressStatus = axios.progressStatus;
 
   useEffect(() => {
     setshowChatDetailsScreen(false);
@@ -269,14 +271,14 @@ const MainScreen = () => {
   const updateUserName = (name: string) => {
     updateUserDetails(name)
       .then((_) => {
-        axios.updateCurrentUserModelState(name);
+        axios.updateCurrentUserModelState();
       })
       .catch((e) => console.log(e));
   };
   const updateUserAbout = (about: string) => {
     updateUserDetails(null, about)
       .then((_) => {
-        axios.updateCurrentUserModelState(undefined, about);
+        axios.updateCurrentUserModelState();
       })
       .catch((e) => console.log(e));
   };
@@ -286,7 +288,7 @@ const MainScreen = () => {
   ) => {
     updateUserDetails(null, null, imageFile, shouldRemoveProfileImage)
       .then((result: any) => {
-        axios.updateCurrentUserModelState(undefined, undefined, result);
+        axios.updateCurrentUserModelState();
       })
       .catch((e: any) => console.log(e.message));
   };
@@ -453,6 +455,10 @@ const MainScreen = () => {
 
   return (
     <div className="pg">
+      <LoadingBar color="#00a884" progress={progressStatus.progressPercent} />
+      {/* {progressStatus.isLoading ? (
+        
+      ) : null} */}
       <SelectUsersToAddInGroupDialog
         onDoneClicked={(participants) => {
           setShowSelectUsersForGroupDialog(false);
