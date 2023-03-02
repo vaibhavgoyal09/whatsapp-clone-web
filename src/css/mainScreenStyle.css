@@ -1,5 +1,5 @@
 .pg {
-  height: 100%;
+  height: 100vh;
   overflow: hidden;
   display: flex;
   flex-grow: 2 1 1;
