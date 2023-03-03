@@ -12,7 +12,6 @@ import {
 import {
   createContext,
   ReactNode,
-  useCallback,
   useContext,
   useEffect,
   useState,
@@ -47,7 +46,6 @@ export default function AuthContextProvider({
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      console.log("Auth State Changed", user);
       setCurrentUser(user ? user : null);
     });
     return () => {

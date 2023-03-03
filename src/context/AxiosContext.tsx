@@ -42,7 +42,7 @@ export const useAxios = () => useContext(AxiosContext);
 const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
   const auth = useAuth()!;
   const [currentUserModel, setCurrentUserModel] = useState<User | null>(null);
-  const [accessToken, setAccessToken] = useState<string | null>(null); // Just a fake token
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [progressStatus, setProgressStatus] = useState<ProgressStatus>({
     isLoading: false,
     progressPercent: 0,
@@ -61,14 +61,22 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     auth.getUserIdToken().then((token) => {
       if (token) {
-        setAccessToken(token.substring(8, 5));
-        instanceRef.current.interceptors.request.use((config) => {
-          config.headers = { Authorization: `Bearer ${token}` };
-          return config;
-        });
+        console.log("Auth State Changed");
+        setAccessToken(token);
       }
     });
   }, [auth.currentUser]);
+
+  useEffect(() => {
+    instanceRef.current.interceptors.request.use((config) => {
+      if (accessToken) {
+        config.headers = { Authorization: `Bearer ${accessToken}` };
+      } else {
+        config.headers = { Authorization: "" };
+      }
+      return config;
+    });
+  }, [accessToken]);
 
   useEffect(() => {
     async function retrieveCurrentUser() {
@@ -106,9 +114,7 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     if (accessToken) {
       safeApiRequest(async () => {
         let data = (
-          await instanceRef.current.get(
-            `${WhatsApi.GET_CURRENT_USER_INFO_URL}`
-          )
+          await instanceRef.current.get(`${WhatsApi.GET_CURRENT_USER_INFO_URL}`)
         ).data;
         let user = Utils.userFromJson(data);
         setCurrentUserModel(user);
@@ -116,9 +122,14 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
+  function getUniqueString(): String {
+    return crypto.randomUUID();
+  }
+
   async function uploadFile(file: File) {
     return await safeApiRequest<string>(async () => {
-      let fileRef = firebaseService.getStorageRef(file.name);
+      let fileName = getUniqueString() + `.${file.name.split(".").pop()}`;
+      let fileRef = firebaseService.getStorageRef(fileName);
       await firebaseService.uploadFile(fileRef, file);
       return firebaseService.getMediaURL(fileRef);
     });

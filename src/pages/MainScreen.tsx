@@ -456,9 +456,6 @@ const MainScreen = () => {
   return (
     <div className="pg">
       <LoadingBar color="#00a884" progress={progressStatus.progressPercent} />
-      {/* {progressStatus.isLoading ? (
-        
-      ) : null} */}
       <SelectUsersToAddInGroupDialog
         onDoneClicked={(participants) => {
           setShowSelectUsersForGroupDialog(false);

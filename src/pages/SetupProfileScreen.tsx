@@ -1,5 +1,6 @@
 import React, { createRef, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import LoadingBar from "react-top-loading-bar";
 import { ReactComponent as CameraImg } from "../assets/camera.svg";
 import { ReactComponent as Logo } from "../assets/logo.svg";
 import { useAuth } from "../context/AuthContext";
@@ -24,6 +25,7 @@ const SetupProfileScreen = () => {
   const axios = useAxios();
   const state = location.state as SetupProfileScreenState;
   const { phoneNumber } = state;
+  const progressStatus  = axios!.progressStatus;
 
   const maxRowCount = 4;
   const maxCharCount = 50;
@@ -84,6 +86,7 @@ const SetupProfileScreen = () => {
 
   return (
     <div className="page">
+      <LoadingBar color="#00a884" progress={progressStatus.progressPercent} />
       <div className="box">
         <div className="logoTitleSubtitle">
           <Logo className="logo" />

@@ -8,6 +8,7 @@ import "../css/signInScreenStyle.css";
 import { WhatsApi } from "../utils/Constants";
 import { auth as FirebaseAuth } from "../utils/FirebaseConfig";
 import { RecaptchaVerifier } from "firebase/auth";
+import LoadingBar from "react-top-loading-bar";
 
 const SignInScreen: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -15,6 +16,7 @@ const SignInScreen: React.FC = () => {
   const navigate = useNavigate();
   const auth = useAuth()!;
   const axios = useAxios()!;
+  const progressStatus = axios.progressStatus;
   const sendVerificationCode = auth.sendVerificationCode;
 
   const form = createRef<HTMLFormElement>();
@@ -77,6 +79,7 @@ const SignInScreen: React.FC = () => {
 
   return (
     <div className="page">
+      <LoadingBar color="#00a884" progress={progressStatus.progressPercent} />
       <EnterOTPDialog
         open={dialogVisibility}
         onClose={() => setDialogVisibility(false)}

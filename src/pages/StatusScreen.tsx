@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import LoadingBar from "react-top-loading-bar";
 import { ReactComponent as StatusLogo } from "../assets/status.svg";
 import CreateNewStatusDialog from "../components/CreateNewStatusDialog";
 import StatusContactItem from "../components/StatusContactItem";
@@ -21,6 +22,7 @@ const StatusScreen = () => {
   const [showCreateNewStatusDialog, setShowCreateNewStatusDialog] =
     useState<boolean>(false);
   const navigate = useNavigate();
+  const progressStatus = axios.progressStatus;
 
   useEffect(() => {
     axios
@@ -99,6 +101,7 @@ const StatusScreen = () => {
 
   return (
     <div className="statusScreen">
+      <LoadingBar color="#00a884" progress={progressStatus.progressPercent} />
       {showStatusesScreen ? (
         <ViewStatusesScreen
           onNextCliked={() => {
