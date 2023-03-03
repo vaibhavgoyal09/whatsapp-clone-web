@@ -34,6 +34,7 @@ interface AxiosContextInterface {
     requestPath: string,
     params: object | null
   ) => Promise<T>;
+  onUserLoggedOut: () => void;
   safeApiRequest: <T = any>(request: () => Promise<T>) => Promise<T>;
 }
 
@@ -42,7 +43,7 @@ export const useAxios = () => useContext(AxiosContext);
 const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
   const auth = useAuth()!;
   const [currentUserModel, setCurrentUserModel] = useState<User | null>(null);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null); // Just a fake token
   const [progressStatus, setProgressStatus] = useState<ProgressStatus>({
     isLoading: false,
     progressPercent: 0,
@@ -61,22 +62,14 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     auth.getUserIdToken().then((token) => {
       if (token) {
-        console.log("Auth State Changed");
-        setAccessToken(token);
+        setAccessToken(token.substring(8, 5));
+        instanceRef.current.interceptors.request.use((config) => {
+          config.headers = { Authorization: `Bearer ${token}` };
+          return config;
+        });
       }
     });
   }, [auth.currentUser]);
-
-  useEffect(() => {
-    instanceRef.current.interceptors.request.use((config) => {
-      if (accessToken) {
-        config.headers = { Authorization: `Bearer ${accessToken}` };
-      } else {
-        config.headers = { Authorization: "" };
-      }
-      return config;
-    });
-  }, [accessToken]);
 
   useEffect(() => {
     async function retrieveCurrentUser() {
@@ -223,6 +216,14 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     });
   }
 
+  function onUserLoggedOut() {
+    setCurrentUserModel(null);
+    instanceRef.current.interceptors.request.use((config) => {
+      config.headers = { Authorization: "" };
+      return config;
+    });
+  }
+
   const value: AxiosContextInterface = {
     currentUserModel,
     accessToken,
@@ -232,6 +233,7 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     getRequest,
     safeApiRequest,
     updateCurrentUserModelState,
+    onUserLoggedOut,
     putRequest,
   };
 

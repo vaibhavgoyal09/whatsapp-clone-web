@@ -13,6 +13,7 @@ import LoadingBar from "react-top-loading-bar";
 const SignInScreen: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [dialogVisibility, setDialogVisibility] = useState(false);
+  const [recaptcha, setRecaptcha] = useState<RecaptchaVerifier | null>(null);
   const navigate = useNavigate();
   const auth = useAuth()!;
   const axios = useAxios()!;
@@ -28,17 +29,33 @@ const SignInScreen: React.FC = () => {
   };
 
   useEffect(() => {
-    (window as any).recaptchaVerifier = new RecaptchaVerifier(
+    let verifier = new RecaptchaVerifier(
       "captcha-container",
       {
         size: "invisible",
       },
       FirebaseAuth
     );
-    (window as any).recaptchaVerifier.render().then((widgetId: any) => {
-      (window as any).recaptchaWidgetId = widgetId;
-    });
+
+    if( !recaptcha) {
+      setRecaptcha(verifier);
+    }
+
+    return () => {
+      verifier.clear();
+    };
   }, []);
+
+  useEffect(() => {
+    if (recaptcha) {
+
+      (window as any).recaptchaVerifier = recaptcha;
+
+      recaptcha.render().then((widgetId: any) => {
+        (window as any).recaptchaWidgetId = widgetId;
+      });
+    }
+  }, [recaptcha]);
 
   const onSendOtpClicked = (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,7 +79,11 @@ const SignInScreen: React.FC = () => {
 
   const onOtpVerified = () => {
     let trimmedPhoneNumber = phoneNumber.replace(/\s+/g, "");
-    axios.getRequest<boolean>(`${WhatsApi.CHECK_USER_SIGNING_IN_URL}/${trimmedPhoneNumber}`, null)
+    axios
+      .getRequest<boolean>(
+        `${WhatsApi.CHECK_USER_SIGNING_IN_URL}/${trimmedPhoneNumber}`,
+        null
+      )
       .then((result) => {
         if (result) {
           auth.setUserLoggedIn();

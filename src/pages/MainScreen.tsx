@@ -341,6 +341,7 @@ const MainScreen = () => {
     auth
       .logOut()
       .then((_) => {
+        axios.onUserLoggedOut();
         navigate("/auth");
       })
       .catch((e) => console.log(e));
