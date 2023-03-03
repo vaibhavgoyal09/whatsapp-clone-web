@@ -100,6 +100,7 @@ export default function AuthContextProvider({
           localStorage.setItem("authPreferences", JSON.stringify(prefs));
           resolve(setIsUserLoggedIn(false));
         }
+        setCurrentUser(null);
       }
     );
   }

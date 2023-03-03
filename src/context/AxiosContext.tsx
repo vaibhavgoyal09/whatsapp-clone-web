@@ -48,6 +48,8 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     isLoading: false,
     progressPercent: 0,
   });
+  const [authHeaderInterceptorId, setAuthHeaderInterceptorId] =
+    useState<number>();
 
   let config = {
     baseURL: WhatsApi.BASE_URL,
@@ -60,15 +62,18 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
   const instanceRef = useRef(axios.create(config));
 
   useEffect(() => {
-    auth.getUserIdToken().then((token) => {
-      if (token) {
-        setAccessToken(token.substring(8, 5));
-        instanceRef.current.interceptors.request.use((config) => {
-          config.headers = { Authorization: `Bearer ${token}` };
-          return config;
-        });
-      }
-    });
+    if (auth.currentUser) {
+      auth.getUserIdToken().then((token) => {
+        if (token) {
+          setAccessToken(token.substring(8, 5));
+          const id = instanceRef.current.interceptors.request.use((config) => {
+            config.headers = { Authorization: `Bearer ${token}` };
+            return config;
+          });
+          setAuthHeaderInterceptorId(id);
+        }
+      });
+    }
   }, [auth.currentUser]);
 
   useEffect(() => {
@@ -217,11 +222,9 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
   }
 
   function onUserLoggedOut() {
+    setAccessToken(null);
     setCurrentUserModel(null);
-    instanceRef.current.interceptors.request.use((config) => {
-      config.headers = { Authorization: "" };
-      return config;
-    });
+    instanceRef.current.interceptors.request.eject(authHeaderInterceptorId!);
   }
 
   const value: AxiosContextInterface = {
