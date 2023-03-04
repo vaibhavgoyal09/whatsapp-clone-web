@@ -1,13 +1,13 @@
 # Whatsapp Web Clone
 
-<div style="text-align:center">
+<p align="center">
 <img src="images/Screenshot_2023-02-28_11-13-47.png" height="300"/>
-</div>
-<div style="text-align:center">
-<img src="images/Screenshot_2023-02-28_11-12-15.png" width="300" /> 
-<img src="images/Screenshot_2023-02-28_11-12-15.png" width="300" />
-<img src="images/Screenshot_2023-02-28_11-12-15.png" width="300" />
-</div>
+</p>
+<p align="center">
+<img src="images/Screenshot_2023-02-28_11-12-15.png" width="200" /> 
+<img src="images/Screenshot_2023-02-28_11-12-15.png" width="200" />
+<img src="images/Screenshot_2023-02-28_11-12-15.png" width="200" />
+</p>
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/d27d80bb-5002-4b75-944c-b431f59ea529/deploy-status)](https://app.netlify.com/sites/whatsapp-clone-web09/deploys)
 
@@ -56,3 +56,20 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 # Contributors
 
 - [Vaibhav Goyal](https://github.com/vaibhavgoyal09)
+
+# LICENSE
+```
+   Copyright 2023 Vaibhav Goyal
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+```
