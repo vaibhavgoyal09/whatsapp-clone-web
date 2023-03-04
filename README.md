@@ -15,6 +15,7 @@
 
 - [Typescript](https://www.typescriptlang.org/) - A strongly typed programming language that builds on JavaScript.
 - [React](https://reactjs.org/) - A JavaScript library for building user interfaces.
+- [Fastapi](https://fastapi.tiangolo.com/) - A modern, fast (high-performance), web framework for building APIs
 
 ## Features 👓
 
@@ -25,6 +26,8 @@
 - [x] Dark mode 🌗
 
 ## Development Setup 🖥
+
+First of all, clone the Backend for the website which is available here, https://github.com/vaibhavgoyal09/whatsapp-clone-backend and finish its setup.
 
 Make sure you have Node.js installed.
 
