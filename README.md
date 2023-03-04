@@ -4,9 +4,9 @@
 <img src="images/Screenshot_2023-02-28_11-13-47.png" height="300"/>
 </p>
 <p align="center">
-<img src="images/Screenshot_2023-02-28_11-12-15.png" width="200" /> 
-<img src="images/Screenshot_2023-02-28_11-12-15.png" width="200" />
-<img src="images/Screenshot_2023-02-28_11-12-15.png" width="200" />
+<img src="images/Screenshot_2023-02-28_11-12-15.png" width="250" /> 
+<img src="images/Screenshot_2023-02-28_11-12-15.png" width="250" />
+<img src="images/Screenshot_2023-02-28_11-12-15.png" width="250" />
 </p>
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/d27d80bb-5002-4b75-944c-b431f59ea529/deploy-status)](https://app.netlify.com/sites/whatsapp-clone-web09/deploys)
