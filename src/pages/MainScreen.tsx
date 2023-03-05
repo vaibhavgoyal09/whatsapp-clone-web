@@ -90,7 +90,7 @@ const MainScreen = () => {
           result.forEach((element: any) => {
             chats.push(Utils.chatFromJson(element));
           });
-          // setShowSplashScreen(false);
+          setShowSplashScreen(false);
           setChatsList(chats);
         })
         .catch((e) => {
