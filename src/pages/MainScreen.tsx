@@ -1,33 +1,50 @@
-import { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ChattingScreen from "../components/ChattingScreen";
-import EnterGroupDetailsScreen from "../components/EnterGroupDetailsScreen";
-import MainSidebar from "../components/MainSidebar";
-import RemoteUserProfilePreview from "../components/RemoteUserProfilePreview";
-import SelectUsersForGroup from "../components/SelectUsersForGroup";
-import UserSelfProfilePreview from "../components/UserSelfProfilePreview";
-import WhatsappIntroScreen from "../components/WhatsappIntroScreen";
 import { useAuth } from "../context/AuthContext";
 import { useAxios } from "../context/AxiosContext";
 import { useWhatsappWebSocket } from "../context/WhatsAppWebSocketContext";
 import "../css/mainScreenStyle.css";
 import Chat, { ChatType } from "../models/Chat";
+import Group from "../models/Group";
 import Message from "../models/Message";
 import SendMessageRequest from "../models/SendMessageRequest";
-import Group from "../models/Group";
 import User from "../models/User";
 import { WhatsApi } from "../utils/Constants";
 import Utils from "../utils/Utils";
-import GroupDetailsScreen from "../components/GroupDetailsScreen";
-import SelectUsersToAddInGroupDialog from "../components/SelectUsersToAddInGroupDialog";
+
+import { AnimatePresence, motion } from "framer-motion";
+import SplashScreen from "../components/SplashScreen";
 import AddRemoveParticipantsRequest from "../models/AddRemoveParticipantsRequest";
-import { motion, AnimatePresence } from "framer-motion";
+import RemoveParticipantsRequest from "../models/RemoveParticipantsRequest";
 import {
   componentLeftToRight,
   componentRightToLeft,
 } from "../utils/Transitions";
-import RemoveParticipantsRequest from "../models/RemoveParticipantsRequest";
-import LoadingBar from "react-top-loading-bar";
+
+const WhatsappIntroScreen = React.lazy(
+  () => import("../components/WhatsappIntroScreen")
+);
+const LoadingBar = React.lazy(() => import("react-top-loading-bar"));
+const ChattingScreen = React.lazy(() => import("../components/ChattingScreen"));
+const MainSidebar = React.lazy(() => import("../components/MainSidebar"));
+const SelectUsersForGroup = React.lazy(
+  () => import("../components/SelectUsersForGroup")
+);
+const UserSelfProfilePreview = React.lazy(
+  () => import("../components/UserSelfProfilePreview")
+);
+const GroupDetailsScreen = React.lazy(
+  () => import("../components/GroupDetailsScreen")
+);
+const SelectUsersToAddInGroupDialog = React.lazy(
+  () => import("../components/SelectUsersToAddInGroupDialog")
+);
+const RemoteUserProfilePreview = React.lazy(
+  () => import("../components/RemoteUserProfilePreview")
+);
+const EnterGroupDetailsScreen = React.lazy(
+  () => import("../components/EnterGroupDetailsScreen")
+);
 
 const MainScreen = () => {
   const [chat, setChat] = useState<Chat | null>(null);
@@ -51,6 +68,7 @@ const MainScreen = () => {
   const [groupDetails, setGroupDetails] = useState<Group | null>(null);
   const [messagesListForChat, setMessagesListForChat] = useState<Message[]>([]);
   const [usersToAddInGroup, setUsersToAddInGroup] = useState<string[]>([]);
+  const [showSplashScreen, setShowSplashScreen] = useState<boolean>(true);
   const navigate = useNavigate();
   const auth = useAuth()!;
   const webSockets = useWhatsappWebSocket()!;
@@ -72,6 +90,7 @@ const MainScreen = () => {
           result.forEach((element: any) => {
             chats.push(Utils.chatFromJson(element));
           });
+          // setShowSplashScreen(false);
           setChatsList(chats);
         })
         .catch((e) => {
@@ -457,6 +476,7 @@ const MainScreen = () => {
   return (
     <div className="pg">
       <LoadingBar color="#00a884" progress={progressStatus.progressPercent} />
+      <SplashScreen show={showSplashScreen} />
       <SelectUsersToAddInGroupDialog
         onDoneClicked={(participants) => {
           setShowSelectUsersForGroupDialog(false);
