@@ -1,16 +1,18 @@
-import React, { createRef, useCallback } from "react";
-import ChatHeader from "./ChatHeader";
-import ChatFooter from "./ChatFooter";
+import { EmojiClickData, Theme } from "emoji-picker-react";
+import React, { createRef, Suspense, useCallback, useState } from "react";
+import { useAxios } from "../context/AxiosContext";
 import "../css/chattingScreenStyle.css";
-import { useState } from "react";
-import ReceivedMessageItem from "./ReceivedMessageItem";
-import SentMessageItem from "./SentMessageItem";
-import User, { OnlineStatus } from "../models/User";
 import Chat, { ChatType } from "../models/Chat";
 import Message from "../models/Message";
 import SendMessageRequest from "../models/SendMessageRequest";
+import User, { OnlineStatus } from "../models/User";
 import Utils from "../utils/Utils";
-import { useAxios } from "../context/AxiosContext";
+import ChatFooter from "./ChatFooter";
+import ChatHeader from "./ChatHeader";
+import ReceivedMessageItem from "./ReceivedMessageItem";
+import SentMessageItem from "./SentMessageItem";
+
+const EmojiPicker = React.lazy(() => import("emoji-picker-react"));
 
 interface Props {
   currentUserModel: User;
@@ -33,6 +35,7 @@ const ChattingScreen: React.FC<Props> = ({
 }) => {
   const [messageText, setMessageText] = useState("");
   const [attachment, setAttachment] = useState<File | null>(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const fileInputRef = createRef<HTMLInputElement>();
   const axios = useAxios()!;
 
@@ -65,6 +68,14 @@ const ChattingScreen: React.FC<Props> = ({
 
   const onAttachmentClicked = () => {
     fileInputRef.current!.click();
+  };
+
+  const onEmojiIconClicked = () => {
+    setShowEmojiPicker(prev => !prev);
+  };
+
+  const handleOnEmojiSelected = (emojiData: EmojiClickData) => {
+    setMessageText(prev => prev + emojiData.emoji)
   };
 
   const sendMessage = async () => {
@@ -113,10 +124,29 @@ const ChattingScreen: React.FC<Props> = ({
           type={chat.type}
           isUserOnline={isUserOnline}
           lastOnlineAt={lastOnlineAt}
-          isTyping={remoteUser ? remoteUser.onlineStatus === OnlineStatus.typing : false}
+          isTyping={
+            remoteUser ? remoteUser.onlineStatus === OnlineStatus.typing : false
+          }
         />
       </div>
-      <div className="messagesContainer">
+      <div className="messagesContainer" onClick={() => {
+        if (showEmojiPicker) {
+          setShowEmojiPicker(false);
+        }
+      }}>
+        <Suspense>
+          <div className="emojiPickerCtnr">
+            {showEmojiPicker ? (
+              <EmojiPicker
+                onEmojiClick={(data: EmojiClickData) => handleOnEmojiSelected(data)}
+                theme={Theme.DARK}
+                lazyLoadEmojis
+                searchDisabled
+                height="350px"
+              />
+            ) : null}
+          </div>
+        </Suspense>
         <div className="listContainer">
           {messages.map((message: Message) =>
             message.senderId === currentUserModel.id ? (
@@ -135,12 +165,14 @@ const ChattingScreen: React.FC<Props> = ({
       />
       <div className="footerContainer">
         <ChatFooter
+          messageFieldValue={messageText}
           onSendMessage={() => sendMessage()}
           onMessageFieldValueChange={(value: string) => setMessageText(value)}
           onTypingStatusChange={(isTyping: boolean) =>
             onTypingStatusChange(isTyping)
           }
           onAttachmentClicked={() => onAttachmentClicked()}
+          onEmojiIconClicked={() => onEmojiIconClicked()}
         />
       </div>
     </div>

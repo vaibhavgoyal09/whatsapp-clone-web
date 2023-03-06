@@ -3,10 +3,12 @@ import "../css/chatFooterStyle.css";
 import debounce from "lodash/debounce";
 
 interface Props {
+  messageFieldValue: string;
   onSendMessage: () => void;
   onMessageFieldValueChange: (value: string) => void;
   onTypingStatusChange: (isTyping: boolean) => void;
   onAttachmentClicked: () => void;
+  onEmojiIconClicked: () => void; 
 }
 
 const ChatFooter: React.FC<Props> = ({
@@ -14,6 +16,8 @@ const ChatFooter: React.FC<Props> = ({
   onMessageFieldValueChange,
   onTypingStatusChange,
   onAttachmentClicked,
+  onEmojiIconClicked,
+  messageFieldValue
 }) => {
   const [messageText, setMessageText] = useState<string>("");
   const messageInputFieldRef = createRef<HTMLInputElement>();
@@ -37,7 +41,9 @@ const ChatFooter: React.FC<Props> = ({
   const handleMessageFieldValueChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setIsTyping(true);
+    if (!isTyping) {
+      setIsTyping(true);
+    }
     setMessageText(event.target.value);
     handleIsTypingChange();
   };
@@ -48,7 +54,7 @@ const ChatFooter: React.FC<Props> = ({
 
   return (
     <div className="fcontnt">
-      <span className="icon nt-allow">
+      <span className="icon" onClick={() => onEmojiIconClicked()}>
         <i className="fa-regular fa-face-smile" />
       </span>
       <span className="icon" onClick={() => onAttachmentClicked()}>
@@ -56,6 +62,7 @@ const ChatFooter: React.FC<Props> = ({
       </span>
       <input
         ref={messageInputFieldRef}
+        value={messageFieldValue}
         type="text"
         placeholder="Type a message"
         className="input"

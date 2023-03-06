@@ -1,5 +1,6 @@
 #content {
   display: flex;
+  position: relative;
   flex-direction: column;
   height: 100vh;
 }
@@ -11,6 +12,7 @@
 .messagesContainer {
   flex: 1 1 auto;
   overflow-y: auto;
+  position: relative;
   background-image: linear-gradient(
       rgb(13, 17, 23, 0.9) 100%,
       rgba(0, 0, 0, 0.5) 100%
@@ -32,6 +34,14 @@
 
 /* For Firefox */
 .listContainer { overflow: -moz-scrollbars-none; }
+
+.emojiPickerCtnr {
+  position: absolute;
+  display: inline-block;
+  z-index: 39847;
+  bottom: 8px;
+  left: 8px;
+}
 
 .footerContainer {
   flex: 0 1 50px;
