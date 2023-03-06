@@ -79,13 +79,13 @@ const MainScreen = () => {
     setshowChatDetailsScreen(false);
   }, [chat]);
 
-  useEffect(() => {}, []);
-
   useEffect(() => {
-    if (axios.accessToken) {
+    let isSubscribed = false;
+    if (axios.accessToken && !isSubscribed) {
       axios
         .getRequest(WhatsApi.GET_ALL_CHATS_URL, null)
         .then((result: any) => {
+          isSubscribed = true;
           let chats: Chat[] = [];
           result.forEach((element: any) => {
             chats.push(Utils.chatFromJson(element));
@@ -97,15 +97,20 @@ const MainScreen = () => {
           console.log(e);
         });
     }
+    return () => {
+      isSubscribed = false;
+    };
   }, [axios.accessToken]);
 
   useEffect(() => {
-    if (searchQuery !== null && searchQuery.length >= 1) {
+    let isSubscribed = false;
+    if (searchQuery !== null && searchQuery.length >= 1 && !isSubscribed) {
       axios
         .getRequest(WhatsApi.SEARCH_USERS_BY_PHONE_NUMBER_URL, {
           phone_number: searchQuery,
         })
         .then((result: any) => {
+          isSubscribed = true;
           let contacts: User[] = [];
           result.forEach((element: any) => {
             contacts.push(Utils.userFromJson(element));
@@ -116,15 +121,20 @@ const MainScreen = () => {
           console.log(e);
         });
     }
+    return () => {
+      isSubscribed = false;
+    };
   }, [searchQuery]);
 
   useEffect(() => {
-    if (contactNameSearchQuery !== null) {
+    let isSubscribed = false;
+    if (contactNameSearchQuery !== null && !isSubscribed) {
       axios
         .getRequest(WhatsApi.SEARCH_CONTACTS_BY_NAME_URL, {
           name: contactNameSearchQuery,
         })
         .then((result: any) => {
+          isSubscribed = true;
           let contacts: User[] = [];
           result.forEach((element: any) => {
             contacts.push(Utils.userFromJson(element));
@@ -135,13 +145,18 @@ const MainScreen = () => {
           console.log(e);
         });
     }
+    return () => {
+      isSubscribed = false;
+    };
   }, [contactNameSearchQuery]);
 
   useEffect(() => {
-    if (chat) {
+    let isSubscribed = false;
+    if (chat && !isSubscribed) {
       axios
         .getRequest(`${WhatsApi.GET_MESSAGES_FOR_CHAT_URL}/${chat.id}`, null)
         .then((result: any) => {
+          isSubscribed = true;
           let messages: Message[] = [];
           for (let message of result) {
             messages.push(Utils.messageFromJson(message));
@@ -150,10 +165,14 @@ const MainScreen = () => {
         })
         .catch((e) => console.log(e));
     }
+    return () => {
+      isSubscribed = false;
+    };
   }, [chat]);
 
   useEffect(() => {
-    if (chat) {
+    let isSubscribed = false;
+    if (chat && !isSubscribed) {
       if (chat.type === ChatType.oneToOne) {
         let remoteUserId = Utils.getRemoteUserIdFromChat(
           chat,
@@ -165,6 +184,7 @@ const MainScreen = () => {
             null
           )
           .then((result: any) => {
+            isSubscribed = true;
             setRemoteUser(Utils.userFromJson(result));
           })
           .catch((e) => console.log(e.message));
@@ -172,14 +192,19 @@ const MainScreen = () => {
         if (!chat.groupId) {
           return;
         }
+        isSubscribed = true;
         getGroupDetails();
       }
     }
+    return () => {
+      isSubscribed = false;
+    };
   }, [chat]);
 
   useEffect(() => {
+    let isSubscribed = false;
     let status = webSockets.typingStatusChange;
-    if (status) {
+    if (status && !isSubscribed) {
       console.log("Typing Status Change Received");
       chatsList.map((c) => {
         if (c.id === status!.chat_id) {
@@ -188,10 +213,14 @@ const MainScreen = () => {
           } else {
             c.typingUsersIds.push(status!.user_id);
           }
+          isSubscribed = true;
         }
         return c;
       });
     }
+    return () => {
+      isSubscribed = false;
+    };
   }, [webSockets.typingStatusChange]);
 
   useEffect(() => {
@@ -488,9 +517,11 @@ const MainScreen = () => {
         showDialog={showSelectUsersForGroupDialog}
         onClose={() => setShowSelectUsersForGroupDialog(false)}
       />
-      <div className="sidebarContainer">
-        {<AnimatePresence>{sidebarComponent}</AnimatePresence>}
-      </div>
+      <Suspense>
+        <div className="sidebarContainer">
+          {<AnimatePresence>{sidebarComponent}</AnimatePresence>}
+        </div>
+      </Suspense>
       {chat ? (
         <div
           className={
@@ -499,55 +530,59 @@ const MainScreen = () => {
               : "chattingContainer max"
           }
         >
-          <ChattingScreen
-            currentUserModel={axios.currentUserModel}
-            chat={chat}
-            onProfileClick={() => {
-              handleShowChatInfoScreen();
-            }}
-            remoteUser={chat.type === ChatType.oneToOne ? remoteUser : null}
-            messages={messagesListForChat}
-            onSendMessage={(request: SendMessageRequest) =>
-              handleSendChatMessage(request)
-            }
-            onTypingStatusChange={(isTyping: boolean) =>
-              handleSelfTypingStatusChange(isTyping)
-            }
-          />
+          <Suspense>
+            <ChattingScreen
+              currentUserModel={axios.currentUserModel}
+              chat={chat}
+              onProfileClick={() => {
+                handleShowChatInfoScreen();
+              }}
+              remoteUser={chat.type === ChatType.oneToOne ? remoteUser : null}
+              messages={messagesListForChat}
+              onSendMessage={(request: SendMessageRequest) =>
+                handleSendChatMessage(request)
+              }
+              onTypingStatusChange={(isTyping: boolean) =>
+                handleSelfTypingStatusChange(isTyping)
+              }
+            />
+          </Suspense>
         </div>
       ) : (
         <div className="whatsappIntroContainer">
           <WhatsappIntroScreen />
         </div>
       )}
-      <AnimatePresence>
-        {showChatDetailsScreen && (
-          <div className="chatInfoScreenContainer">
-            <motion.div
-              style={{ height: "100%" }}
-              key={"self_profile_screen"}
-              {...componentRightToLeft}
-            >
-              {chat?.type === ChatType.oneToOne ? (
-                <RemoteUserProfilePreview
-                  user={remoteUser!}
-                  onClose={() => setshowChatDetailsScreen(false)}
-                />
-              ) : (
-                <GroupDetailsScreen
-                  currentUser={axios.currentUserModel!!}
-                  group={groupDetails}
-                  onAddParticipantsClicked={handleShowSelectUsersDialog}
-                  onClose={() => setshowChatDetailsScreen(false)}
-                  onKickUserClicked={(groupId: string, user: User) =>
-                    handleKickUserFromGroupClicked(groupId, user)
-                  }
-                />
-              )}
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      <Suspense>
+        <AnimatePresence>
+          {showChatDetailsScreen && (
+            <div className="chatInfoScreenContainer">
+              <motion.div
+                style={{ height: "100%" }}
+                key={"self_profile_screen"}
+                {...componentRightToLeft}
+              >
+                {chat?.type === ChatType.oneToOne ? (
+                  <RemoteUserProfilePreview
+                    user={remoteUser!}
+                    onClose={() => setshowChatDetailsScreen(false)}
+                  />
+                ) : (
+                  <GroupDetailsScreen
+                    currentUser={axios.currentUserModel!!}
+                    group={groupDetails}
+                    onAddParticipantsClicked={handleShowSelectUsersDialog}
+                    onClose={() => setshowChatDetailsScreen(false)}
+                    onKickUserClicked={(groupId: string, user: User) =>
+                      handleKickUserFromGroupClicked(groupId, user)
+                    }
+                  />
+                )}
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+      </Suspense>
     </div>
   );
 };
