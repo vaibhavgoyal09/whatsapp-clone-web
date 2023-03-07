@@ -20,6 +20,8 @@ import {
   componentLeftToRight,
   componentRightToLeft,
 } from "../utils/Transitions";
+import { CircleLoader } from "react-spinners";
+import DefaultFallback from "../components/DefaultFallback";
 
 const WhatsappIntroScreen = React.lazy(
   () => import("../components/WhatsappIntroScreen")
@@ -517,11 +519,13 @@ const MainScreen = () => {
         showDialog={showSelectUsersForGroupDialog}
         onClose={() => setShowSelectUsersForGroupDialog(false)}
       />
-      <Suspense>
-        <div className="sidebarContainer">
+      <div className="sidebarContainer">
+        <Suspense
+          fallback={<DefaultFallback />}
+        >
           {<AnimatePresence>{sidebarComponent}</AnimatePresence>}
-        </div>
-      </Suspense>
+        </Suspense>
+      </div>
       {chat ? (
         <div
           className={

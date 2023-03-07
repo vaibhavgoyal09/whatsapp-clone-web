@@ -10,7 +10,9 @@
 }
 
 .messagesContainer {
+  display: flex;
   flex: 1 1 auto;
+  flex-direction: column;
   overflow-y: auto;
   position: relative;
   background-image: linear-gradient(
@@ -18,8 +20,6 @@
       rgba(0, 0, 0, 0.5) 100%
     ),
     url("../assets/chat_back_wallpaper.png");
-  padding-bottom: 8px;
-  padding-top: 8px;
 }
 
 .listContainer {
@@ -28,6 +28,8 @@
   display: flex;
   flex-direction: column-reverse;
   overflow-y: auto;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
 .listContainer::-webkit-scrollbar { width: 0 !important }
@@ -41,6 +43,16 @@
   z-index: 39847;
   bottom: 8px;
   left: 8px;
+}
+
+.attachmentPreviewCtnr {
+  width: 220px;
+  position: relative;
+  display: inline !important;
+  background-color: var(--darkerGrey);
+  margin: 0px 8px 8px 8px;
+  border-radius: 8px;
+  align-self: center;
 }
 
 .footerContainer {

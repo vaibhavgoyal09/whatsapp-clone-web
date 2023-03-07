@@ -1,0 +1,51 @@
+.paCtnr {
+  display: inline-flex;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px;
+  position: relative;
+}
+
+.paimageWrapper {
+  width: 100%;
+  height: 200px;
+   display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+#paMedia {
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  position: absolute;
+}
+
+.paCancelOverlayCtnr {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  z-index: 1666;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+}
+
+.paimageWrapper:hover .paCancelOverlayCtnr {
+  display: flex;
+}
+
+.paCancelBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  width: 30px;
+  background-color: #f15c6d;
+  border-radius: 50%;
+  font-size: 1.1rem;
+}
+

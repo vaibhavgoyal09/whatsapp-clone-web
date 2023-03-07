@@ -1,5 +1,5 @@
 import { EmojiClickData, Theme } from "emoji-picker-react";
-import React, { createRef, Suspense, useCallback, useState } from "react";
+import React, { createRef, Suspense, useEffect, useState } from "react";
 import { useAxios } from "../context/AxiosContext";
 import "../css/chattingScreenStyle.css";
 import Chat, { ChatType } from "../models/Chat";
@@ -7,10 +7,12 @@ import Message from "../models/Message";
 import SendMessageRequest from "../models/SendMessageRequest";
 import User, { OnlineStatus } from "../models/User";
 import Utils from "../utils/Utils";
-import ChatFooter from "./ChatFooter";
-import ChatHeader from "./ChatHeader";
-import ReceivedMessageItem from "./ReceivedMessageItem";
-import SentMessageItem from "./SentMessageItem";
+
+const ChatFooter = React.lazy(() => import("./ChatFooter"));
+const ChatHeader = React.lazy(() => import("./ChatHeader"));
+const PreviewAttachment = React.lazy(() => import("./PreviewAttachment"));
+const ReceivedMessageItem = React.lazy(() => import("./ReceivedMessageItem"));
+const SentMessageItem = React.lazy(() => import("./SentMessageItem"));
 
 const EmojiPicker = React.lazy(() => import("emoji-picker-react"));
 
@@ -36,19 +38,18 @@ const ChattingScreen: React.FC<Props> = ({
   const [messageText, setMessageText] = useState("");
   const [attachment, setAttachment] = useState<File | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showPreviewAttachment, setShowPreviewAttachment] = useState(false);
   const fileInputRef = createRef<HTMLInputElement>();
   const axios = useAxios()!;
 
-  const handleFileChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      let files = event.target.files;
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let files = event.target.files;
 
-      if (files && files.length >= 1) {
-        setAttachment(files[0]);
-      }
-    },
-    []
-  );
+    if (files && files.length >= 1) {
+      setAttachment(files[0]);
+      setShowPreviewAttachment(true);
+    }
+  };
 
   if (!chat || !currentUserModel) {
     return null;
@@ -71,11 +72,12 @@ const ChattingScreen: React.FC<Props> = ({
   };
 
   const onEmojiIconClicked = () => {
-    setShowEmojiPicker(prev => !prev);
+    console.log("onEmojiIconClicked");
+    setShowEmojiPicker((prev) => !prev);
   };
 
   const handleOnEmojiSelected = (emojiData: EmojiClickData) => {
-    setMessageText(prev => prev + emojiData.emoji)
+    setMessageText((prev) => prev + emojiData.emoji);
   };
 
   const sendMessage = async () => {
@@ -114,6 +116,11 @@ const ChattingScreen: React.FC<Props> = ({
     setMessageText("");
   };
 
+  const handleRemoveAttachmentClicked = () => {
+    setAttachment(null);
+    setShowPreviewAttachment(false);
+  };
+
   return (
     <div id="content">
       <div className="headerContainer">
@@ -129,24 +136,15 @@ const ChattingScreen: React.FC<Props> = ({
           }
         />
       </div>
-      <div className="messagesContainer" onClick={() => {
-        if (showEmojiPicker) {
-          setShowEmojiPicker(false);
-        }
-      }}>
-        <Suspense>
-          <div className="emojiPickerCtnr">
-            {showEmojiPicker ? (
-              <EmojiPicker
-                onEmojiClick={(data: EmojiClickData) => handleOnEmojiSelected(data)}
-                theme={Theme.DARK}
-                lazyLoadEmojis
-                searchDisabled
-                height="350px"
-              />
-            ) : null}
-          </div>
-        </Suspense>
+      <div
+        className="messagesContainer"
+        onClick={() => {
+          if (showEmojiPicker) {
+            setShowEmojiPicker(false);
+          }
+        }}
+      >
+
         <div className="listContainer">
           {messages.map((message: Message) =>
             message.senderId === currentUserModel.id ? (
@@ -156,6 +154,30 @@ const ChattingScreen: React.FC<Props> = ({
             )
           )}
         </div>
+        <Suspense>
+          <div className="emojiPickerCtnr" onClick={(e) => e.stopPropagation()}>
+            {showEmojiPicker ? (
+              <EmojiPicker
+                onEmojiClick={(data: EmojiClickData) =>
+                  handleOnEmojiSelected(data)
+                }
+                theme={Theme.DARK}
+                lazyLoadEmojis
+                searchDisabled
+                height="350px"
+              />
+            ) : null}
+          </div>
+        </Suspense>
+        {showPreviewAttachment ? (
+          <div className="attachmentPreviewCtnr">
+            <PreviewAttachment
+              onRemoveAttachmentClicked={() => handleRemoveAttachmentClicked()}
+              attachment={attachment!}
+              doShow={showPreviewAttachment}
+            />
+          </div>
+        ) : null}
       </div>
       <input
         type="file"
