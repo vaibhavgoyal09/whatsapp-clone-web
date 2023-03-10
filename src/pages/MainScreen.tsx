@@ -268,6 +268,8 @@ const MainScreen = () => {
     navigate("/call", {
       state: {
         remoteUserId: webSockets.incomingCall!.user_id,
+        remoteUserName: webSockets.incomingCall!.user_name,
+        remoteUserProfileImageUrl: webSockets.incomingCall!.user_profile_image_url,
         callType: webSockets.incomingCall!.call_type,
         actionType: "incoming",
       },

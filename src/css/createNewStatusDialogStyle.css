@@ -12,7 +12,6 @@
 .cnsDialogContent {
   width: 430px;
   max-height: 500px;
-  /*overflow-y: auto;*/
   background-color: var(--darkerGrey);
   position: relative;
   border-radius: 18px;

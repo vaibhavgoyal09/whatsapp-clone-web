@@ -85,6 +85,8 @@ const ChattingScreen: React.FC<Props> = ({
     navigate("/call", {
       state: {
         remoteUserId: remoteUser!.id,
+        remoteUserName: remoteUser!.name,
+        remoteUserProfileImageUrl: remoteUser!.profileImageUrl,
         callType: "audio",
         actionType: "outgoing",
       },
@@ -95,6 +97,8 @@ const ChattingScreen: React.FC<Props> = ({
     navigate("/call", {
       state: {
         remoteUserId: remoteUser!.id,
+        remoteUserName: remoteUser!.name,
+        remoteUserProfileImageUrl: remoteUser!.profileImageUrl,
         callType: "video",
         actionType: "outgoing",
       },
