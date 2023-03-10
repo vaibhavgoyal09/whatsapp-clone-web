@@ -21,6 +21,9 @@ import {
   componentRightToLeft,
 } from "../utils/Transitions";
 import DefaultFallback from "../components/DefaultFallback";
+import IncomingCallResponse, {
+  IncomingCallResponseType,
+} from "../models/IncomingCallResponse";
 
 const WhatsappIntroScreen = React.lazy(
   () => import("../components/WhatsappIntroScreen")
@@ -73,7 +76,6 @@ const MainScreen = () => {
   const [groupDetails, setGroupDetails] = useState<Group | null>(null);
   const [messagesListForChat, setMessagesListForChat] = useState<Message[]>([]);
   const [usersToAddInGroup, setUsersToAddInGroup] = useState<string[]>([]);
-  const [showIncomingCallPopup, setShowIncomingCallPopup] = useState(false);
   const [showSplashScreen, setShowSplashScreen] = useState<boolean>(true);
   const navigate = useNavigate();
   const auth = useAuth()!;
@@ -254,6 +256,24 @@ const MainScreen = () => {
       .catch((e) => console.log(e.message));
   };
 
+  const handleOnCallRejected = () => {};
+
+  const handleOnCallAccepted = () => {
+    let response: IncomingCallResponse = {
+      to_user_id: webSockets.incomingCall?.user_id!,
+      by_user_id: axios.currentUserModel!.id, 
+      response: IncomingCallResponseType.accepted,
+    };
+    webSockets.sendIncomingCallResponse(response);
+    navigate("/call", {
+      state: {
+        remoteUserId: webSockets.incomingCall!.user_id,
+        callType: webSockets.incomingCall!.call_type,
+        actionType: "incoming",
+      },
+    });
+  };
+
   const onChatClick = (chat: Chat) => {
     setshowChatDetailsScreen(false);
     setChat(chat);
@@ -341,7 +361,7 @@ const MainScreen = () => {
     shouldRemoveProfileImage: boolean
   ) => {
     updateUserDetails(null, null, imageFile, shouldRemoveProfileImage)
-      .then((result: any) => {
+      .then(() => {
         axios.updateCurrentUserModelState();
       })
       .catch((e: any) => console.log(e.message));
@@ -511,11 +531,20 @@ const MainScreen = () => {
   return (
     <div className="pg">
       <IncomingCallPopup
-        show={showIncomingCallPopup}
-        userName={axios.currentUserModel.name}
-        userProfileImageUrl={axios.currentUserModel.profileImageUrl}
-        onCallRejectedClicked={() => {}}
-        onCallAcceptedClicked={() => {}}
+        show={
+          webSockets.incomingCall != null ||
+          webSockets.incomingCall != undefined
+        }
+        userName={
+          webSockets.incomingCall ? webSockets.incomingCall.user_name : ""
+        }
+        userProfileImageUrl={
+          webSockets.incomingCall
+            ? webSockets.incomingCall.user_profile_image_url
+            : null
+        }
+        onCallRejectedClicked={() => handleOnCallRejected()}
+        onCallAcceptedClicked={() => handleOnCallAccepted()}
       />
       <LoadingBar color="#00a884" progress={progressStatus.progressPercent} />
       <SplashScreen show={showSplashScreen} />

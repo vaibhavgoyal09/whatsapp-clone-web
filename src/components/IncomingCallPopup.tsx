@@ -28,16 +28,26 @@ const IncomingCallPopup: React.FC<Props> = ({
             alt="User Profile Picture"
             src={userProfileImageUrl ? userProfileImageUrl : "avatar.png"}
           />
-          <div id="icUserName" className="unselectable">{userName}</div>
+          <div id="icUserName" className="unselectable">
+            {userName}
+          </div>
         </div>
         <div className="icTab">
-          <div id="icTitle" className="unselectable">Incoming Call</div>
+          <div id="icTitle" className="unselectable">
+            Incoming Call
+          </div>
         </div>
         <div className="icTab" id="icTabActBtns">
-          <div className="icActBtn unselectable" id="icAccept">
+          <div
+            className="icActBtn unselectable"
+            id="icAccept"
+            onClick={() => onCallAcceptedClicked()}
+          >
             Accept
           </div>
-          <div className="icActBtn unselectable" id="icReject">Reject</div>
+          <div className="icActBtn unselectable" id="icReject" onClick={() => onCallRejectedClicked()}>
+            Reject
+          </div>
         </div>
       </div>
     </div>

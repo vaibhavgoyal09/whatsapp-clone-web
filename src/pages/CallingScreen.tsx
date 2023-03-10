@@ -4,10 +4,13 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAxios } from "../context/AxiosContext";
 import User from "../models/User";
+import { useWhatsappWebSocket } from "../context/WhatsAppWebSocketContext";
+import CallUserRequest from "../models/CallUserRequest";
 
 interface Props {
-  remoteUser: User;
+  remoteUserId: string;
   callType: string;
+  actionType: string;
 }
 
 const CallingScreen = () => {
@@ -17,16 +20,29 @@ const CallingScreen = () => {
   const axios = useAxios()!;
   const navigate = useNavigate();
   const [peerJsInstance, setPeerJsInstance] = useState<Peer>();
+  const websocket = useWhatsappWebSocket()!;
   const currentUser = axios.currentUserModel!;
 
   const props = location.state as Props;
 
-  if (!props || !props.remoteUser) {
+  if (!props || !props.remoteUserId) {
     navigate("/");
   }
 
   useEffect(() => {
+    if (props.actionType === "outgoing") {
+      let request : CallUserRequest =  {
+        to_user_id: props.remoteUserId,
+        by_user_id: axios.currentUserModel!.id,
+        call_type: props.callType
+      }
+      websocket.sendOutgoingCall(request);
+    }
+  }, []);
+
+  useEffect(() => {
     const peer = new Peer(currentUser.id);
+    setPeerJsInstance(peer)
   }, []);
 
   useEffect(() => {

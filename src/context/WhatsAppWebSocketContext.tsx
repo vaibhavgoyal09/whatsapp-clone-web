@@ -14,12 +14,18 @@ import SendMessageRequest from "../models/SendMessageRequest";
 import TypingStatusChange from "../models/TypingStatusChange";
 import { WsMessageType } from "../models/WsClientMessage";
 import Utils from "../utils/Utils";
+import CallUserRequest from "../models/CallUserRequest";
+import IncomingCall from "../models/IncomingCall";
+import IncomingCallResponse from "../models/IncomingCallResponse";
 
 interface WhatsAppWebSocketContextInterface {
   sendChatMessage: (message: SendMessageRequest) => void;
   sendSelfTypingStatusChange: (isTyping: boolean, chatId: string) => void;
+  sendOutgoingCall: (request: CallUserRequest) => void;
+  sendIncomingCallResponse: (response: IncomingCallResponse) => void;
   lastChatMessage: Message | null;
   typingStatusChange: TypingStatusChange | null;
+  incomingCall: IncomingCall | null;
 }
 
 export const WhatsAppWebSocketContext =
@@ -46,13 +52,16 @@ function WhatsAppWebSocketContextProvider({
   const { sendMessage, lastMessage, readyState } = useWebSocket(getSocketUrl);
 
   const [lastChatMessage, setLastChatMessage] = useState<Message | null>(null);
-  const [typingStatusChange, setTypingStatusChange] = useState<TypingStatusChange | null>(null);
+  const [typingStatusChange, setTypingStatusChange] =
+    useState<TypingStatusChange | null>(null);
+  const [incomingCall, setIncomingCall] = useState<IncomingCall | null>(null);
 
   useEffect(() => {
     let receivedMessage: string = lastMessage?.data;
-    console.log(receivedMessage);
+
     if (receivedMessage) {
       let jsonObject = JSON.parse(receivedMessage);
+
       if (jsonObject.type === WsMessageType.chat_message) {
         let message: Message = Utils.messageFromJson(jsonObject.message);
         setLastChatMessage(message);
@@ -60,9 +69,17 @@ function WhatsAppWebSocketContextProvider({
         let statusChange: TypingStatusChange = {
           is_typing: jsonObject.message.is_typing,
           user_id: jsonObject.message.user_id,
-          chat_id: jsonObject.message.chat_id
+          chat_id: jsonObject.message.chat_id,
         };
         setTypingStatusChange(statusChange);
+      } else if (jsonObject.type === WsMessageType.incoming_call) {
+        let incomingCall: IncomingCall = {
+          call_type: jsonObject.message.call_type,
+          user_id: jsonObject.message.user_id,
+          user_name: jsonObject.message.user_name,
+          user_profile_image_url: jsonObject.message.user_profile_image_url,
+        };
+        setIncomingCall(incomingCall);
       }
     }
   }, [lastMessage]);
@@ -79,6 +96,16 @@ function WhatsAppWebSocketContextProvider({
     );
   }
 
+  function sendOutgoingCall(request: CallUserRequest) {
+    console.log(request);
+    sendMessage(
+      JSON.stringify({
+        type: WsMessageType.incoming_call,
+        message: request,
+      })
+    );
+  }
+
   function sendSelfTypingStatusChange(isTyping: boolean, chatId: string) {
     if (readyState !== ReadyState.OPEN) {
       return;
@@ -91,11 +118,26 @@ function WhatsAppWebSocketContextProvider({
     );
   }
 
+  function sendIncomingCallResponse(response: IncomingCallResponse) {
+    if (readyState !== ReadyState.OPEN) {
+      return;
+    }
+    sendMessage(
+      JSON.stringify({
+        type: WsMessageType.incoming_call_response,
+        message: response,
+      })
+    );
+  }
+
   const value: WhatsAppWebSocketContextInterface = {
     sendChatMessage,
+    sendOutgoingCall,
     sendSelfTypingStatusChange,
+    sendIncomingCallResponse,
     lastChatMessage,
-    typingStatusChange
+    typingStatusChange,
+    incomingCall,
   };
 
   return (

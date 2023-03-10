@@ -74,7 +74,6 @@ const ChattingScreen: React.FC<Props> = ({
   };
 
   const onEmojiIconClicked = () => {
-    console.log("onEmojiIconClicked");
     setShowEmojiPicker((prev) => !prev);
   };
 
@@ -83,11 +82,23 @@ const ChattingScreen: React.FC<Props> = ({
   };
 
   const handleOnAudioCallClicked = () => {
-    navigate("/call", { state: { remoteUser: remoteUser, callType: "audio" } });
+    navigate("/call", {
+      state: {
+        remoteUserId: remoteUser!.id,
+        callType: "audio",
+        actionType: "outgoing",
+      },
+    });
   };
 
   const handleOnVideoCallClicked = () => {
-    navigate("/call", { state: { remoteUser: remoteUser, callType: "video" } });
+    navigate("/call", {
+      state: {
+        remoteUserId: remoteUser!.id,
+        callType: "video",
+        actionType: "outgoing",
+      },
+    });
   };
 
   const sendMessage = async () => {
