@@ -1,0 +1,77 @@
+.icOverlay {
+  background-color: var(--darkerGrey);
+  width: 50%;
+  margin-top: 4px;
+  margin-left: auto;
+  margin-right: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  justify-self: center;
+  z-index: 8090;
+  border-radius: 8px;
+}
+
+.icContent {
+  display: flex;
+  margin: 0px auto;
+  flex-direction: row;
+  padding: 8px;
+  align-items: center;
+  box-sizing: border-box;
+  justify-content: space-between;
+}
+
+#icUserProfileImg {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+#icUserName {
+  font-size: 0.9rem;
+  color: var(--secondaryText);
+  position: relative;
+  bottom: 2px;
+  margin-left: 16px;
+}
+
+.icTab {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#icTitle {
+  font-size: 1.1rem;
+  font-style: normal;
+  font-family: serif;
+  position: relative;
+  bottom: 2px;
+  margin-right: 2px;
+  color: var(--white);
+}
+
+#icTabActBtns {
+  gap: 8px;
+  position: relative;
+  bottom: 2px;
+}
+
+.icActBtn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+#icAccept {
+  background-color: var(--green);
+  color: var(--white);
+}
+
+#icReject {
+  background-color: #f15c6d;
+}

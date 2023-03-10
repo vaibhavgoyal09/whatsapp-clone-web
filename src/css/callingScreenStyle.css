@@ -1,0 +1,25 @@
+.csPage {
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--background-color);
+}
+
+.csVideoScreenWrapper {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.csSelfVideoWrapper {
+  width: 60%;
+  height: 60%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 40px;
+}
+
+#csSelfVideo {
+  height: 100%;
+  width: 100%;
+  object-fit: fill;
+}

@@ -169,7 +169,7 @@ const CreateNewStatusDialog: React.FC<Props> = ({
                     />
                   </div>
                 </div>
-                <video src={mediaUrl} autoPlay loop muted={isVideoMuted} />
+                <video id="cnsVideo" src={mediaUrl} autoPlay loop muted={isVideoMuted} />
               </div>
             )}
           </div>

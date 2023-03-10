@@ -20,7 +20,6 @@ import {
   componentLeftToRight,
   componentRightToLeft,
 } from "../utils/Transitions";
-import { CircleLoader } from "react-spinners";
 import DefaultFallback from "../components/DefaultFallback";
 
 const WhatsappIntroScreen = React.lazy(
@@ -48,6 +47,10 @@ const EnterGroupDetailsScreen = React.lazy(
   () => import("../components/EnterGroupDetailsScreen")
 );
 
+const IncomingCallPopup = React.lazy(
+  () => import("../components/IncomingCallPopup")
+);
+
 const MainScreen = () => {
   const [chat, setChat] = useState<Chat | null>(null);
   const [remoteUser, setRemoteUser] = useState<User | null>(null);
@@ -70,6 +73,7 @@ const MainScreen = () => {
   const [groupDetails, setGroupDetails] = useState<Group | null>(null);
   const [messagesListForChat, setMessagesListForChat] = useState<Message[]>([]);
   const [usersToAddInGroup, setUsersToAddInGroup] = useState<string[]>([]);
+  const [showIncomingCallPopup, setShowIncomingCallPopup] = useState(false);
   const [showSplashScreen, setShowSplashScreen] = useState<boolean>(true);
   const navigate = useNavigate();
   const auth = useAuth()!;
@@ -506,6 +510,13 @@ const MainScreen = () => {
 
   return (
     <div className="pg">
+      <IncomingCallPopup
+        show={showIncomingCallPopup}
+        userName={axios.currentUserModel.name}
+        userProfileImageUrl={axios.currentUserModel.profileImageUrl}
+        onCallRejectedClicked={() => {}}
+        onCallAcceptedClicked={() => {}}
+      />
       <LoadingBar color="#00a884" progress={progressStatus.progressPercent} />
       <SplashScreen show={showSplashScreen} />
       <SelectUsersToAddInGroupDialog
@@ -520,9 +531,7 @@ const MainScreen = () => {
         onClose={() => setShowSelectUsersForGroupDialog(false)}
       />
       <div className="sidebarContainer">
-        <Suspense
-          fallback={<DefaultFallback />}
-        >
+        <Suspense fallback={<DefaultFallback />}>
           {<AnimatePresence>{sidebarComponent}</AnimatePresence>}
         </Suspense>
       </div>

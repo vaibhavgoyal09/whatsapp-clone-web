@@ -11,6 +11,8 @@ interface Props {
   isUserOnline: boolean | null;
   lastOnlineAt: number | null;
   isTyping: boolean;
+  onVideoCallClicked: () => void;
+  onAudioCallClicked: () => void;
 }
 
 const ChatHeader: React.FC<Props> = ({
@@ -21,6 +23,8 @@ const ChatHeader: React.FC<Props> = ({
   isUserOnline,
   lastOnlineAt,
   isTyping,
+  onAudioCallClicked,
+  onVideoCallClicked
 }) => {
   const [showLastSeen, setShowLastSeen] = useState<boolean>(true);
 
@@ -66,10 +70,10 @@ const ChatHeader: React.FC<Props> = ({
         <span className="chic">
           <i className="fa-solid fa-magnifying-glass" />
         </span>
-        <span className="chic">
+        <span className="chic" onClick={() => onAudioCallClicked()}>
           <i className="fa-solid fa-phone" />
         </span>
-        <span className="chic">
+        <span className="chic" onClick={() => onVideoCallClicked()}>
           <i className="fa-solid fa-video" />
         </span>
       </div>

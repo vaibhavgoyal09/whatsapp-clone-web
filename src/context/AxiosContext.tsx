@@ -149,7 +149,7 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
         requestBody,
         {
           params: params,
-          onDownloadProgress: (progressEvent) => {
+          onUploadProgress: (progressEvent) => {
             let percentCompleted = Math.floor(
               (progressEvent.loaded * 100) / progressEvent.total
             );
@@ -177,8 +177,7 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     return await safeApiRequest<T>(async () => {
       let response = await instanceRef.current.get(requestPath, {
         params: params,
-        onDownloadProgress: (progressEvent) => {
-          console.log(progressEvent);
+        onUploadProgress: (progressEvent) => {
           let percentCompleted = Math.floor(
             (progressEvent.loaded * 100) / progressEvent.total
           );
@@ -202,7 +201,7 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     return await safeApiRequest<T>(async () => {
       let response = await instanceRef.current.put(requestPath, requestBody, {
         params: params,
-        onDownloadProgress: (progressEvent) => {
+        onUploadProgress: (progressEvent) => {
           let percentCompleted = Math.floor(
             (progressEvent.loaded * 100) / progressEvent.total
           );

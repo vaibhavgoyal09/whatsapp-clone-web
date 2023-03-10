@@ -143,7 +143,7 @@
   transition: opacity 150ms ease-in-out;
 }
 
-video {
+#cnsVideo {
   width: 100% !important;
   height: auto !important;
   object-fit: fill;

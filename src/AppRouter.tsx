@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AxiosInstanceProvider from "./context/AxiosContext";
 import WhatsAppWebSocketContextProvider from "./context/WhatsAppWebSocketContext";
+import CallingScreen from "./pages/CallingScreen";
 import MainScreen from "./pages/MainScreen";
 import SetupProfileScreen from "./pages/SetupProfileScreen";
 import SignInScreen from "./pages/SignInScreen";
@@ -29,12 +30,27 @@ export const AppRouter: React.FC = () => {
               </ProtectedRoute>
             }
           />
-          <Route path="/setup-profile" element={<SetupProfileScreen />} />
+          <Route
+            path="/setup-profile"
+            element={
+              <ProtectedRoute>
+                <SetupProfileScreen />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/status"
             element={
               <ProtectedRoute>
                 <StatusScreen />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/call"
+            element={
+              <ProtectedRoute>
+                <CallingScreen />
               </ProtectedRoute>
             }
           />

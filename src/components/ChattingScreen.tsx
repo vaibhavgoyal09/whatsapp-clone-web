@@ -1,5 +1,6 @@
 import { EmojiClickData, Theme } from "emoji-picker-react";
-import React, { createRef, Suspense, useEffect, useState } from "react";
+import React, { createRef, Suspense, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAxios } from "../context/AxiosContext";
 import "../css/chattingScreenStyle.css";
 import Chat, { ChatType } from "../models/Chat";
@@ -41,6 +42,7 @@ const ChattingScreen: React.FC<Props> = ({
   const [showPreviewAttachment, setShowPreviewAttachment] = useState(false);
   const fileInputRef = createRef<HTMLInputElement>();
   const axios = useAxios()!;
+  const navigate = useNavigate();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let files = event.target.files;
@@ -78,6 +80,14 @@ const ChattingScreen: React.FC<Props> = ({
 
   const handleOnEmojiSelected = (emojiData: EmojiClickData) => {
     setMessageText((prev) => prev + emojiData.emoji);
+  };
+
+  const handleOnAudioCallClicked = () => {
+    navigate("/call", { state: { remoteUser: remoteUser, callType: "audio" } });
+  };
+
+  const handleOnVideoCallClicked = () => {
+    navigate("/call", { state: { remoteUser: remoteUser, callType: "video" } });
   };
 
   const sendMessage = async () => {
@@ -125,6 +135,8 @@ const ChattingScreen: React.FC<Props> = ({
     <div id="content">
       <div className="headerContainer">
         <ChatHeader
+          onAudioCallClicked={() => handleOnAudioCallClicked()}
+          onVideoCallClicked={() => handleOnVideoCallClicked()}
           profileImageUrl={chat.profileImageUrl}
           onProfileClick={() => onProfileClick()}
           name={chat.name}
@@ -144,7 +156,6 @@ const ChattingScreen: React.FC<Props> = ({
           }
         }}
       >
-
         <div className="listContainer">
           {messages.map((message: Message) =>
             message.senderId === currentUserModel.id ? (
