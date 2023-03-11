@@ -53,8 +53,6 @@ const CallingScreen = () => {
     }
   }, [localMediaStream]);
 
-  useEffect(() => {}, []);
-
   useEffect(() => {
     if (!peerJsInstance.current) {
       var peer = new Peer(currentUser.id, { debug: 2 });
@@ -67,7 +65,12 @@ const CallingScreen = () => {
             response: IncomingCallResponseType.accepted,
           };
           websocket.sendIncomingCallResponse(response);
-          peer.call(props.remoteUserId, localMediaStream!);
+
+          navigator.mediaDevices
+            .getUserMedia({ video: true, audio: true })
+            .then((stream) => {
+              peer.call(props.remoteUserId, stream);
+            });
         } else {
           let request: CallUserRequest = {
             to_user_id: props.remoteUserId,
