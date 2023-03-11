@@ -17,6 +17,7 @@ import Utils from "../utils/Utils";
 import CallUserRequest from "../models/CallUserRequest";
 import IncomingCall from "../models/IncomingCall";
 import IncomingCallResponse from "../models/IncomingCallResponse";
+import IncomingCallResponseReceived from "../models/IncomingCallResponseReceived";
 
 interface WhatsAppWebSocketContextInterface {
   sendChatMessage: (message: SendMessageRequest) => void;
@@ -26,6 +27,7 @@ interface WhatsAppWebSocketContextInterface {
   lastChatMessage: Message | null;
   typingStatusChange: TypingStatusChange | null;
   incomingCall: IncomingCall | null;
+  incomingCallResponse: IncomingCallResponseReceived | null;
 }
 
 export const WhatsAppWebSocketContext =
@@ -55,9 +57,13 @@ function WhatsAppWebSocketContextProvider({
   const [typingStatusChange, setTypingStatusChange] =
     useState<TypingStatusChange | null>(null);
   const [incomingCall, setIncomingCall] = useState<IncomingCall | null>(null);
+  const [incomingCallResponse, setIncomingCallResponse] =
+    useState<IncomingCallResponseReceived | null>(null);
 
   useEffect(() => {
     let receivedMessage: string = lastMessage?.data;
+
+    console.log(receivedMessage);
 
     if (receivedMessage) {
       let jsonObject = JSON.parse(receivedMessage);
@@ -80,6 +86,13 @@ function WhatsAppWebSocketContextProvider({
           user_profile_image_url: jsonObject.message.user_profile_image_url,
         };
         setIncomingCall(incomingCall);
+      } else if (jsonObject.type === WsMessageType.incoming_call_response) {
+        let response: IncomingCallResponseReceived = {
+          byUserId: jsonObject.message.by_user_id,
+          response: jsonObject.message.response,
+        };
+
+        setIncomingCallResponse(response);
       }
     }
   }, [lastMessage]);
@@ -97,7 +110,6 @@ function WhatsAppWebSocketContextProvider({
   }
 
   function sendOutgoingCall(request: CallUserRequest) {
-    console.log(request);
     sendMessage(
       JSON.stringify({
         type: WsMessageType.incoming_call,
@@ -138,6 +150,7 @@ function WhatsAppWebSocketContextProvider({
     lastChatMessage,
     typingStatusChange,
     incomingCall,
+    incomingCallResponse,
   };
 
   return (

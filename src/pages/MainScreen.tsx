@@ -259,12 +259,6 @@ const MainScreen = () => {
   const handleOnCallRejected = () => {};
 
   const handleOnCallAccepted = () => {
-    let response: IncomingCallResponse = {
-      to_user_id: webSockets.incomingCall?.user_id!,
-      by_user_id: axios.currentUserModel!.id, 
-      response: IncomingCallResponseType.accepted,
-    };
-    webSockets.sendIncomingCallResponse(response);
     navigate("/call", {
       state: {
         remoteUserId: webSockets.incomingCall!.user_id,

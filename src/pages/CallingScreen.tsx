@@ -5,6 +5,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAxios } from "../context/AxiosContext";
 import { useWhatsappWebSocket } from "../context/WhatsAppWebSocketContext";
 import CallUserRequest from "../models/CallUserRequest";
+import IncomingCallResponse, {
+  IncomingCallResponseType,
+} from "../models/IncomingCallResponse";
 
 interface Props {
   remoteUserId: string;
@@ -20,7 +23,7 @@ const CallingScreen = () => {
   const location = useLocation();
   const axios = useAxios()!;
   const navigate = useNavigate();
-  const [peerJsInstance, setPeerJsInstance] = useState<Peer>();
+  const peerJsInstance = useRef<Peer | null>(null);
   const [localMediaStream, setLocalMediaStream] = useState<MediaStream | null>(
     null
   );
@@ -33,7 +36,15 @@ const CallingScreen = () => {
     navigate("/");
   }
 
-  useEffect(() => {});
+  useEffect(() => {
+    if (websocket.incomingCallResponse) {
+      let response = websocket.incomingCallResponse;
+      if (response.response === IncomingCallResponseType.accepted) {
+        peerJsInstance!.current!.call(props.remoteUserId, localMediaStream!);
+      } else if (response.response === IncomingCallResponseType.rejected) {
+      }
+    }
+  }, [websocket.incomingCallResponse]);
 
   useEffect(() => {
     if (localMediaStream && props.callType === "video") {
@@ -42,33 +53,46 @@ const CallingScreen = () => {
     }
   }, [localMediaStream]);
 
+  useEffect(() => {}, []);
+
   useEffect(() => {
-    if (props.actionType === "outgoing") {
-      let request: CallUserRequest = {
-        to_user_id: props.remoteUserId,
-        by_user_id: axios.currentUserModel!.id,
-        call_type: props.callType,
-      };
-      websocket.sendOutgoingCall(request);
+    if (!peerJsInstance.current) {
+      var peer = new Peer(currentUser.id, { debug: 2 });
+
+      peer.on("open", (_) => {
+        if (props.actionType === "incoming") {
+          let response: IncomingCallResponse = {
+            to_user_id: props.remoteUserId,
+            by_user_id: axios.currentUserModel!.id,
+            response: IncomingCallResponseType.accepted,
+          };
+          websocket.sendIncomingCallResponse(response);
+          peer.call(props.remoteUserId, localMediaStream!);
+        } else {
+          let request: CallUserRequest = {
+            to_user_id: props.remoteUserId,
+            by_user_id: axios.currentUserModel!.id,
+            call_type: props.callType,
+          };
+          websocket.sendOutgoingCall(request);
+        }
+      });
+
+      peer.on("call", (call) => {
+        call.answer(localMediaStream!);
+        call.on("stream", (remoteStream) => {
+          remoteUserVideoRef!.current!.srcObject = remoteStream;
+          remoteUserVideoRef.current?.play();
+        });
+      });
+
+      peerJsInstance.current = peer;
     }
   }, []);
 
   useEffect(() => {
-    const peer = new Peer(currentUser.id);
-
-    peer.on("call", (call) => {
-      call.answer(localMediaStream!);
-      call.on("stream", (remoteStream) => {
-        remoteUserVideoRef!.current!.srcObject = remoteStream;
-        remoteUserVideoRef.current?.play();
-      });
-    });
-    setPeerJsInstance(peer);
-  }, []);
-
-  useEffect(() => {
     navigator.mediaDevices
-      .getUserMedia({ video: props.callType === "video", audio: true })
+      .getUserMedia({ video: true, audio: true })
       .then((stream: MediaStream) => {
         setLocalMediaStream(stream);
       })
