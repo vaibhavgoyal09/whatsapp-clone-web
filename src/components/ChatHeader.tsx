@@ -2,6 +2,7 @@ import "../css/chatHeaderStyle.css";
 import { ChatType } from "../models/Chat";
 import moment from "moment";
 import { useEffect, useState } from "react";
+import { ReactComponent as BackArrow } from "../assets/back_button.svg";
 
 interface Props {
   profileImageUrl?: string | null;
@@ -11,6 +12,7 @@ interface Props {
   isUserOnline: boolean | null;
   lastOnlineAt: number | null;
   isTyping: boolean;
+  onBack: () => void;
   onVideoCallClicked: () => void;
   onAudioCallClicked: () => void;
 }
@@ -23,6 +25,7 @@ const ChatHeader: React.FC<Props> = ({
   isUserOnline,
   lastOnlineAt,
   isTyping,
+  onBack,
   onAudioCallClicked,
   onVideoCallClicked
 }) => {
@@ -53,6 +56,7 @@ const ChatHeader: React.FC<Props> = ({
 
   return (
     <div className="chtnr">
+      <span className="chBackIcon" onClick={() => onBack()}><BackArrow className="chBackArrow"/></span>
       <img
         className="avt"
         onClick={() => onProfileClick()}

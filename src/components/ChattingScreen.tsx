@@ -23,6 +23,7 @@ interface Props {
   messages: Message[];
   remoteUser: User | null;
   onProfileClick: () => void;
+  onBack: () => void;
   onSendMessage: (request: SendMessageRequest) => void;
   onTypingStatusChange: (isTyping: boolean) => void;
 }
@@ -32,6 +33,7 @@ const ChattingScreen: React.FC<Props> = ({
   chat,
   messages,
   onProfileClick,
+  onBack,
   onSendMessage,
   onTypingStatusChange,
   remoteUser,
@@ -150,6 +152,7 @@ const ChattingScreen: React.FC<Props> = ({
     <div id="content">
       <div className="headerContainer">
         <ChatHeader
+          onBack={() => onBack()}
           onAudioCallClicked={() => handleOnAudioCallClicked()}
           onVideoCallClicked={() => handleOnVideoCallClicked()}
           profileImageUrl={chat.profileImageUrl}

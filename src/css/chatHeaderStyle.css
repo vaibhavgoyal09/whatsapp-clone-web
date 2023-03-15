@@ -6,6 +6,26 @@
   justify-content: center;
 }
 
+.chBackIcon {
+  display: none;
+  height: 18px;
+  width: 18px;
+  margin-left: 16px;
+  margin-right: 8px;
+  margin-top: auto;
+  margin-bottom: auto;
+  justify-self: center;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.chBackArrow {
+  height: 100%;
+  width: 100%;
+  color: white;
+  fill: white;
+}
+
 .avt {
   width: 45px;
   height: 45px;
@@ -59,4 +79,10 @@
   color: var(--secondaryText);
   cursor: pointer;
   margin-right: 30px;
+}
+
+@media (max-width: 600px) {
+  .chBackIcon {
+    display: inline;
+  }
 }

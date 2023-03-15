@@ -569,6 +569,7 @@ const MainScreen = () => {
         >
           <Suspense>
             <ChattingScreen
+              onBack={() => setChat(null)}
               currentUserModel={axios.currentUserModel}
               chat={chat}
               onProfileClick={() => {
