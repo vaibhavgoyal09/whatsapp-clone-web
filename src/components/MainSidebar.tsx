@@ -67,7 +67,6 @@ const MainSidebar: React.FC<Props> = ({
       <div className="dividerLine" />
       {isSearchingForUser ? (
         <div className="contactsContainer">
-          <div className="contacts">
             {contactsList.map((contact, index) => (
               <ContactItem
                 key={contact.id}
@@ -75,7 +74,6 @@ const MainSidebar: React.FC<Props> = ({
                 onClick={() => handleContactClicked(contactsList[index])}
               />
             ))}
-          </div>
         </div>
       ) : (
         <div className="chatsContainer">

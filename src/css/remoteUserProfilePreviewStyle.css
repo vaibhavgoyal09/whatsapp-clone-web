@@ -3,13 +3,19 @@
   height: 100%;
   background-color: var(--darkerGrey);
   border-left: 1px solid var(--inputFieldBorder);
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
 }
 
 .rmHeaderCtnr {
   background-color: var(--background);
   color: var(--white);
   display: flex;
-  height: 64px;
+  height: 69px;
+  flex-shrink: 0;
+  width: 100%;
+  overflow: hidden;
   flex-direction: row;
   align-items: center;
 }
@@ -26,8 +32,9 @@
 }
 
 .rmBottomCtnr {
-  margin-top: 40px;
   width: 100%;
+  flex-grow: 1;
+  overflow: auto;
   display: flex;
   flex-direction: column;
 }
@@ -35,6 +42,7 @@
 .imgCtnr {
   width: 200px;
   height: 200px;
+  margin-top: 40px;
   align-self: center;
 }
 
@@ -108,3 +116,11 @@
 .rmOpAction {
   padding-left: 30px;
 }
+
+@media (max-width: 900px) {
+  .imgCtnr {
+    width: 150px;
+    height: 150px;
+  }
+}
+

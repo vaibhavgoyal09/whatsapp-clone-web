@@ -10,7 +10,7 @@ interface Props {
   isSelected: boolean;
 }
 
-const ChatItem: React.FC<Props> = ({chat, onChatClick, isSelected }) => {
+const ChatItem: React.FC<Props> = ({ chat, onChatClick, isSelected }) => {
   const contentRef = createRef<HTMLDivElement>();
   const [typingStatus, setTypingStatus] = useState<string | null>(null);
   const [messageText, setMessageText] = useState("Tap to start Chatting");
@@ -19,10 +19,10 @@ const ChatItem: React.FC<Props> = ({chat, onChatClick, isSelected }) => {
   useEffect(() => {
     if (chat.type === ChatType.oneToOne) {
       if (chat.typingUsersIds.length >= 1) {
-        console.log("typing...")
+        console.log("typing...");
         setTypingStatus("typing...");
       } else {
-        console.log("not typing...")
+        console.log("not typing...");
         setTypingStatus(null);
       }
     }
@@ -48,27 +48,27 @@ const ChatItem: React.FC<Props> = ({chat, onChatClick, isSelected }) => {
   }
 
   return (
-    <div
-      className={isSelected ? "cn cnWithBg" : "cn"}
-      ref={contentRef}
-      onClick={() => onChatClick()}
-    >
-      <img
-        src={chat.profileImageUrl ? chat.profileImageUrl : "avatar.png"}
-        alt="user profile"
-        className="avatar"
-      />
-      <div className="infoContainer">
-        <div className="unamec">
-          <p className="uname unselectable">{chat.name}</p>
-          {typingStatus ? (
-            <p className="usecText utys unselectable">{typingStatus}</p>
-          ) : (
-            <p className="usectext umsg unselectable">{messageText}</p>
-          )}
+    <div className={isSelected ? "ciContainer isSelected" : "ciContainer"}>
+      <div className="cn" ref={contentRef} onClick={() => onChatClick()}>
+        <div className="avatarContainer">
+          <img
+            src={chat.profileImageUrl ? chat.profileImageUrl : "avatar.png"}
+            alt="user profile"
+            className="avatar"
+          />
+        </div>
+        <div className="infoContainer">
+          <div className="unamec">
+            <div className="uname unselectable">{chat.name}</div>
+            {typingStatus ? (
+              <div className="usecText utys unselectable">{typingStatus}</div>
+            ) : (
+              <div className="usectext umsg unselectable">{messageText}</div>
+            )}
+          </div>
         </div>
         <div className="mcTstmp">
-          <p className="tstmp">{timestamp}</p>
+          <div className="tstmp">{timestamp}</div>
         </div>
       </div>
     </div>

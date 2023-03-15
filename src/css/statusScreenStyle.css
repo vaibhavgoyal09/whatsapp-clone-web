@@ -99,3 +99,15 @@
 .sUsersContainer {
   margin-top: 20px;
 }
+
+@media (max-width: 1000px) {
+  .statusSidebar {
+    width: 35%;
+  }
+}
+
+@media (max-width: 900px) {
+  .statusSidebar {
+    width: 40%;
+  }
+}

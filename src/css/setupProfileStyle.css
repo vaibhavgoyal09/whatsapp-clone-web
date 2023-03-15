@@ -74,6 +74,7 @@
   justify-content: center;
   position: absolute;
   opacity: 0;
+  transition: opacity 0.5s ease-in;
 }
 
 .cameraOverlay:hover {
@@ -82,7 +83,7 @@
 
 .camera {
   width: 25px;
-  color: var(--secondaryText);
+  color: #6caf84;
 }
 
 .field {

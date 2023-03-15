@@ -25,40 +25,47 @@
   flex: 70%;
 }
 
+.sideBorder {
+  background-color: var(--inputFieldBorder);
+  width: 1px;
+  height: 100%;
+  z-index: 777;
+}
+
 .whatsappIntroContainer {
   flex: 70%;
 }
 
 .chatInfoScreenContainer {
-  flex: 0 0 30%;
+  flex: 0 0 29%;
   height: 100%;
   justify-self: flex-end;
 }
 
 @media (max-width: 1000px) {
   .sidebarContainer {
-    width: 35%;
+    flex: 35%;
   }
 
   .chattingContainer {
-    width: 65%;
+    flex: 65%;
   }
 
   .whatsappIntroContainer {
-    width: 65%;
+    flex: 65%;
   }
 }
 
 @media (max-width: 900px) {
   .sidebarContainer {
-    width: 40%;
+    flex: 40%;
   }
 
   .chattingContainer {
-    width: 60%;
+    flex: 60%;
   }
 
   .whatsappIntroContainer {
-    width: 60%;
+    flex: 60%;
   }
 }

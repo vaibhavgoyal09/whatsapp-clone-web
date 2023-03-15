@@ -72,110 +72,113 @@ const UserSelfProfilePreview: React.FC<Props> = ({
           <h2>Profile</h2>
         </span>
       </div>
-      <div className="bottomCtnt">
-        <form>
-          <input
-            type="file"
-            onChange={handleFileChange}
-            hidden
-            ref={fileInputRef}
-            accept="image/png, image/jpeg, image/jpg"
-          />
-        </form>
-        <div className="usimageWrapper">
-          <img
-            className="usstdImg"
-            src={imageSrc ? imageSrc : "avatar.png"}
-            alt="profile"
-          />
-          <div
-            className="uscameraOverlay"
-            onClick={() => fileInputRef!.current!.click()}
-          >
-            <CameraImage className="uscamera" />
+      <div className="bottomContainer">
+        <div className="bottomCtnt">
+          <form>
+            <input
+              type="file"
+              onChange={handleFileChange}
+              hidden
+              ref={fileInputRef}
+              accept="image/png, image/jpeg, image/jpg"
+            />
+          </form>
+          <div className="usimageWrapper">
+            <img
+              className="usstdImg"
+              src={imageSrc ? imageSrc : "avatar.png"}
+              alt="profile"
+            />
+            <div
+              className="uscameraOverlay"
+              onClick={() => fileInputRef!.current!.click()}
+            >
+              <CameraImage className="uscamera" />
+            </div>
           </div>
-        </div>
-        <div className="nameContainer">
-          <div className="nameCtnt">
-            <span className="nt tgreen">Your Name</span>
-            <div className="nInputCtnr">
-              <div className="usSearchField">
-                <input
-                  type="text"
-                  name="name"
-                  autoComplete="off"
-                  onClick={() => setIsUserNameFieldFocused(true)}
-                  onChange={handleUserNameFieldValueChange}
-                  value={name}
-                />
-              </div>
+          <div className="nameContainer">
+            <div className="nameCtnt">
+              <span className="nt tgreen">Your Name</span>
+              <div className="nInputCtnr">
+                <div className="usSearchField">
+                  <input
+                    type="text"
+                    name="name"
+                    autoComplete="off"
+                    onClick={() => setIsUserNameFieldFocused(true)}
+                    onChange={handleUserNameFieldValueChange}
+                    value={name}
+                  />
+                </div>
 
-              <div className="icCtnr">
-                <span className="lIc">
-                  {isUserNameFieldFocused ? (
-                    <i
-                      className="fa-solid fa-check sM"
-                      onClick={() => {
-                        setIsUserNameFieldFocused(false);
-                        updateUserName(name);
-                      }}
-                    />
-                  ) : (
-                    <i
-                      className="fa-solid fa-pen sS"
-                      onClick={() => {
-                        setIsUserNameFieldFocused(true);
-                      }}
-                    />
-                  )}
-                </span>
+                <div className="icCtnr">
+                  <span className="lIc">
+                    {isUserNameFieldFocused ? (
+                      <i
+                        className="fa-solid fa-check sM"
+                        onClick={() => {
+                          setIsUserNameFieldFocused(false);
+                          updateUserName(name);
+                        }}
+                      />
+                    ) : (
+                      <i
+                        className="fa-solid fa-pen sS"
+                        onClick={() => {
+                          setIsUserNameFieldFocused(true);
+                        }}
+                      />
+                    )}
+                  </span>
+                </div>
               </div>
             </div>
+            {isUserNameFieldFocused ? <div className="gLine" /> : null}
+            <p className="nSub">
+              This is not your username or pin. This name will be visible <br />{" "}
+              to your Whatsapp contacts only.{" "}
+            </p>
           </div>
-          {isUserNameFieldFocused ? <div className="gLine" /> : null}
-          <p className="nSub">
-            This is not your username or pin. This name will be visible <br />{" "}
-            to your Whatsapp contacts only.{" "}
-          </p>
-        </div>
-      </div>
-      <div className="aboutContainer">
-        <div className="aboutCtnt">
-          <span className="nt tgreen">About</span>
-          <div className="aInputCtnr">
-            <div className="usSearchField">
-              <input
-                type="text"
-                name="name"
-                autoComplete="off" onClick={() => setIsUserAboutFieldFocused(true)}
-                onChange={handleUserAboutFieldValueChange}
-                value={about}
-                placeholder={currentUserModel.about ? "" : "Enter about"}
-              />
-            </div>
-            <div className="icCtnr">
-              <span className="lIc">
-                {isUserAboutFieldFocused ? (
-                  <i
-                    className="fa-solid fa-check sM"
-                    onClick={() => {
-                      setIsUserAboutFieldFocused(false);
-                      updateUserAbout(about);
-                    }}
+          <div className="aboutContainer">
+            <div className="aboutCtnt">
+              <span className="nt tgreen">About</span>
+              <div className="aInputCtnr">
+                <div className="usSearchField">
+                  <input
+                    type="text"
+                    name="name"
+                    autoComplete="off"
+                    onClick={() => setIsUserAboutFieldFocused(true)}
+                    onChange={handleUserAboutFieldValueChange}
+                    value={about}
+                    placeholder={currentUserModel.about ? "" : "Enter about"}
                   />
-                ) : (
-                  <i
-                    className="fa-solid fa-pen sS"
-                    onClick={() => {
-                      setIsUserAboutFieldFocused(true);
-                    }}
-                  />
-                )}
-              </span>
+                </div>
+                <div className="icCtnr">
+                  <span className="lIc">
+                    {isUserAboutFieldFocused ? (
+                      <i
+                        className="fa-solid fa-check sM"
+                        onClick={() => {
+                          setIsUserAboutFieldFocused(false);
+                          updateUserAbout(about);
+                        }}
+                      />
+                    ) : (
+                      <i
+                        className="fa-solid fa-pen sS"
+                        onClick={() => {
+                          setIsUserAboutFieldFocused(true);
+                        }}
+                      />
+                    )}
+                  </span>
+                </div>
+              </div>
             </div>
+            {isUserAboutFieldFocused ? <div className="gLine" /> : null}
           </div>
         </div>
-        {isUserAboutFieldFocused ? <div className="gLine" /> : null}
       </div>
     </div>
   );

@@ -3,7 +3,6 @@
   width: 100%;
   flex-direction: row;
   background-color: var(--background);
-  cursor: pointer;
 }
 
 .avt {
@@ -12,6 +11,7 @@
   border-radius: 50%;
   margin-top: 12px;
   margin-left: 12px;
+  cursor: pointer;
   margin-bottom: 12px;
 }
 

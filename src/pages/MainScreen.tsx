@@ -21,9 +21,6 @@ import {
   componentRightToLeft,
 } from "../utils/Transitions";
 import DefaultFallback from "../components/DefaultFallback";
-import IncomingCallResponse, {
-  IncomingCallResponseType,
-} from "../models/IncomingCallResponse";
 
 const WhatsappIntroScreen = React.lazy(
   () => import("../components/WhatsappIntroScreen")
@@ -263,7 +260,8 @@ const MainScreen = () => {
       state: {
         remoteUserId: webSockets.incomingCall!.user_id,
         remoteUserName: webSockets.incomingCall!.user_name,
-        remoteUserProfileImageUrl: webSockets.incomingCall!.user_profile_image_url,
+        remoteUserProfileImageUrl:
+          webSockets.incomingCall!.user_profile_image_url,
         callType: webSockets.incomingCall!.call_type,
         actionType: "incoming",
       },
@@ -464,7 +462,7 @@ const MainScreen = () => {
   if (showSelfProfileScreen) {
     sidebarComponent = (
       <motion.div
-        style={{ height: "100%" }}
+        style={{ height: "100%", width: "100%" }}
         key={"self_profile_screen"}
         {...componentLeftToRight}
       >
@@ -484,8 +482,8 @@ const MainScreen = () => {
   } else if (showSelectUsersForGroup) {
     sidebarComponent = (
       <motion.div
-        style={{ height: "100%" }}
-        key={"self_profile_screen"}
+        style={{ height: "100%", width: "100%" }}
+        key={"select_users_to_add"}
         {...componentLeftToRight}
       >
         <SelectUsersForGroup
@@ -507,7 +505,7 @@ const MainScreen = () => {
   } else if (showCreateGroupSidebar) {
     sidebarComponent = (
       <motion.div
-        style={{ height: "100%" }}
+        style={{ height: "100%", width: "100%" }}
         key={"self_profile_screen"}
         {...componentLeftToRight}
       >
@@ -556,10 +554,11 @@ const MainScreen = () => {
         onClose={() => setShowSelectUsersForGroupDialog(false)}
       />
       <div className="sidebarContainer">
-        <Suspense fallback={<DefaultFallback />}>
+        <Suspense>
           {<AnimatePresence>{sidebarComponent}</AnimatePresence>}
         </Suspense>
       </div>
+      <div className="sideBorder" />
       {chat ? (
         <div
           className={
