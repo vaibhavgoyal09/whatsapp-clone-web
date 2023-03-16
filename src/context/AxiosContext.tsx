@@ -139,6 +139,8 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     requestPath: string
   ): Promise<T> {
     return await safeApiRequest<T>(async () => {
+      setProgressStatus({ isLoading: true, progressPercent: 25 });
+
       let status: ProgressStatus = {
         isLoading: true,
         progressPercent: 0,
@@ -149,22 +151,13 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
         requestBody,
         {
           params: params,
-          onUploadProgress: (progressEvent) => {
-            let percentCompleted = Math.floor(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
-            let status: ProgressStatus = {
-              isLoading: true,
-              progressPercent: percentCompleted,
-            };
-            setProgressStatus(status);
-          },
         }
       );
-      setProgressStatus({ isLoading: false, progressPercent: 0 });
       if (response) {
+        setProgressStatus({ isLoading: false, progressPercent: 0 });
         return response.data ? response.data : null;
       } else {
+        setProgressStatus({ isLoading: false, progressPercent: 0 });
         return null;
       }
     });
@@ -174,22 +167,19 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     requestPath: string,
     params: object | null
   ): Promise<T> {
+    setProgressStatus({ isLoading: true, progressPercent: 25 });
     return await safeApiRequest<T>(async () => {
       let response = await instanceRef.current.get(requestPath, {
         params: params,
-        onUploadProgress: (progressEvent) => {
-          let percentCompleted = Math.floor(
-            (progressEvent.loaded * 100) / progressEvent.total
-          );
-          let status: ProgressStatus = {
-            isLoading: true,
-            progressPercent: percentCompleted,
-          };
-          setProgressStatus(status);
-        },
       });
       setProgressStatus({ isLoading: false, progressPercent: 0 });
-      return response.data ? response.data : null;
+      if (response.data) {
+        setProgressStatus({ isLoading: false, progressPercent: 100 });
+        return response.data;
+      } else {
+        setProgressStatus({ isLoading: false, progressPercent: 100 });
+        return null;
+      }
     });
   }
 
@@ -199,22 +189,15 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     requestPath: string
   ): Promise<T> {
     return await safeApiRequest<T>(async () => {
+      setProgressStatus({ isLoading: true, progressPercent: 25 });
       let response = await instanceRef.current.put(requestPath, requestBody, {
         params: params,
-        onUploadProgress: (progressEvent) => {
-          let percentCompleted = Math.floor(
-            (progressEvent.loaded * 100) / progressEvent.total
-          );
-          let status: ProgressStatus = {
-            isLoading: true,
-            progressPercent: percentCompleted,
-          };
-          setProgressStatus(status);
-        },
       });
       if (response !== undefined && response !== null) {
+        setProgressStatus({ isLoading: false, progressPercent: 100 });
         return response.status ? response.request : null;
       } else {
+        setProgressStatus({ isLoading: false, progressPercent: 100 });
         return null;
       }
     });

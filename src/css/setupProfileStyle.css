@@ -1,26 +1,28 @@
-.page {
+.sppage {
   display: flex;
-  width: 100vw;
   height: 100vh;
+  width: 100vw;
   align-items: center;
+  flex-grow: 1;
+  overflow-y: auto;
 }
 
-.box {
+.spBox {
   display: flex;
   width: 100%;
-  height: auto;
-  z-index: 2;
+  flex-shrink: 0;
+  flex-grow: 1;
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
 }
 
-.logoTitleSubtitle {
+.splogoTitleSubtitle {
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative;
   margin-bottom: 30px;
+  box-sizing: border-box !important; 
 }
 
 .logo {
@@ -30,7 +32,6 @@
 
 .formWrapper {
   width: 300px;
-  height: auto;
   padding: 20px;
   gap: 16px;
   background-color: var(--darkerGrey);
@@ -84,6 +85,7 @@
 .camera {
   width: 25px;
   color: #6caf84;
+  fill: #6caf84;
 }
 
 .field {
@@ -103,7 +105,6 @@
 
 .about {
   margin-top: 12px;
-  /* height */
 }
 
 .appTitle {
@@ -113,6 +114,7 @@
 
 .appSubtitle {
   color: var(--secondaryText);
+  text-align: center;
 }
 
 .subtitle {
@@ -122,4 +124,28 @@
 .sBtn {
   width: 100%;
   margin-top: 16px;
+}
+
+@media (max-width: 800px) {
+  .sppage {
+    height: auto;
+    width: auto;
+    overflow-x: hidden;
+  }
+
+  .spBox {
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    justify-content: space-evenly;
+    box-sizing: border-box;
+  }
+
+  .splogoTitleSubtitle {
+    margin-top: 30px;
+  }
+
+  .formWrapper {
+    margin-top: 20px;
+  }
 }

@@ -25,7 +25,11 @@ const SetupProfileScreen = () => {
   const axios = useAxios();
   const state = location.state as SetupProfileScreenState;
   const { phoneNumber } = state;
-  const progressStatus  = axios!.progressStatus;
+  const progressStatus = axios!.progressStatus;
+
+  if (!state) {
+    navigate("/auth");
+  }
 
   const maxRowCount = 4;
   const maxCharCount = 50;
@@ -85,19 +89,13 @@ const SetupProfileScreen = () => {
   }
 
   return (
-    <div className="page">
+    <div className="sppage">
       <LoadingBar color="#00a884" progress={progressStatus.progressPercent} />
-      <div className="box">
-        <div className="logoTitleSubtitle">
+      <div className="spBox">
+        <div className="splogoTitleSubtitle">
           <Logo className="logo" />
-          <h1>
-            <span className="appTitle">WhatsApp</span>
-          </h1>
-          <h2>
-            <span className="appSubtitle">
-              Simple. Secure. Reliable messaging.
-            </span>
-          </h2>
+          <h1 className="appTitle">WhatsApp</h1>
+          <h2 className="appSubtitle">Simple. Secure. Reliable messaging.</h2>
         </div>
         <div className="formWrapper">
           <h3 className="title">Setup Your Profile</h3>

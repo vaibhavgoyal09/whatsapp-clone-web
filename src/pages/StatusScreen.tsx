@@ -12,6 +12,7 @@ import Status from "../models/Status";
 import User from "../models/User";
 import { WhatsApi } from "../utils/Constants";
 import Utils from "../utils/Utils";
+import {ReactComponent as BackArrow} from "../assets/back_button.svg";
 
 const StatusScreen = () => {
   const axios = useAxios()!;
@@ -133,6 +134,7 @@ const StatusScreen = () => {
         )}
         <div className="statusSidebar">
           <div className="statusSidebarHeader">
+            <BackArrow className="sBackarrow" onClick={() => handleCloseButtonClicked()}/>
             <img
               className="sselfProfilePreview"
               src={

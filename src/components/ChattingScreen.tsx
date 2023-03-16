@@ -108,7 +108,7 @@ const ChattingScreen: React.FC<Props> = ({
   };
 
   const sendMessage = async () => {
-    if (messageText === "") {
+    if (messageText === "" && !attachment) {
       return;
     }
 
@@ -139,6 +139,7 @@ const ChattingScreen: React.FC<Props> = ({
       text: messageText,
     };
     onSendMessage(request);
+    setShowPreviewAttachment(false);
     setAttachment(null);
     setMessageText("");
   };

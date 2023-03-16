@@ -96,6 +96,14 @@
   border-radius: 50%;
 }
 
+.sBackarrow {
+  width: 18px;
+  height: 18px;
+  fill: var(--white);
+  display: none;
+  margin-right: 16px;
+}
+
 .sUsersContainer {
   margin-top: 20px;
 }
@@ -104,10 +112,51 @@
   .statusSidebar {
     width: 35%;
   }
+
+  .statusIntroContainer {
+    width: 65%;
+  }
 }
 
 @media (max-width: 900px) {
   .statusSidebar {
     width: 40%;
+  }
+
+  .statusIntroContainer {
+    width: 60%;
+  }
+}
+
+@media (max-width: 700px) {
+  .statusSidebar {
+    width: 45%;
+  }
+
+  .statusIntroContainer {
+    width: 55%;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .sBackarrow {
+    display: inline;
+  }
+
+  .statusScreenContent {
+    display: block;
+  }
+
+  .statusIntroContainer {
+    display: none;
+  }
+
+  .statusSidebar {
+    width: 100%;
+  }
+
+  #statusCloseBtn {
+    display: none;
   }
 }

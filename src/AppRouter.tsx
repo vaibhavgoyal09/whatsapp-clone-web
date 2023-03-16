@@ -30,14 +30,7 @@ export const AppRouter: React.FC = () => {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/setup-profile"
-            element={
-              <ProtectedRoute>
-                <SetupProfileScreen />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/setup-profile" element={<SetupProfileScreen />} />
           <Route
             path="/status"
             element={

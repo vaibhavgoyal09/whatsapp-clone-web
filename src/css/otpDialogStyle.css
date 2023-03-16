@@ -26,12 +26,17 @@
   padding: 8px;
   width: 300px;
   border-radius: 8px;
+  outline: none;
   font-size: 15px;
   margin-top: 40px;
   color: var(--white);
   caret-color: var(--white);
   background-color: var(--darkerGrey);
   border: 1px solid var(--inputFieldBorder);
+}
+
+.field:focus {
+  border : 1px solid var(--white);
 }
 
 .sBtn {

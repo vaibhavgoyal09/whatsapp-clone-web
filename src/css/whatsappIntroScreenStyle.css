@@ -8,6 +8,7 @@
 }
 
 .introImg {
+  flex-shrink: 0;
   width: 360px;
   height: 200px;
   margin-top: 20%;
@@ -28,4 +29,18 @@
 .introSubtitle h2 {
   font-size: 14px;
   color: #8696a0;
+}
+
+@media (max-width: 800px) {
+  .introImg {
+    width: 250px;
+  }
+
+  .introTitle {
+    font-size: 26px;
+  }
+
+  .introSubtitle {
+    text-align: center;
+  }
 }

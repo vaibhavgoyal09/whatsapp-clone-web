@@ -1,13 +1,13 @@
 import "../css/previewAttachmentStyle.css";
 
 interface Props {
-  attachment: File;
+  attachment: File | null;
   doShow: boolean;
   onRemoveAttachmentClicked: () => void;
 }
 
 const PreviewAttachment: React.FC<Props> = ({ attachment, doShow, onRemoveAttachmentClicked }) => {
-  if (!doShow) {
+  if (!doShow || !attachment) {
     return null;
   }
 

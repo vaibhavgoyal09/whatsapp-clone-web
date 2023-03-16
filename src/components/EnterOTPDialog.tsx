@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import "../css/otpDialogStyle.css";
 
@@ -16,10 +16,12 @@ const EnterOTPDialog: React.FC<Props> = ({
   onOtpVerified,
 }) => {
   const [otp, setOtp] = useState("");
+  const otpFieldRef = useRef<HTMLInputElement>(null);
   const auth = useAuth();
 
   const handleSubmitOtp = useCallback((e?: React.FormEvent) => {
     e?.preventDefault();
+    otpFieldRef!.current!.disabled = true;
     auth?.verifyOtpAndSignInUser(otp)
       .then((_: any) => {
         onOtpVerified();
@@ -55,6 +57,7 @@ const EnterOTPDialog: React.FC<Props> = ({
             type="text"
             placeholder="OTP"
             className="field"
+            ref={otpFieldRef}
             onChange={handleOtpFieldChange}
           />
           <button type="submit" id="signInButton" className="pBtn sBtn">

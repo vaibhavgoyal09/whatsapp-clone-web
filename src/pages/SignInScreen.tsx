@@ -85,7 +85,8 @@ const SignInScreen: React.FC = () => {
         null
       )
       .then((result) => {
-        if (result) {
+        console.log(result, "result")
+        if (result === true) {
           auth.setUserLoggedIn();
           navigate("/");
         } else {
@@ -110,14 +111,9 @@ const SignInScreen: React.FC = () => {
       <div className="box">
         <div className="logoTitleSubtitle">
           <Logo className="logo" />
-          <h1>
-            <span className="appTitle">WhatsApp</span>
-          </h1>
-          <h2>
-            <span className="appSubtitle">
-              Simple. Secure. Reliable messaging.
-            </span>
-          </h2>
+          <h1 className="appTitle">WhatsApp</h1>
+          <h2 className="appSubtitle">
+              Simple. Secure. Reliable messaging.</h2>
         </div>
         <div className="formWrapper">
           <h3 className="title">Enter Your Phone Number</h3>
