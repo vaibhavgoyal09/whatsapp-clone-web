@@ -40,8 +40,13 @@ const CallingScreen = () => {
     if (websocket.incomingCallResponse) {
       let response = websocket.incomingCallResponse;
       if (response.response === IncomingCallResponseType.accepted) {
-        peerJsInstance!.current!.call(props.remoteUserId, localMediaStream!);
-      } else if (response.response === IncomingCallResponseType.rejected) {
+
+        navigator.mediaDevices.getUserMedia({video: true, audio: true}).then(mediaStream => {
+ peerJsInstance!.current!.call(props.remoteUserId, mediaStream);
+
+        })
+
+             } else if (response.response === IncomingCallResponseType.rejected) {
       }
     }
   }, [websocket.incomingCallResponse]);
@@ -82,7 +87,10 @@ const CallingScreen = () => {
       });
 
       peer.on("call", (call) => {
-        call.answer(localMediaStream!);
+        navigator.mediaDevices
+          .getUserMedia({ video: true, audio: true })
+          .then((mediaStream) => call.answer(mediaStream));
+
         call.on("stream", (remoteStream) => {
           remoteUserVideoRef!.current!.srcObject = remoteStream;
           remoteUserVideoRef.current?.play();
