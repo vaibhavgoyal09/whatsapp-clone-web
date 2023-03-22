@@ -4,10 +4,12 @@
   flex-direction: row;
   background-color: var(--background);
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .chBackIcon {
   display: none;
+  flex-shrink: 0;
   height: 18px;
   width: 18px;
   margin-left: 16px;
@@ -34,6 +36,7 @@
   margin-left: 12px;
   margin-bottom: 12px;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .chname {
@@ -43,6 +46,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-self: center;
+  flex-shrink: 0;
   justify-content: center;
 }
 
@@ -53,7 +57,7 @@
 }
 
 .cTyping {
-   font-size: 0.8rem;
+  font-size: 0.8rem;
   color: var(--green);
   margin-top: 4px;
   text-align: left;
@@ -63,6 +67,9 @@
   font-size: 0.8rem;
   color: var(--secondaryText);
   margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   text-align: left;
 }
 
@@ -75,7 +82,7 @@
 }
 
 .chic {
-  font-size: 1.0rem;
+  font-size: 1rem;
   color: var(--secondaryText);
   cursor: pointer;
   margin-right: 30px;

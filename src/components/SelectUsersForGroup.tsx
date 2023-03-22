@@ -16,9 +16,11 @@ const SelectUserForGroup: React.FC<Props> = ({
   onClose,
   contacts,
   onSearchQueryChange,
-  previouslySelectedUsers
+  previouslySelectedUsers,
 }) => {
-  const [selectedUsers, setSelectedUsers] = useState<string[]>(previouslySelectedUsers);
+  const [selectedUsers, setSelectedUsers] = useState<string[]>(
+    previouslySelectedUsers
+  );
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
@@ -35,9 +37,11 @@ const SelectUserForGroup: React.FC<Props> = ({
     setSelectedUsers(users);
   };
 
-  const handleSearchQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchQueryChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setSearchQuery(event.target.value);
-  }
+  };
 
   return (
     <div className="suCtnr">
@@ -51,10 +55,21 @@ const SelectUserForGroup: React.FC<Props> = ({
       </div>
       <div className="suBtmCtnt">
         <div className="suSearchField">
-          <input type="text" name="name" onChange={handleSearchQueryChange} placeholder="Type User Name" />
+          <input
+            type="text"
+            name="name"
+            onChange={handleSearchQueryChange}
+            placeholder="Type User Name"
+          />
         </div>
       </div>
-      <div className="suContactsCtnr">
+      <div
+        className="suContactsCtnr"
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+        }}
+      >
         {contacts.map((element: User) => (
           <ContactItem
             key={element.id}
@@ -64,7 +79,10 @@ const SelectUserForGroup: React.FC<Props> = ({
           />
         ))}
       </div>
-      <div className="suDoneBtnCtnr" onClick={() => onUsersSelected(selectedUsers)}>
+      <div
+        className="suDoneBtnCtnr"
+        onClick={() => onUsersSelected(selectedUsers)}
+      >
         <span className="addic">
           <i className="fa-solid fa-check"></i>
         </span>

@@ -22,17 +22,20 @@ interface AxiosContextInterface {
   postRequest: <T = any>(
     requestBody: any,
     params: object | null,
-    requestPath: string
+    requestPath: string,
+    abortController: AbortController | undefined
   ) => Promise<T>;
   putRequest: <T = any>(
     requestBody: any,
     params: object | null,
-    requestPath: string
+    requestPath: string,
+    abortController: AbortController | undefined
   ) => Promise<T>;
   uploadFile: (file: File) => Promise<string>;
   getRequest: <T = any>(
     requestPath: string,
-    params: object | null
+    params: object | null,
+    abortController: AbortController | undefined
   ) => Promise<T>;
   onUserLoggedOut: () => void;
   safeApiRequest: <T = any>(request: () => Promise<T>) => Promise<T>;
@@ -79,18 +82,17 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     async function retrieveCurrentUser() {
       if (accessToken) {
-        safeApiRequest(async () => {
-          let data = (
-            await instanceRef.current.get(
-              `${WhatsApi.GET_CURRENT_USER_INFO_URL}`
-            )
-          ).data;
-          let user = Utils.userFromJson(data);
-          setCurrentUserModel(user);
-        });
+        getRequest(`${WhatsApi.GET_CURRENT_USER_INFO_URL}`, null).then(
+          (data) => {
+            let user = Utils.userFromJson(data);
+            setCurrentUserModel(user);
+          }
+        );
       }
     }
     retrieveCurrentUser();
+
+    return () => {};
   }, [accessToken, auth.isUserLoggedIn]);
 
   const firebaseService = new FirebaseService();
@@ -110,10 +112,7 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
 
   function updateCurrentUserModelState() {
     if (accessToken) {
-      safeApiRequest(async () => {
-        let data = (
-          await instanceRef.current.get(`${WhatsApi.GET_CURRENT_USER_INFO_URL}`)
-        ).data;
+      getRequest(`${WhatsApi.GET_CURRENT_USER_INFO_URL}`, null).then((data) => {
         let user = Utils.userFromJson(data);
         setCurrentUserModel(user);
       });
@@ -136,7 +135,8 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
   async function postRequest<T = any>(
     requestBody: any,
     params: object | null = null,
-    requestPath: string
+    requestPath: string,
+    abortController: AbortController = new AbortController()
   ): Promise<T> {
     return await safeApiRequest<T>(async () => {
       setProgressStatus({ isLoading: true, progressPercent: 25 });
@@ -151,6 +151,7 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
         requestBody,
         {
           params: params,
+          signal: abortController.signal,
         }
       );
       if (response) {
@@ -165,12 +166,14 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
 
   async function getRequest<T = any>(
     requestPath: string,
-    params: object | null
+    params: object | null,
+    abortController: AbortController = new AbortController()
   ): Promise<T> {
     setProgressStatus({ isLoading: true, progressPercent: 25 });
     return await safeApiRequest<T>(async () => {
       let response = await instanceRef.current.get(requestPath, {
         params: params,
+        signal: abortController.signal,
       });
       setProgressStatus({ isLoading: false, progressPercent: 0 });
       if (response.data) {
@@ -186,12 +189,14 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
   async function putRequest<T = any>(
     requestBody: any,
     params: object | null,
-    requestPath: string
+    requestPath: string,
+    abortController: AbortController = new AbortController()
   ): Promise<T> {
     return await safeApiRequest<T>(async () => {
       setProgressStatus({ isLoading: true, progressPercent: 25 });
       let response = await instanceRef.current.put(requestPath, requestBody, {
         params: params,
+        signal: abortController.signal,
       });
       if (response !== undefined && response !== null) {
         setProgressStatus({ isLoading: false, progressPercent: 100 });

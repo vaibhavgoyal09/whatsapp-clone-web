@@ -78,7 +78,7 @@ const SetupProfileScreen = () => {
       profile_image_url: profileImageUrl,
     };
     axios!
-      .postRequest(request, null, WhatsApi.REGISTER_USER_URL)
+      .postRequest(request, null, WhatsApi.REGISTER_USER_URL, undefined)
       .then((_) => {
         auth?.setUserLoggedIn();
         navigate("/");

@@ -37,7 +37,7 @@ const SignInScreen: React.FC = () => {
       FirebaseAuth
     );
 
-    if( !recaptcha) {
+    if (!recaptcha) {
       setRecaptcha(verifier);
     }
 
@@ -48,7 +48,6 @@ const SignInScreen: React.FC = () => {
 
   useEffect(() => {
     if (recaptcha) {
-
       (window as any).recaptchaVerifier = recaptcha;
 
       recaptcha.render().then((widgetId: any) => {
@@ -82,10 +81,11 @@ const SignInScreen: React.FC = () => {
     axios
       .getRequest<boolean>(
         `${WhatsApi.CHECK_USER_SIGNING_IN_URL}/${trimmedPhoneNumber}`,
-        null
+        null,
+        undefined
       )
       .then((result) => {
-        console.log(result, "result")
+        console.log(result, "result");
         if (result === true) {
           auth.setUserLoggedIn();
           navigate("/");
@@ -112,8 +112,7 @@ const SignInScreen: React.FC = () => {
         <div className="logoTitleSubtitle">
           <Logo className="logo" />
           <h1 className="appTitle">WhatsApp</h1>
-          <h2 className="appSubtitle">
-              Simple. Secure. Reliable messaging.</h2>
+          <h2 className="appSubtitle">Simple. Secure. Reliable messaging.</h2>
         </div>
         <div className="formWrapper">
           <h3 className="title">Enter Your Phone Number</h3>

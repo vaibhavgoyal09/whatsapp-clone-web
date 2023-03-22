@@ -49,7 +49,7 @@ const CallingScreen = () => {
     var shouldDestroyed = false;
     if (!peerJsInstance.current) {
       navigator.mediaDevices
-        .getUserMedia({ audio: true, video: true })
+        .getUserMedia({ audio: true, video: props.callType === "video" })
         .then((stream) => {
           var peer = new Peer(currentUser.id, { debug: 2 });
 

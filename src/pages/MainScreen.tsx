@@ -13,7 +13,6 @@ import { WhatsApi } from "../utils/Constants";
 import Utils from "../utils/Utils";
 
 import { AnimatePresence, motion } from "framer-motion";
-import SplashScreen from "../components/SplashScreen";
 import AddRemoveParticipantsRequest from "../models/AddRemoveParticipantsRequest";
 import RemoveParticipantsRequest from "../models/RemoveParticipantsRequest";
 import {
@@ -73,7 +72,6 @@ const MainScreen = () => {
   const [groupDetails, setGroupDetails] = useState<Group | null>(null);
   const [messagesListForChat, setMessagesListForChat] = useState<Message[]>([]);
   const [usersToAddInGroup, setUsersToAddInGroup] = useState<string[]>([]);
-  const [showSplashScreen, setShowSplashScreen] = useState<boolean>(true);
   const navigate = useNavigate();
   const auth = useAuth()!;
   const webSockets = useWhatsappWebSocket()!;
@@ -85,17 +83,15 @@ const MainScreen = () => {
   }, [chat]);
 
   useEffect(() => {
-    let isSubscribed = false;
-    if (axios.accessToken && !isSubscribed) {
+    var controller = new AbortController();
+    if (axios.accessToken) {
       axios
-        .getRequest(WhatsApi.GET_ALL_CHATS_URL, null)
+        .getRequest(WhatsApi.GET_ALL_CHATS_URL, null, controller)
         .then((result: any) => {
-          isSubscribed = true;
           let chats: Chat[] = [];
           result.forEach((element: any) => {
             chats.push(Utils.chatFromJson(element));
           });
-          setShowSplashScreen(false);
           setChatsList(chats);
         })
         .catch((e) => {
@@ -103,19 +99,23 @@ const MainScreen = () => {
         });
     }
     return () => {
-      isSubscribed = false;
+      controller.abort();
     };
   }, [axios.accessToken]);
 
   useEffect(() => {
-    let isSubscribed = false;
-    if (searchQuery !== null && searchQuery.length >= 1 && !isSubscribed) {
+    var controller = new AbortController();
+
+    if (searchQuery !== null && searchQuery.length >= 1) {
       axios
-        .getRequest(WhatsApi.SEARCH_USERS_BY_PHONE_NUMBER_URL, {
-          phone_number: searchQuery,
-        })
+        .getRequest(
+          WhatsApi.SEARCH_USERS_BY_PHONE_NUMBER_URL,
+          {
+            phone_number: searchQuery,
+          },
+          controller
+        )
         .then((result: any) => {
-          isSubscribed = true;
           let contacts: User[] = [];
           result.forEach((element: any) => {
             contacts.push(Utils.userFromJson(element));
@@ -127,19 +127,23 @@ const MainScreen = () => {
         });
     }
     return () => {
-      isSubscribed = false;
+      controller.abort();
     };
   }, [searchQuery]);
 
   useEffect(() => {
-    let isSubscribed = false;
-    if (contactNameSearchQuery !== null && !isSubscribed) {
+    var controller = new AbortController();
+
+    if (contactNameSearchQuery !== null) {
       axios
-        .getRequest(WhatsApi.SEARCH_CONTACTS_BY_NAME_URL, {
-          name: contactNameSearchQuery,
-        })
+        .getRequest(
+          WhatsApi.SEARCH_CONTACTS_BY_NAME_URL,
+          {
+            name: contactNameSearchQuery,
+          },
+          controller
+        )
         .then((result: any) => {
-          isSubscribed = true;
           let contacts: User[] = [];
           result.forEach((element: any) => {
             contacts.push(Utils.userFromJson(element));
@@ -151,17 +155,20 @@ const MainScreen = () => {
         });
     }
     return () => {
-      isSubscribed = false;
+      controller.abort();
     };
   }, [contactNameSearchQuery]);
 
   useEffect(() => {
-    let isSubscribed = false;
-    if (chat && !isSubscribed) {
+    var controller = new AbortController();
+    if (chat) {
       axios
-        .getRequest(`${WhatsApi.GET_MESSAGES_FOR_CHAT_URL}/${chat.id}`, null)
+        .getRequest(
+          `${WhatsApi.GET_MESSAGES_FOR_CHAT_URL}/${chat.id}`,
+          null,
+          controller
+        )
         .then((result: any) => {
-          isSubscribed = true;
           let messages: Message[] = [];
           for (let message of result) {
             messages.push(Utils.messageFromJson(message));
@@ -171,13 +178,13 @@ const MainScreen = () => {
         .catch((e) => console.log(e));
     }
     return () => {
-      isSubscribed = false;
+      controller.abort();
     };
   }, [chat]);
 
   useEffect(() => {
-    let isSubscribed = false;
-    if (chat && !isSubscribed) {
+    var controller = new AbortController();
+    if (chat) {
       if (chat.type === ChatType.oneToOne) {
         let remoteUserId = Utils.getRemoteUserIdFromChat(
           chat,
@@ -186,10 +193,10 @@ const MainScreen = () => {
         axios
           ?.getRequest(
             `${WhatsApi.GET_REMOTE_USER_DETAILS_URL}/${remoteUserId}`,
-            null
+            null,
+            controller
           )
           .then((result: any) => {
-            isSubscribed = true;
             setRemoteUser(Utils.userFromJson(result));
           })
           .catch((e) => console.log(e.message));
@@ -197,19 +204,17 @@ const MainScreen = () => {
         if (!chat.groupId) {
           return;
         }
-        isSubscribed = true;
         getGroupDetails();
       }
     }
     return () => {
-      isSubscribed = false;
+      controller.abort();
     };
   }, [chat]);
 
   useEffect(() => {
-    let isSubscribed = false;
     let status = webSockets.typingStatusChange;
-    if (status && !isSubscribed) {
+    if (status) {
       console.log("Typing Status Change Received");
       chatsList.map((c) => {
         if (c.id === status!.chat_id) {
@@ -218,14 +223,10 @@ const MainScreen = () => {
           } else {
             c.typingUsersIds.push(status!.user_id);
           }
-          isSubscribed = true;
         }
         return c;
       });
     }
-    return () => {
-      isSubscribed = false;
-    };
   }, [webSockets.typingStatusChange]);
 
   useEffect(() => {
@@ -246,7 +247,11 @@ const MainScreen = () => {
 
   const getGroupDetails = () => {
     axios
-      .getRequest(`${WhatsApi.GET_GROUP_DETAILS_URL}/${chat!.groupId!}`, null)
+      .getRequest(
+        `${WhatsApi.GET_GROUP_DETAILS_URL}/${chat!.groupId!}`,
+        null,
+        undefined
+      )
       .then((result) => {
         setGroupDetails(Utils.groupFromJson(result));
       })
@@ -293,7 +298,8 @@ const MainScreen = () => {
         .postRequest(
           null,
           { remote_user_id: contact.id },
-          WhatsApi.CREATE_NEW_CHAT_URL
+          WhatsApi.CREATE_NEW_CHAT_URL,
+          undefined
         )
         .then((result: any) => {
           let chat: Chat = Utils.chatFromJson(result);
@@ -332,7 +338,8 @@ const MainScreen = () => {
         should_remove_profile_image: shouldRemoveProfileImage,
       },
       null,
-      WhatsApi.UPDATE_USER_DETAILS_URL
+      WhatsApi.UPDATE_USER_DETAILS_URL,
+      undefined
     );
   };
 
@@ -376,7 +383,8 @@ const MainScreen = () => {
           user_ids: usersToAddInGroup,
         },
         null,
-        WhatsApi.CREATE_NEW_GROUP_URL
+        WhatsApi.CREATE_NEW_GROUP_URL,
+        undefined
       );
       setShowCreateGroupSidebar(false);
       setUsersToAddInGroup([]);
@@ -399,7 +407,12 @@ const MainScreen = () => {
       user_ids: participants,
     };
     axios
-      .postRequest(request, null, WhatsApi.ADD_GROUP_PARTICIPANTS_URL)
+      .postRequest(
+        request,
+        null,
+        WhatsApi.ADD_GROUP_PARTICIPANTS_URL,
+        undefined
+      )
       .then((_) => {
         getGroupDetails();
       })
@@ -430,7 +443,12 @@ const MainScreen = () => {
       user_ids: [user.id],
     };
     axios
-      .postRequest(requestBody, null, WhatsApi.REMOVE_GROUP_PARTICIPANTS_URL)
+      .postRequest(
+        requestBody,
+        null,
+        WhatsApi.REMOVE_GROUP_PARTICIPANTS_URL,
+        undefined
+      )
       .then((_) => {
         if (groupDetails?.id === groupId) {
           getGroupDetails();
@@ -541,7 +559,6 @@ const MainScreen = () => {
         onCallAcceptedClicked={() => handleOnCallAccepted()}
       />
       <LoadingBar color="#00a884" progress={progressStatus.progressPercent} />
-      <SplashScreen show={showSplashScreen} />
       <SelectUsersToAddInGroupDialog
         onDoneClicked={(participants) => {
           setShowSelectUsersForGroupDialog(false);

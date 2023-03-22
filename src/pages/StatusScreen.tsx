@@ -26,8 +26,13 @@ const StatusScreen = () => {
   const progressStatus = axios.progressStatus;
 
   useEffect(() => {
+    var controller = new AbortController();
     axios
-      .getRequest(WhatsApi.GET_ALL_USERS_WITH_ACTIVE_STATUS_URL, null)
+      .getRequest(
+        WhatsApi.GET_ALL_USERS_WITH_ACTIVE_STATUS_URL,
+        null,
+        controller
+      )
       .then((result) => {
         let list: User[] = [];
         result.forEach((userJson: any) => {
@@ -39,16 +44,22 @@ const StatusScreen = () => {
         setContacts(list);
       })
       .catch((e) => console.log(e));
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   useEffect(() => {
+    var controller = new AbortController();
     setShowStatusesScreen(false);
     if (selectedContact) {
       setStatusesOfUser([]);
       axios
         .getRequest(
           `${WhatsApi.GET_STATUSES_OF_USER_URL}/${selectedContact.id}`,
-          null
+          null,
+          controller
         )
         .then((result) => {
           let statuses: Status[] = [];
@@ -60,6 +71,9 @@ const StatusScreen = () => {
         })
         .catch((e) => console.log(e));
     }
+    return () => {
+      controller.abort();
+    };
   }, [selectedContact]);
 
   const handleCloseButtonClicked = () => {
@@ -72,7 +86,7 @@ const StatusScreen = () => {
 
   const handleCreateNewStatusClicked = (request: CreateStatusRequest) => {
     axios
-      .postRequest(request, null, WhatsApi.CREATE_NEW_STATUS_URL)
+      .postRequest(request, null, WhatsApi.CREATE_NEW_STATUS_URL, undefined)
       .then((_) => {
         setShowCreateNewStatusDialog(false);
         alert("Created Successfully");
@@ -138,7 +152,12 @@ const StatusScreen = () => {
               className="sBackarrow"
               onClick={() => handleCloseButtonClicked()}
             />
-            <div className="ssSelfInfoCtnr" onClick={() => {setSelectedContact(axios.currentUserModel!)}}>
+            <div
+              className="ssSelfInfoCtnr"
+              onClick={() => {
+                setSelectedContact(axios.currentUserModel!);
+              }}
+            >
               <img
                 className="sselfProfilePreview"
                 src={
@@ -147,7 +166,9 @@ const StatusScreen = () => {
                     : "avatar.png"
                 }
               />
-              <div className="unselectable" id="myStatusText">My Status</div>
+              <div className="unselectable" id="myStatusText">
+                My Status
+              </div>
             </div>
             <span
               id="addStatusIcon"
