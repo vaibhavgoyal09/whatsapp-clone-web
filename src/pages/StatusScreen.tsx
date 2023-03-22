@@ -12,7 +12,7 @@ import Status from "../models/Status";
 import User from "../models/User";
 import { WhatsApi } from "../utils/Constants";
 import Utils from "../utils/Utils";
-import {ReactComponent as BackArrow} from "../assets/back_button.svg";
+import { ReactComponent as BackArrow } from "../assets/back_button.svg";
 
 const StatusScreen = () => {
   const axios = useAxios()!;
@@ -73,7 +73,7 @@ const StatusScreen = () => {
   const handleCreateNewStatusClicked = (request: CreateStatusRequest) => {
     axios
       .postRequest(request, null, WhatsApi.CREATE_NEW_STATUS_URL)
-      .then((result) => {
+      .then((_) => {
         setShowCreateNewStatusDialog(false);
         alert("Created Successfully");
       })
@@ -134,17 +134,20 @@ const StatusScreen = () => {
         )}
         <div className="statusSidebar">
           <div className="statusSidebarHeader">
-            <BackArrow className="sBackarrow" onClick={() => handleCloseButtonClicked()}/>
-            <img
-              className="sselfProfilePreview"
-              src={
-                axios.currentUserModel?.profileImageUrl
-                  ? axios.currentUserModel.profileImageUrl
-                  : "avatar.png"
-              }
+            <BackArrow
+              className="sBackarrow"
+              onClick={() => handleCloseButtonClicked()}
             />
-            <div>
-              <p id="myStatusText">My Status</p>
+            <div className="ssSelfInfoCtnr" onClick={() => {setSelectedContact(axios.currentUserModel!)}}>
+              <img
+                className="sselfProfilePreview"
+                src={
+                  axios.currentUserModel?.profileImageUrl
+                    ? axios.currentUserModel.profileImageUrl
+                    : "avatar.png"
+                }
+              />
+              <div className="unselectable" id="myStatusText">My Status</div>
             </div>
             <span
               id="addStatusIcon"

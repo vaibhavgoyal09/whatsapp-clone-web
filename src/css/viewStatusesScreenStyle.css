@@ -20,6 +20,7 @@
   position: absolute;
   top: 30px;
   right: 30px;
+  z-index: 77777;
 }
 
 .sscIconLarge {
@@ -111,4 +112,36 @@
 #sscMediaImage {
   width: 100%;
   height: 100%;
+}
+
+@media (max-width: 1200px) {
+  .sscStatusContentWrapper {
+    width: 40%;
+  }
+}
+
+@media (max-width: 1000px) {
+  .sscStatusContentWrapper {
+    width: 45%;
+  }
+}
+
+@media (max-width: 800px) {
+  .sscStatusContentWrapper {
+    width: 50%;
+  }
+}
+
+@media (max-width: 700px) {
+  .sscStatusContentWrapper {
+    width: 100%;
+  }
+
+  #sscLeftIcon {
+    left: 8px;
+  }
+
+  #sscRightIcon {
+    right: 8px;
+  }
 }

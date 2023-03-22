@@ -37,6 +37,13 @@
   background-color: var(--darkerGrey);
 }
 
+.ssSelfInfoCtnr {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+}
+
 .sintroImg {
   width: 80px;
   height: 80px;
@@ -70,13 +77,6 @@
   margin-top: 16px;
 }
 
-.statusSidebarHeader > div {
-  margin-left: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
 #addStatusIcon {
   margin-left: auto;
   color: white;
@@ -88,6 +88,7 @@
 #myStatusText {
   color: var(--white);
   font-size: 1.0rem;
+  margin-left: 20px;
 }
 
 .sselfProfilePreview {

@@ -18,14 +18,18 @@ import CallUserRequest from "../models/CallUserRequest";
 import IncomingCall from "../models/IncomingCall";
 import IncomingCallResponse from "../models/IncomingCallResponse";
 import IncomingCallResponseReceived from "../models/IncomingCallResponseReceived";
+import CallingEventReceived from "../models/CallingEventReceived";
+import CallingEvent from "../models/CallingEvents";
 
 interface WhatsAppWebSocketContextInterface {
   sendChatMessage: (message: SendMessageRequest) => void;
   sendSelfTypingStatusChange: (isTyping: boolean, chatId: string) => void;
   sendOutgoingCall: (request: CallUserRequest) => void;
   sendIncomingCallResponse: (response: IncomingCallResponse) => void;
+  sendCallingEvent: (event: CallingEvent) => void;
   lastChatMessage: Message | null;
   typingStatusChange: TypingStatusChange | null;
+  callingEvent: CallingEventReceived | null;
   incomingCall: IncomingCall | null;
   incomingCallResponse: IncomingCallResponseReceived | null;
 }
@@ -59,11 +63,10 @@ function WhatsAppWebSocketContextProvider({
   const [incomingCall, setIncomingCall] = useState<IncomingCall | null>(null);
   const [incomingCallResponse, setIncomingCallResponse] =
     useState<IncomingCallResponseReceived | null>(null);
+  const [callingEvent, setCallingEvent] = useState<CallingEventReceived | null>(null);
 
   useEffect(() => {
     let receivedMessage: string = lastMessage?.data;
-
-    console.log(receivedMessage);
 
     if (receivedMessage) {
       let jsonObject = JSON.parse(receivedMessage);
@@ -94,8 +97,27 @@ function WhatsAppWebSocketContextProvider({
 
         setIncomingCallResponse(response);
       }
+      else if (jsonObject.type === WsMessageType.calling_event) {
+        let event: CallingEventReceived = {
+          by_user_id: jsonObject.message.by_user_id,
+          event: jsonObject.message.event
+        }
+        setCallingEvent(event);
+      }
     }
   }, [lastMessage]);
+
+  function sendCallingEvent(event: CallingEvent) {
+    if (readyState !== ReadyState.OPEN) {
+      return;
+    }
+    sendMessage(
+      JSON.stringify({
+        type: WsMessageType.calling_event,
+        message: event,
+      })
+    );
+  }
 
   function sendChatMessage(message: SendMessageRequest) {
     if (readyState !== ReadyState.OPEN) {
@@ -134,6 +156,7 @@ function WhatsAppWebSocketContextProvider({
     if (readyState !== ReadyState.OPEN) {
       return;
     }
+    setIncomingCall(null);
     sendMessage(
       JSON.stringify({
         type: WsMessageType.incoming_call_response,
@@ -151,6 +174,8 @@ function WhatsAppWebSocketContextProvider({
     typingStatusChange,
     incomingCall,
     incomingCallResponse,
+    callingEvent,
+    sendCallingEvent,
   };
 
   return (

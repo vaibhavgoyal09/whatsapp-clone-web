@@ -1,6 +1,5 @@
-import { uniqueId } from "lodash";
 import moment from "moment";
-import { createRef, useCallback, useEffect, useState } from "react";
+import { createRef, useEffect, useState } from "react";
 import { ReactComponent as CloseIcon } from "../assets/close_icon.svg";
 import { ReactComponent as LeftArrowIcon } from "../assets/left-arrow.svg";
 import { ReactComponent as RighArrowIcon } from "../assets/right-arrow.svg";
@@ -32,6 +31,16 @@ const ViewStatusesScreen: React.FC<Props> = ({
   );
   const [currentStatusIndex, setCurrentStatusIndex] = useState<number>(0);
   const videoRef = createRef<HTMLVideoElement>();
+
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     if (statuses[currentStatusIndex + 1]) {
+  //       setCurrentViewingStatus(statuses[currentStatusIndex + 1]);
+  //     } else {
+  //       onClose();
+  //     }
+  //   }, progressDuration * 1000);
+  // }, [currentViewingStatus]);
 
   useEffect(() => {
     if (statuses.length >= 1) {

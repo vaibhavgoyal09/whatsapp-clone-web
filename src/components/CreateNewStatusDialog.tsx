@@ -1,6 +1,13 @@
-import React, { useState, createRef, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  createRef,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
 import "../css/createNewStatusDialogStyle.css";
 import { ReactComponent as ImageVideoIcon } from "../assets/image_video.svg";
+import { ReactComponent as CloseIcon } from "../assets/close_icon.svg";
 import MutedIcon from "../assets/muted.svg";
 import UnmuteIcon from "../assets/unmute.svg";
 import { useAxios } from "../context/AxiosContext";
@@ -24,7 +31,8 @@ const CreateNewStatusDialog: React.FC<Props> = ({
   const [mediaType, setMediaType] = useState<string>("");
   const [isVideoMuted, setIsVideoMuted] = useState<boolean>(true);
   const dropAreaRef = createRef<HTMLDivElement>();
-  const axios = useAxios()!!;
+  const inputFileRef = useRef<HTMLInputElement>(null);
+  const axios = useAxios()!;
 
   useEffect(() => {
     dropAreaRef.current?.addEventListener("dragover", handleDragOver);
@@ -123,6 +131,13 @@ const CreateNewStatusDialog: React.FC<Props> = ({
     onCreateNewStatusClicked(request);
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+    let file = e.target.files ? e.target.files[0] : null;
+    setMedia(file);
+  };
+
   if (!isOpen) {
     return null;
   }
@@ -141,7 +156,8 @@ const CreateNewStatusDialog: React.FC<Props> = ({
             <span id="cnsBackBtn" onClick={handleBackButtonClicked}>
               <i className="fa-solid fa-arrow-left-long"></i>
             </span>
-          ) : null}
+          ) : <CloseIcon className="cnsCloseIcon" onClick={() => onClose()}/> 
+        }
           <p id="cnsText" className="unselectable">
             Create new status
           </p>
@@ -169,16 +185,32 @@ const CreateNewStatusDialog: React.FC<Props> = ({
                     />
                   </div>
                 </div>
-                <video id="cnsVideo" src={mediaUrl} autoPlay loop muted={isVideoMuted} />
+                <video
+                  id="cnsVideo"
+                  src={mediaUrl}
+                  autoPlay
+                  loop
+                  muted={isVideoMuted}
+                />
               </div>
             )}
           </div>
         ) : (
           <div className="cnsMediaDropper" ref={dropAreaRef}>
+            <input
+              type="file"
+              onChange={handleFileChange}
+              hidden
+              ref={inputFileRef}
+            />
+
             <div className="cnsMediaDropperContentWrpr">
               <ImageVideoIcon id="imageVideoIcon" />
               <p id="cnsDropContextText">Drag photos and videos here</p>
-              <button className="cnsSelectFromComputerBtn pBtn">
+              <button
+                className="cnsSelectFromComputerBtn pBtn"
+                onClick={() => inputFileRef!.current!.click()}
+              >
                 Select from computer
               </button>
             </div>

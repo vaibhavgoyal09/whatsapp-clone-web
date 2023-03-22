@@ -7,6 +7,7 @@
   height: 100vh;
   position: fixed;
   z-index: 3;
+  overflow: hidden;
 }
 
 .cnsDialogContent {
@@ -28,6 +29,15 @@
   align-items: center;
   border-bottom: 1px solid var(--inputFieldBorder);
   box-sizing: border-box;
+}
+
+.cnsCloseIcon {
+  position: relative;
+  top: 2px;
+  width: 16px;
+  height: 15px;
+  cursor: pointer;
+  display: none;
 }
 
 #cnsBackBtn {
@@ -146,4 +156,19 @@
   width: 100% !important;
   height: auto !important;
   object-fit: fill;
+}
+
+@media (max-width: 500px) {
+
+  .cnsDialogContent {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .cnsCloseIcon {
+    display: inline;
+  }
 }

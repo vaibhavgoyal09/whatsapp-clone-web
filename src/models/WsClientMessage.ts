@@ -6,7 +6,8 @@ enum WsMessageType {
   chat_message = 0,
   typing_status_change = 1,
   incoming_call = 2,
-  incoming_call_response = 3
+  incoming_call_response = 3,
+  calling_event = 4
 }
 
 interface WsClientMessage {

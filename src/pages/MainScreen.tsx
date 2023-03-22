@@ -554,7 +554,7 @@ const MainScreen = () => {
         onClose={() => setShowSelectUsersForGroupDialog(false)}
       />
       <div className="sidebarContainer">
-        <Suspense>
+        <Suspense fallback={<DefaultFallback />}>
           {<AnimatePresence>{sidebarComponent}</AnimatePresence>}
         </Suspense>
       </div>
@@ -567,7 +567,7 @@ const MainScreen = () => {
               : "chattingContainer max"
           }
         >
-          <Suspense>
+          <Suspense fallback={<DefaultFallback />}>
             <ChattingScreen
               onBack={() => setChat(null)}
               currentUserModel={axios.currentUserModel}
@@ -591,7 +591,7 @@ const MainScreen = () => {
           <WhatsappIntroScreen />
         </div>
       )}
-      <Suspense>
+      <Suspense fallback={<DefaultFallback />}>
         <AnimatePresence>
           {showChatDetailsScreen && (
             <div className="chatInfoScreenContainer">
