@@ -75,3 +75,15 @@
 #icReject {
   background-color: #f15c6d;
 }
+
+@media (max-width: 800px) {
+  .icOverlay {
+    width: 70%;
+  }
+}
+
+@media (max-width: 500px) {
+  .icOverlay {
+    width: 99%
+  }
+}

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { CanceledError } from "axios";
 import {
   createContext,
   ReactNode,
@@ -101,12 +101,13 @@ const AxiosInstanceProvider = ({ children }: { children: ReactNode }) => {
     try {
       return await request();
     } catch (axiosError: any) {
+      setProgressStatus({ isLoading: false, progressPercent: 0 });
       let message = "Check Your Internet Connection";
       console.log(axiosError);
       if (axiosError.response && axiosError.response.data) {
         message = axiosError.response.data["detail"];
       }
-      throw Error(message);
+      throw Error(axiosError === CanceledError ? undefined : message );
     }
   }
 

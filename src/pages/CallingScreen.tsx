@@ -46,7 +46,6 @@ const CallingScreen = () => {
   }, [websocket.incomingCallResponse]);
 
   useEffect(() => {
-    var shouldDestroyed = false;
     if (!peerJsInstance.current) {
       navigator.mediaDevices
         .getUserMedia({ audio: true, video: props.callType === "video" })
@@ -54,7 +53,6 @@ const CallingScreen = () => {
           var peer = new Peer(currentUser.id, { debug: 2 });
 
           peer.on("open", () => {
-            shouldDestroyed = true;
             if (props.actionType === "incoming") {
               let response: IncomingCallResponse = {
                 to_user_id: props.remoteUserId,
@@ -78,7 +76,7 @@ const CallingScreen = () => {
             con.on("open", () => {
               peer.call(props.remoteUserId, stream);
             });
-            con.on('error', (e) => {
+            con.on("error", (e) => {
               console.log(e);
             });
           });
@@ -98,21 +96,24 @@ const CallingScreen = () => {
         });
     }
 
-    // return () => {
-    //   if (shouldDestroyed) {
-    //     console.log("destroying");
-    //     peerJsInstance?.current?.destroy();
-    //   }
-    // };
+    return () => {
+      if (peerJsInstance?.current?.open) {
+        console.log("destroying");
+        peerJsInstance?.current?.destroy();
+      }
+    };
   }, []);
 
   useEffect(() => {
-    console.log(websocket.callingEvent);
     if (websocket.callingEvent) {
       let event = websocket.callingEvent;
 
       if (event.event === CallingEventType.aborted) {
         peerJsInstance?.current?.destroy();
+        localMediaStreamRef?.current
+          ?.getTracks()
+          .forEach((track) => track.stop());
+        navigate("/");
       }
     }
   }, [websocket.callingEvent]);
