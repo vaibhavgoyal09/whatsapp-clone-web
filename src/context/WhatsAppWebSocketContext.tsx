@@ -63,7 +63,25 @@ function WhatsAppWebSocketContextProvider({
   const [incomingCall, setIncomingCall] = useState<IncomingCall | null>(null);
   const [incomingCallResponse, setIncomingCallResponse] =
     useState<IncomingCallResponseReceived | null>(null);
-  const [callingEvent, setCallingEvent] = useState<CallingEventReceived | null>(null);
+  const [callingEvent, setCallingEvent] = useState<CallingEventReceived | null>(
+    null
+  );
+
+  useEffect(() => {
+    var timeout = setTimeout(() => {
+      setIncomingCall(null);
+    }, 2000);
+
+    return () => clearTimeout(timeout);
+  }, [incomingCall]);
+
+  useEffect(() => {
+    var timeout = setTimeout(() => {
+      setCallingEvent(null);
+    }, 2000);
+
+    return () => clearTimeout(timeout);
+  }, [callingEvent]);
 
   useEffect(() => {
     let receivedMessage: string = lastMessage?.data;
@@ -96,12 +114,11 @@ function WhatsAppWebSocketContextProvider({
         };
 
         setIncomingCallResponse(response);
-      }
-      else if (jsonObject.type === WsMessageType.calling_event) {
+      } else if (jsonObject.type === WsMessageType.calling_event) {
         let event: CallingEventReceived = {
           by_user_id: jsonObject.message.by_user_id,
-          event: jsonObject.message.event
-        }
+          event: jsonObject.message.event,
+        };
         setCallingEvent(event);
       }
     }

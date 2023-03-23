@@ -20,7 +20,7 @@
   gap: 8px;
 }
 
-.ciContainer.isSelected {
+.cnWithBg {
   background-color: var(--background) !important;
 }
 

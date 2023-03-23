@@ -98,7 +98,6 @@ const CallingScreen = () => {
 
     return () => {
       if (peerJsInstance?.current?.open) {
-        console.log("destroying");
         peerJsInstance?.current?.destroy();
       }
     };
@@ -107,7 +106,6 @@ const CallingScreen = () => {
   useEffect(() => {
     if (websocket.callingEvent) {
       let event = websocket.callingEvent;
-
       if (event.event === CallingEventType.aborted) {
         peerJsInstance?.current?.destroy();
         localMediaStreamRef?.current
