@@ -90,8 +90,10 @@ const CallingScreen = () => {
               remoteUserVideoRef.current?.play();
             });
           });
-          selfVideoRef!.current!.srcObject = stream;
-          selfVideoRef!.current!.play();
+          if (props.callType === "video") {
+            selfVideoRef!.current!.srcObject = stream;
+            selfVideoRef!.current!.play();
+          }
           peerJsInstance.current = peer;
         });
     }
@@ -139,19 +141,15 @@ const CallingScreen = () => {
     <div className="csPage">
       <div className="csScreenWrapper">
         <div className="csRemoteVideoWrapper">
-          {props.callType === "video" ? (
-            <video id="csRemoteVideo" ref={remoteUserVideoRef} />
-          ) : (
-            <img
-              id="csRemoteProfilePic"
-              src={
-                props.remoteUserProfileImageUrl
-                  ? props.remoteUserProfileImageUrl
-                  : "avatar.png"
-              }
-              alt="User Profile Image"
-            />
-          )}
+          <video
+            id="csRemoteVideo"
+            poster={
+              props.remoteUserProfileImageUrl
+                ? props.remoteUserProfileImageUrl
+                : "avatar.png"
+            }
+            ref={remoteUserVideoRef}
+          />
           <div className="csVideoActionsContainer">
             <span className="csHangCall" onClick={() => handleCallAborted()}>
               <i className="fa-solid fa-phone-slash fa-flip-horizontal"></i>
