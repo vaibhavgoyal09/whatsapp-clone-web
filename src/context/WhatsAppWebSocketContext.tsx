@@ -16,7 +16,9 @@ import { WsMessageType } from "../models/WsClientMessage";
 import Utils from "../utils/Utils";
 import CallUserRequest from "../models/CallUserRequest";
 import IncomingCall from "../models/IncomingCall";
-import IncomingCallResponse from "../models/IncomingCallResponse";
+import IncomingCallResponse, {
+  IncomingCallResponseType,
+} from "../models/IncomingCallResponse";
 import IncomingCallResponseReceived from "../models/IncomingCallResponseReceived";
 import CallingEventReceived from "../models/CallingEventReceived";
 import CallingEvent from "../models/CallingEvents";
@@ -69,8 +71,15 @@ function WhatsAppWebSocketContextProvider({
 
   useEffect(() => {
     var timeout = setTimeout(() => {
-      setIncomingCall(null);
-    }, 2000);
+      if (incomingCall) {
+        sendIncomingCallResponse({
+          to_user_id: incomingCall.user_id,
+          by_user_id: currentUserModel!.id,
+          response: IncomingCallResponseType.rejected,
+        });
+        setIncomingCall(null);
+      }
+    }, 30000);
 
     return () => clearTimeout(timeout);
   }, [incomingCall]);
